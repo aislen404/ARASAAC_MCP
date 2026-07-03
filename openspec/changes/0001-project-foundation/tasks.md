@@ -10,4 +10,4 @@
 - [x] Documentar instalación y arranque local.
 - [x] Ejecutar tests, lint, typecheck y validación de Compose disponibles.
 - [x] Revisar ausencia de secretos, PII, pictogramas y uso de ARASAAC.
-- [ ] Preparar una PR contra `main` con resultados y riesgos.
+- [x] Preparar una PR contra `main` con resultados y riesgos.
