@@ -1,0 +1,226 @@
+agents:
+- id: openspec_steward
+  name: OpenSpec Steward Agent
+  mission: Gobierna proposal/design/tasks/spec y precedencias.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: product_owner_social
+  name: Product Owner Social Agent
+  mission: Convierte necesidades sociales en backlog priorizado.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: arasaac_liaison
+  name: ARASAAC Liaison Agent
+  mission: Prepara dossier y relación institucional.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: license_legal_compliance
+  name: License & Legal Compliance Agent
+  mission: Valida CC BY-NC-SA, atribución y no comercialidad.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: privacy_ethics
+  name: Privacy & Ethics Agent
+  mission: Evita datos personales y vinculación a personas concretas.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: caasaac_methodology
+  name: CAA/SAAC Methodology Agent
+  mission: Asegura criterios de comunicación aumentativa/alternativa.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: cognitive_accessibility
+  name: Cognitive Accessibility Agent
+  mission: Revisa comprensión, lenguaje y carga visual.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: easy_reading
+  name: Easy Reading Agent
+  mission: Adapta textos a lectura fácil/lenguaje claro.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: ngo_cee_domain
+  name: NGO/CEE Domain Agent
+  mission: Aterriza casos de uso para entidades, CEE y fundaciones.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: ux_accessibility
+  name: UX Accessibility Agent
+  mission: Diseña Web App accesible AA y guiada.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: solution_architect
+  name: Solution Architect Agent
+  mission: Mantiene arquitectura modular y escalable.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: mcp_architect
+  name: MCP Architect Agent
+  mission: Diseña tools/resources/prompts MCP seguros.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: backend
+  name: Backend Agent
+  mission: Implementa FastAPI, dominio, persistencia y validadores.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: frontend
+  name: Frontend Agent
+  mission: Implementa Next.js, editor, preview y flujos guiados.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: data_connector
+  name: Data Connector Agent
+  mission: Integra ARASAAC API, caché y metadatos.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: semantic_search
+  name: Semantic Search Agent
+  mission: Evoluciona búsqueda semántica open source.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: export_document
+  name: Export/Document Agent
+  mission: Genera HTML/PDF/DOCX/PPTX/ZIP con créditos.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: devops
+  name: DevOps Agent
+  mission: Docker Compose, CI y despliegue reproducible.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: security
+  name: Security Agent
+  mission: Threat modeling y seguridad MCP/API.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: qa
+  name: QA Agent
+  mission: Valida funcional y regresión.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: accessibility_qa
+  name: Accessibility QA Agent
+  mission: Valida accesibilidad digital/cognitiva.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: test_automation
+  name: Test Automation Agent
+  mission: Automatiza unit, contract, E2E y gates.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: observability
+  name: Observability Agent
+  mission: Eventos, métricas, auditoría y trazabilidad.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: documentation
+  name: Documentation Agent
+  mission: README, manuales, despliegue y contribución.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution
+- id: release_manager
+  name: Release Manager Agent
+  mission: Releases, piloto, changelog y readiness.
+  common_rules:
+  - must_follow_openspec
+  - must_not_store_personal_data_in_mvp
+  - must_not_generate_or_modify_arasaac_pictograms
+  - must_enforce_human_review_before_export
+  - must_preserve_visible_attribution

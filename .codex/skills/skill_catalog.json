@@ -1,0 +1,576 @@
+{
+  "skills": [
+    {
+      "id": "skill.openspec.create_change",
+      "domain": "openspec",
+      "name": "create_change",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.openspec.split_tasks",
+      "domain": "openspec",
+      "name": "split_tasks",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.openspec.validate_acceptance_criteria",
+      "domain": "openspec",
+      "name": "validate_acceptance_criteria",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.openspec.detect_dependency_conflicts",
+      "domain": "openspec",
+      "name": "detect_dependency_conflicts",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.openspec.archive_change",
+      "domain": "openspec",
+      "name": "archive_change",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.codex.generate_task_prompt",
+      "domain": "codex",
+      "name": "generate_task_prompt",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.codex.review_patch",
+      "domain": "codex",
+      "name": "review_patch",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.codex.create_pr_summary",
+      "domain": "codex",
+      "name": "create_pr_summary",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.arasaac.query_api",
+      "domain": "arasaac",
+      "name": "query_api",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.arasaac.get_pictogram",
+      "domain": "arasaac",
+      "name": "get_pictogram",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.arasaac.normalize_metadata",
+      "domain": "arasaac",
+      "name": "normalize_metadata",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.arasaac.validate_real_id",
+      "domain": "arasaac",
+      "name": "validate_real_id",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.arasaac.cache_reference",
+      "domain": "arasaac",
+      "name": "cache_reference",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.arasaac.generate_manifest_entry",
+      "domain": "arasaac",
+      "name": "generate_manifest_entry",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.arasaac.handle_api_error",
+      "domain": "arasaac",
+      "name": "handle_api_error",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.mcp.define_tool_schema",
+      "domain": "mcp",
+      "name": "define_tool_schema",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.mcp.implement_tool",
+      "domain": "mcp",
+      "name": "implement_tool",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.mcp.define_resource",
+      "domain": "mcp",
+      "name": "define_resource",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.mcp.define_prompt",
+      "domain": "mcp",
+      "name": "define_prompt",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.mcp.validate_tool_security",
+      "domain": "mcp",
+      "name": "validate_tool_security",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.mcp.write_contract_test",
+      "domain": "mcp",
+      "name": "write_contract_test",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.material.create_visual_agenda",
+      "domain": "material",
+      "name": "create_visual_agenda",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.material.create_communication_board",
+      "domain": "material",
+      "name": "create_communication_board",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.material.create_social_story",
+      "domain": "material",
+      "name": "create_social_story",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.material.create_easy_reading_document",
+      "domain": "material",
+      "name": "create_easy_reading_document",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.material.create_signage_pack",
+      "domain": "material",
+      "name": "create_signage_pack",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.material.create_cee_kit",
+      "domain": "material",
+      "name": "create_cee_kit",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.material.create_cermi_kit",
+      "domain": "material",
+      "name": "create_cermi_kit",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.editor.update_text_block",
+      "domain": "editor",
+      "name": "update_text_block",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.editor.replace_pictogram",
+      "domain": "editor",
+      "name": "replace_pictogram",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.editor.reorder_steps",
+      "domain": "editor",
+      "name": "reorder_steps",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.editor.adjust_layout",
+      "domain": "editor",
+      "name": "adjust_layout",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.review.request_human_review",
+      "domain": "review",
+      "name": "request_human_review",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.review.approve_material",
+      "domain": "review",
+      "name": "approve_material",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.review.reject_material",
+      "domain": "review",
+      "name": "reject_material",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.validate.pictogram_ids_real",
+      "domain": "validate",
+      "name": "pictogram_ids_real",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.validate.no_modified_pictograms",
+      "domain": "validate",
+      "name": "no_modified_pictograms",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.validate.license_notice_visible",
+      "domain": "validate",
+      "name": "license_notice_visible",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.validate.non_commercial_context",
+      "domain": "validate",
+      "name": "non_commercial_context",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.validate.no_personal_data",
+      "domain": "validate",
+      "name": "no_personal_data",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.validate.plain_language",
+      "domain": "validate",
+      "name": "plain_language",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.validate.visual_density",
+      "domain": "validate",
+      "name": "visual_density",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.validate.sequence_coherence",
+      "domain": "validate",
+      "name": "sequence_coherence",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.validate.human_review_approved",
+      "domain": "validate",
+      "name": "human_review_approved",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.validate.export_readiness",
+      "domain": "validate",
+      "name": "export_readiness",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.export.render_html",
+      "domain": "export",
+      "name": "render_html",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.export.generate_pdf",
+      "domain": "export",
+      "name": "generate_pdf",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.export.generate_docx",
+      "domain": "export",
+      "name": "generate_docx",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.export.generate_pptx",
+      "domain": "export",
+      "name": "generate_pptx",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.export.generate_images",
+      "domain": "export",
+      "name": "generate_images",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.export.package_zip",
+      "domain": "export",
+      "name": "package_zip",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.export.attach_manifest",
+      "domain": "export",
+      "name": "attach_manifest",
+      "requires_openspec": true,
+      "critical_gates": [
+        "license",
+        "privacy",
+        "human_review"
+      ]
+    },
+    {
+      "id": "skill.a11y.test_keyboard_navigation",
+      "domain": "a11y",
+      "name": "test_keyboard_navigation",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.a11y.test_focus_order",
+      "domain": "a11y",
+      "name": "test_focus_order",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.a11y.test_labels",
+      "domain": "a11y",
+      "name": "test_labels",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.a11y.test_color_independence",
+      "domain": "a11y",
+      "name": "test_color_independence",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.a11y.review_cognitive_accessibility",
+      "domain": "a11y",
+      "name": "review_cognitive_accessibility",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.docs.generate_readme",
+      "domain": "docs",
+      "name": "generate_readme",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.docs.generate_entity_manual",
+      "domain": "docs",
+      "name": "generate_entity_manual",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.docs.generate_technical_manual",
+      "domain": "docs",
+      "name": "generate_technical_manual",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.docs.generate_deployment_guide",
+      "domain": "docs",
+      "name": "generate_deployment_guide",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.docs.generate_contribution_guide",
+      "domain": "docs",
+      "name": "generate_contribution_guide",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.docs.generate_release_notes",
+      "domain": "docs",
+      "name": "generate_release_notes",
+      "requires_openspec": true,
+      "critical_gates": []
+    },
+    {
+      "id": "skill.docs.generate_arasaac_validation_dossier",
+      "domain": "docs",
+      "name": "generate_arasaac_validation_dossier",
+      "requires_openspec": true,
+      "critical_gates": []
+    }
+  ]
+}
