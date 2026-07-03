@@ -29,9 +29,11 @@ ejecuta comandos ni realiza acceso arbitrario a red o filesystem.
 ### Escenario 4 — orquestación local
 
 **Dado** que Docker y Docker Compose están disponibles
-**Cuando** se ejecuta `docker compose up --build`
+**Cuando** se ejecuta `make start`
 **Entonces** se construyen los servicios `api`, `web` y `mcp`, y publican sus
-healthchecks o pantalla de estado en puertos locales documentados.
+healthchecks o pantalla de estado en puertos locales documentados. Al ejecutar
+`make stop`, los servicios se detienen y se eliminan los recursos efímeros de
+Compose.
 
 ### Escenario 5 — límites de cumplimiento
 

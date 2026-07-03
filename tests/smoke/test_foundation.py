@@ -23,3 +23,12 @@ def test_mcp_placeholder_has_no_registered_tools() -> None:
     assert "tools=[]" in source
     assert "subprocess" not in source
     assert "os.system" not in source
+
+
+def test_demo_lifecycle_commands_are_defined() -> None:
+    makefile = (ROOT / "Makefile").read_text()
+
+    assert "\nstart:\n" in makefile
+    assert "docker compose up --build --detach" in makefile
+    assert "\nstop:\n" in makefile
+    assert "docker compose down --remove-orphans" in makefile

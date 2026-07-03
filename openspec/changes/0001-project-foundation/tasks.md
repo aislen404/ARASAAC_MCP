@@ -11,3 +11,4 @@
 - [x] Ejecutar tests, lint, typecheck y validación de Compose disponibles.
 - [x] Revisar ausencia de secretos, PII, pictogramas y uso de ARASAAC.
 - [x] Preparar una PR contra `main` con resultados y riesgos.
+- [x] Añadir y documentar `make start` y `make stop` para la demo MVP-0.

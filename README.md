@@ -17,18 +17,19 @@ no genera ni exporta materiales.
 Requisito: Docker con Compose v2.
 
 ```bash
-docker compose up --build
+make start
 ```
 
 Para detener los servicios:
 
 ```bash
-docker compose down
+make stop
 ```
 
-Si `docker compose build` indica que no puede conectar con el daemon, inicia
-Docker Desktop y vuelve a ejecutar el comando. La configuración puede validarse
-sin construir imágenes mediante `docker compose config --quiet`.
+`make start` construye y levanta en segundo plano la web, la API y el placeholder
+MCP, y muestra las tres URLs de la demo. Si indica que Docker no está iniciado,
+abre Docker Desktop y vuelve a ejecutarlo. La configuración puede validarse sin
+construir imágenes mediante `docker compose config --quiet`.
 
 ## Desarrollo local
 
