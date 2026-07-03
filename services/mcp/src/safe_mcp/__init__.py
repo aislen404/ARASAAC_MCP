@@ -1,0 +1,1 @@
+"""Safe MCP boundary placeholder."""
