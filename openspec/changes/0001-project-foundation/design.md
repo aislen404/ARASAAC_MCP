@@ -47,8 +47,10 @@ datos externos ni incluye contenido generado o pictogramas.
 
 ## Verificación
 
-- Pytest para contratos HTTP de API y MCP.
+- Pytest para contratos HTTP de API y MCP, con cobertura mínima del 75%.
+- Vitest para renderizado frontend, con cobertura mínima del 75%.
+- Playwright para flujos integrados de web, API y placeholder MCP.
 - ESLint y TypeScript para el frontend.
-- Smoke tests de estructura y límites de alcance.
+- Smoke tests de estructura, ciclo de demo y límites de alcance.
 - `docker compose config` para validar la orquestación cuando Docker esté
   disponible.

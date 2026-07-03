@@ -1,9 +1,10 @@
-.PHONY: setup start stop dev-api dev-mcp dev-web test lint typecheck openspec-verify docker-up docker-down
+.PHONY: setup start stop dev-api dev-mcp dev-web test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down
 
 setup:
 	python3 -m venv .venv
 	.venv/bin/pip install -e "services/api[dev]" -e "services/mcp[dev]"
 	npm --prefix apps/web install
+	cd apps/web && npx playwright install chromium
 
 start:
 	@docker info >/dev/null 2>&1 || { echo "Error: Docker no está iniciado. Abre Docker Desktop y vuelve a ejecutar 'make start'."; exit 1; }
@@ -27,8 +28,17 @@ dev-web:
 	npm --prefix apps/web run dev
 
 test:
-	.venv/bin/pytest services/api/tests services/mcp/tests tests/smoke
-	npm --prefix apps/web run test
+	$(MAKE) test-unit
+	$(MAKE) test-e2e
+
+test-unit:
+	.venv/bin/pytest services/api/tests services/mcp/tests tests/smoke \
+		--cov=arasaac_platform --cov=safe_mcp --cov-report=term-missing \
+		--cov-report=xml:coverage/python.xml --cov-fail-under=75
+	npm --prefix apps/web run test:coverage
+
+test-e2e:
+	npm --prefix apps/web run test:e2e
 
 lint:
 	.venv/bin/ruff check services tests

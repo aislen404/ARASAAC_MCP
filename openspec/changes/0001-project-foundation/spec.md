@@ -42,10 +42,20 @@ Compose.
 **Entonces** no se detectan secretos, PII, pictogramas, integración ARASAAC,
 generación, exportación, autenticación ni tools MCP.
 
+### Escenario 6 — automatización integral
+
+**Dado** un entorno local con Python, Node.js y Chromium de Playwright
+**Cuando** se ejecuta `make test`
+**Entonces** se ejecutan pruebas unitarias, smoke y Playwright de los tres
+servicios, y la ejecución falla si la cobertura de backend o frontend es inferior
+al 75%.
+
 ## Criterios de aceptación
 
 - La estructura separa backend, frontend, MCP, docs, tests y OpenSpec.
 - Los contratos de salud tienen pruebas automatizadas.
+- Los flujos MVP-0 tienen casos Playwright automatizados.
+- Backend y frontend aplican un umbral de cobertura de código del 75%.
 - El frontend tiene lint y typecheck.
 - Docker Compose es válido o su validación queda documentada si Docker no existe.
 - El README contiene comandos de arranque local.

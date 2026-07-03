@@ -51,6 +51,19 @@ make typecheck
 make openspec-verify
 ```
 
+`make test` ejecuta cobertura unitaria y todos los flujos Playwright. Backend y
+frontend aplican por separado un umbral mínimo del 75%. Para aislar fallos:
+
+```bash
+make test-unit
+make test-e2e
+```
+
+El plan y la matriz de casos están en
+[`docs/testing/test-plan-mvp0.md`](docs/testing/test-plan-mvp0.md).
+El último resultado registrado está en
+[`docs/testing/test-report-mvp0.md`](docs/testing/test-report-mvp0.md).
+
 ## Límites de MVP-0
 
 - Sin conexión ni consultas a ARASAAC.
