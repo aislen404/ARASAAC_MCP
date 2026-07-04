@@ -4,9 +4,12 @@ MVP_OPENSPECS = 0001-project-foundation 0002-arasaac-license-governance \
 	0008-communication-board-generator 0012-export-engine 0013-web-app-shell-aa \
 	0014-guided-creation-flow 0015-preview-editor 0016-review-workflow \
 	0017-audit-observability 0019-testing-quality-gates \
-	0020-docker-compose-deployment 0021-governed-ai-assistant
+	0020-docker-compose-deployment 0021-governed-ai-assistant \
+	0022-obsidian-knowledge-sync
 
-.PHONY: setup start stop reset-data dev-api dev-mcp mcp-stdio dev-web test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down agent-packs-sync agent-packs-verify
+OBSIDIAN_VAULT_PATH ?= $(HOME)/Library/Mobile Documents/iCloud~md~obsidian/Documents/ARASAAC_Project
+
+.PHONY: setup start stop reset-data dev-api dev-mcp mcp-stdio dev-web test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down agent-packs-sync agent-packs-verify obsidian-sync obsidian-sync-check obsidian-hooks-install
 
 setup:
 	python3 -m venv .venv
@@ -58,7 +61,7 @@ test-e2e:
 	npm --prefix apps/web run test:e2e
 
 lint:
-	.venv/bin/ruff check services tests
+	.venv/bin/ruff check services tests scripts/sync_obsidian_vault.py
 	npm --prefix apps/web run lint
 
 typecheck:
@@ -79,6 +82,17 @@ agent-packs-sync:
 
 agent-packs-verify:
 	python3 scripts/verify_agent_packs_sync.py
+
+obsidian-sync:
+	python3 scripts/sync_obsidian_vault.py --vault "$(OBSIDIAN_VAULT_PATH)"
+
+obsidian-sync-check:
+	python3 scripts/sync_obsidian_vault.py --vault "$(OBSIDIAN_VAULT_PATH)" --check
+
+obsidian-hooks-install:
+	git config core.hooksPath .githooks
+	chmod +x .githooks/post-commit .githooks/post-merge
+	@echo "Hooks Obsidian activados para este repositorio."
 
 docker-up:
 	$(MAKE) start

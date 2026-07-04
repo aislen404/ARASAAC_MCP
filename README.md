@@ -120,6 +120,21 @@ make mcp-stdio
 Su allowlist contiene únicamente búsqueda, consulta por ID y sugerencia
 determinista de pictogramas ARASAAC. La IA no añade tools MCP.
 
+## Bóveda de conocimiento Obsidian
+
+La documentación, OpenSpecs y conocimiento canónico pueden mantenerse
+sincronizados con la bóveda iCloud `ARASAAC_Project`:
+
+```bash
+make obsidian-sync
+make obsidian-sync-check
+make obsidian-hooks-install
+```
+
+La sincronización es unidireccional repositorio → Obsidian, no copia secretos ni
+código y preserva notas manuales. Consulta
+[docs/obsidian/knowledge-sync.md](docs/obsidian/knowledge-sync.md).
+
 ## Límites vinculantes
 
 - Solo pictogramas reales obtenidos desde ARASAAC.
