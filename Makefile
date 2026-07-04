@@ -6,7 +6,7 @@ MVP_OPENSPECS = 0001-project-foundation 0002-arasaac-license-governance \
 	0017-audit-observability 0019-testing-quality-gates \
 	0020-docker-compose-deployment 0021-governed-ai-assistant
 
-.PHONY: setup start stop reset-data dev-api dev-mcp mcp-stdio dev-web test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down
+.PHONY: setup start stop reset-data dev-api dev-mcp mcp-stdio dev-web test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down agent-packs-sync agent-packs-verify
 
 setup:
 	python3 -m venv .venv
@@ -73,6 +73,12 @@ openspec-verify:
 		test -s "openspec/changes/$$change/spec.md"; \
 	done
 	@echo "OpenSpecs MVP verificadas."
+
+agent-packs-sync:
+	python3 scripts/sync_agent_packs.py
+
+agent-packs-verify:
+	python3 scripts/verify_agent_packs_sync.py
 
 docker-up:
 	$(MAKE) start

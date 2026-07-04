@@ -90,7 +90,13 @@ make test
 make lint
 make typecheck
 make openspec-verify
+make agent-packs-verify
 ```
+
+`make agent-packs-verify` comprueba que los packs generados (`.cursor/`, `.codex/`,
+`.claude/`, etc.) estén sincronizados con la fuente canónica `.agents/`. Tras
+editar catálogos o contenido en `.agents/`, regenera con `make agent-packs-sync`.
+Ver [docs/agents/multi-ide-agent-packs.md](docs/agents/multi-ide-agent-packs.md).
 
 `make test` ejecuta cobertura unitaria y todos los flujos Playwright. Backend y
 frontend aplican por separado un umbral mínimo del 75%. Para aislar fallos:
