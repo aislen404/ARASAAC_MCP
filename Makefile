@@ -1,4 +1,4 @@
-.PHONY: setup start stop dev-api dev-mcp dev-web test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down
+.PHONY: setup start stop dev-api dev-mcp dev-web test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down agent-packs-sync agent-packs-verify
 
 setup:
 	python3 -m venv .venv
@@ -53,6 +53,12 @@ openspec-verify:
 	test -s openspec/changes/0001-project-foundation/design.md
 	test -s openspec/changes/0001-project-foundation/tasks.md
 	test -s openspec/changes/0001-project-foundation/spec.md
+
+agent-packs-sync:
+	python3 scripts/sync_agent_packs.py
+
+agent-packs-verify:
+	python3 scripts/verify_agent_packs_sync.py
 
 docker-up:
 	$(MAKE) start

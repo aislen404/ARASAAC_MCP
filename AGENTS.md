@@ -138,6 +138,17 @@ Regenerar packs tras editar `.agents/`:
 
 ```bash
 python3 scripts/sync_agent_packs.py
+# o: make agent-packs-sync
 ```
+
+Verificar sincronía (local o CI):
+
+```bash
+python3 scripts/verify_agent_packs_sync.py
+# o: make agent-packs-verify
+```
+
+Documentación: [docs/agents/multi-ide-agent-packs.md](../docs/agents/multi-ide-agent-packs.md).
+CI: [.github/workflows/agent-packs.yml](../.github/workflows/agent-packs.yml).
 
 Documento operativo maestro: `.agents/02_AGENTES_SKILLS_WORKFLOWS_V2.md`.

@@ -1,0 +1,51 @@
+name: Agent Packs Sync
+
+on:
+  pull_request:
+    paths:
+      - .agents/**
+      - .cursor/**
+      - .codex/**
+      - .claude/**
+      - .opencode/**
+      - .github/agents/**
+      - .github/prompts/**
+      - .github/instructions/**
+      - .github/copilot-instructions.md
+      - docs/obsidian/agent-pack/**
+      - scripts/sync_agent_packs.py
+      - scripts/verify_agent_packs_sync.py
+  push:
+    branches:
+      - main
+    paths:
+      - .agents/**
+      - .cursor/**
+      - .codex/**
+      - .claude/**
+      - .opencode/**
+      - .github/agents/**
+      - .github/prompts/**
+      - .github/instructions/**
+      - .github/copilot-instructions.md
+      - docs/obsidian/agent-pack/**
+      - scripts/sync_agent_packs.py
+      - scripts/verify_agent_packs_sync.py
+
+jobs:
+  verify-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Verify generated agent packs
+        run: python3 scripts/verify_agent_packs_sync.py
