@@ -1,8 +1,14 @@
-# Project foundation
+# Arquitectura de la plataforma
 
-MVP-0 separa tres procesos sin estado: web, API y placeholder MCP. No comparten
-base de datos ni contratos de dominio porque esta unidad solo valida el arranque.
+La plataforma separa Web, API, servidor MCP y PostgreSQL. La Web solo consume la
+API mediante un proxy same-origin. La API concentra conectores externos,
+gobernanza, materiales, revisión, exportación y planificación IA opcional.
 
-El placeholder MCP no es todavía un servidor MCP funcional. Su único propósito es
-reservar el límite de servicio y hacer explícita una allowlist vacía. Cualquier
-tool futura requiere su propia OpenSpec, schema estricto, tests y revisión.
+El servidor MCP usa transporte stdio y una allowlist de tres tools con schemas
+cerrados para búsqueda y consulta ARASAAC. No expone shell, filesystem ni
+ejecución arbitraria. Cualquier tool futura requiere OpenSpec, schema estricto,
+tests y revisión.
+
+PostgreSQL persiste materiales y auditoría. Los prompts y planes IA no se
+persisten. Los pictogramas se referencian por metadatos y URL oficial; no se
+almacenan ni modifican como assets del repositorio.

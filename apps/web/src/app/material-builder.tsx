@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 type Pictogram = {
   pictogram_id: number;
@@ -32,6 +32,33 @@ type SearchResponse = {
   requires_human_selection: true;
 };
 
+type AIStatus = {
+  available: boolean;
+  provider: string;
+  model: string | null;
+  reason: string | null;
+  generates_pictograms: false;
+  requires_human_selection: true;
+  stores_input: false;
+};
+
+type AIResolvedItem = {
+  text: string;
+  search_term: string;
+  candidates: Pictogram[];
+};
+
+type AIPlanResponse = {
+  summary: string;
+  items: AIResolvedItem[];
+  provider: string;
+  model: string;
+  requires_human_selection: true;
+  creates_material: false;
+  stores_input: false;
+  warning: string;
+};
+
 type MaterialResponse = {
   material: Material;
 };
@@ -49,10 +76,70 @@ export function MaterialBuilder() {
   const [title, setTitle] = useState("");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Pictogram[]>([]);
+  const [aiStatus, setAIStatus] = useState<AIStatus | null>(null);
+  const [aiObjective, setAIObjective] = useState("");
+  const [aiItemCount, setAIItemCount] = useState("6");
+  const [privacyConfirmed, setPrivacyConfirmed] = useState(false);
+  const [aiPlan, setAIPlan] = useState<AIPlanResponse | null>(null);
   const [items, setItems] = useState<SelectedItem[]>([]);
   const [material, setMaterial] = useState<Material | null>(null);
   const [message, setMessage] = useState("Prepara un borrador sin datos personales.");
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    api<AIStatus>("/api/ai/status")
+      .then((status) => {
+        if (active) setAIStatus(status);
+      })
+      .catch(() => {
+        if (active) {
+          setAIStatus({
+            available: false,
+            provider: "unavailable",
+            model: null,
+            reason: "No se pudo consultar el estado de la IA.",
+            generates_pictograms: false,
+            requires_human_selection: true,
+            stores_input: false,
+          });
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function generateAIPlan() {
+    if (!privacyConfirmed || aiObjective.trim().length < 10) {
+      setMessage(
+        "Describe un escenario genérico de al menos 10 caracteres y confirma que no contiene datos personales.",
+      );
+      return;
+    }
+    await run(async () => {
+      const minimum = type === "agenda" ? 1 : 2;
+      const requestedCount = Math.min(
+        12,
+        Math.max(minimum, Number.parseInt(aiItemCount, 10) || minimum),
+      );
+      const response = await api<AIPlanResponse>("/api/ai/plan", {
+        method: "POST",
+        body: JSON.stringify({
+          material_type:
+            type === "agenda" ? "visual_agenda" : "communication_board",
+          objective: aiObjective.trim(),
+          item_count: requestedCount,
+          locale: "es",
+          no_personal_data_confirmed: true,
+        }),
+      });
+      setAIPlan(response);
+      setMessage(
+        `La IA propuso ${response.items.length} conceptos. Revisa el texto y elige manualmente cada pictograma.`,
+      );
+    });
+  }
 
   async function search(event: FormEvent) {
     event.preventDefault();
@@ -68,16 +155,16 @@ export function MaterialBuilder() {
     });
   }
 
-  function selectPictogram(pictogram: Pictogram) {
+  function selectPictogram(pictogram: Pictogram, text = pictogram.label) {
     setItems((current) => [
       ...current,
       {
         key: crypto.randomUUID(),
-        text: pictogram.label,
+        text,
         pictogram,
       },
     ]);
-    setMessage(`“${pictogram.label}” añadido a la vista previa.`);
+    setMessage(`“${text}” añadido a la vista previa para revisión.`);
   }
 
   function updateText(key: string, text: string) {
@@ -230,8 +317,130 @@ export function MaterialBuilder() {
           value={title}
         />
 
+        <section aria-labelledby="ai-assistant-heading" className="aiAssistant">
+          <div className="aiAssistantHeader">
+            <div>
+              <p className="stepLabel">Asistente opcional</p>
+              <h3 id="ai-assistant-heading">Proponer estructura con IA</h3>
+            </div>
+            <p
+              aria-live="polite"
+              className={aiStatus?.available ? "aiAvailable" : "aiUnavailable"}
+            >
+              {aiStatus === null
+                ? "Comprobando IA…"
+                : aiStatus.available
+                  ? `Disponible · ${aiStatus.model}`
+                  : "No configurada"}
+            </p>
+          </div>
+          <p>
+            La IA solo propone texto y búsquedas. No genera pictogramas, no decide
+            por ti y no crea el material.
+          </p>
+          {aiStatus && !aiStatus.available ? (
+            <p className="helpText">
+              El flujo manual sigue disponible. {aiStatus.reason}
+            </p>
+          ) : null}
+          <label htmlFor="ai-objective">Situación genérica, sin nombres ni diagnósticos</label>
+          <textarea
+            id="ai-objective"
+            maxLength={500}
+            onChange={(event) => setAIObjective(event.target.value)}
+            placeholder="Ej.: Preparar una visita genérica a la biblioteca"
+            rows={3}
+            value={aiObjective}
+          />
+          <label htmlFor="ai-item-count">Número de conceptos</label>
+          <input
+            id="ai-item-count"
+            max={12}
+            min={type === "agenda" ? 1 : 2}
+            onChange={(event) => setAIItemCount(event.target.value)}
+            type="number"
+            value={aiItemCount}
+          />
+          <label className="checkLabel">
+            <input
+              checked={privacyConfirmed}
+              onChange={(event) => setPrivacyConfirmed(event.target.checked)}
+              type="checkbox"
+            />
+            Confirmo que el texto es genérico y no contiene datos personales,
+            contacto, diagnósticos ni información sensible.
+          </label>
+          <button
+            disabled={
+              busy ||
+              !privacyConfirmed ||
+              aiObjective.trim().length < 10 ||
+              aiStatus?.available === false
+            }
+            onClick={generateAIPlan}
+            type="button"
+          >
+            Generar propuesta textual
+          </button>
+
+          {aiPlan ? (
+            <div aria-label="Propuesta de IA" className="aiPlan" role="region">
+              <p>
+                <strong>Resumen:</strong> {aiPlan.summary}
+              </p>
+              <p className="helpText">{aiPlan.warning}</p>
+              <ol>
+                {aiPlan.items.map((plannedItem, itemIndex) => (
+                  <li key={`${plannedItem.search_term}-${itemIndex}`}>
+                    <h4>{plannedItem.text}</h4>
+                    <p className="searchTerm">
+                      Búsqueda ARASAAC: “{plannedItem.search_term}”
+                    </p>
+                    {plannedItem.candidates.length === 0 ? (
+                      <p>Sin candidatos. Usa la búsqueda manual.</p>
+                    ) : (
+                      <div className="aiCandidates">
+                        {plannedItem.candidates.map((pictogram) => (
+                          <article
+                            className="resultCard"
+                            key={`${itemIndex}-${pictogram.pictogram_id}`}
+                          >
+                            {/* Native img preserves the original ARASAAC asset URL. */}
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              alt={pictogram.label}
+                              height="96"
+                              src={pictogram.source_url}
+                              width="96"
+                            />
+                            <p>{pictogram.label}</p>
+                            <button
+                              onClick={() =>
+                                selectPictogram(pictogram, plannedItem.text)
+                              }
+                              type="button"
+                            >
+                              Elegir {pictogram.label} para {plannedItem.text}
+                            </button>
+                          </article>
+                        ))}
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ol>
+              <p className="aiTrace">
+                Propuesta textual: {aiPlan.provider} · {aiPlan.model}. Pictogramas:
+                resultados reales ARASAAC.
+              </p>
+            </div>
+          ) : null}
+        </section>
+
         <form onSubmit={search}>
-          <label htmlFor="pictogram-query">Buscar pictogramas reales ARASAAC</label>
+          <label htmlFor="pictogram-query">
+            Buscar pictogramas reales ARASAAC manualmente
+          </label>
           <div className="inlineForm">
             <input
               id="pictogram-query"

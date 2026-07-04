@@ -1,133 +1,141 @@
-# Plan de pruebas — MVP-0 project-foundation
+# Plan de pruebas — MVP gobernado con asistente IA
 
 ## 1. Objetivo
 
-Validar que el fundamento técnico puede presentarse como demo reproducible sin
-incorporar capacidades fuera de `0001-project-foundation`. La suite verifica web,
-API, placeholder MCP, orquestación y límites de cumplimiento.
+Validar una demo reproducible que combina planificación IA textual, pictogramas
+reales ARASAAC, edición, revisión humana, exportación atribuida y trazabilidad sin
+PII, diagnóstico, generación de imágenes ni ejecución arbitraria.
 
 ## 2. Alcance
 
-Incluye:
+Incluye Web Next.js, API FastAPI, conector ARASAAC, proveedor IA opcional,
+materiales, revisión, exportación HTML/PDF, persistencia, auditoría, MCP allowlisted
+y Docker Compose. La llamada real a ARASAAC es opt-in; proveedores IA se prueban
+mediante dobles y contrato, porque CI no recibe secretos.
 
-- pantalla de estado Next.js;
-- healthcheck FastAPI;
-- estado seguro del placeholder MCP;
-- estructura y comandos de ciclo de vida;
-- contratos HTTP nominales y errores;
-- semántica básica, teclado y responsive;
-- ausencia de pictogramas, PII, tools y llamadas externas en la demo;
-- cobertura de código de backend y frontend.
+Excluye autenticación, perfiles, vinculación a personas, datos sensibles,
+diagnóstico, generación/modificación de pictogramas y nuevas tools MCP.
 
-Excluye ARASAAC, materiales, generación, exportación, autenticación, persistencia
-y datos personales porque no existen en esta versión.
-
-## 3. Estrategia y niveles
+## 3. Estrategia y gates
 
 | Nivel | Herramienta | Propósito | Gate |
 | --- | --- | --- | --- |
-| Unitario/contrato Python | Pytest + pytest-cov | API y MCP | ≥75% por total |
-| Unitario frontend | Vitest + V8 | renderizado de página/layout | ≥75% lines/functions/branches/statements |
-| Smoke | Pytest | estructura, seguridad y Makefile | obligatorio |
-| E2E | Playwright Chromium | flujos integrados y responsive | todos pasan |
-| Calidad | Ruff, ESLint, mypy, TypeScript | estática | sin errores |
+| Unitario/contrato Python | Pytest + pytest-cov | API, IA, dominio, export, DB y MCP | ≥75% total |
+| Unitario frontend | Vitest + V8 | estados y flujos React | ≥75% en cada métrica |
+| Integración | Pytest + HTTPX | proveedor, ARASAAC y repositorios | obligatorio |
+| E2E | Playwright Chromium | flujos manual e IA | todos pasan |
+| Accesibilidad | axe + Playwright | WCAG A/AA y teclado | sin serious/critical |
+| Calidad | Ruff, ESLint, mypy, TypeScript | análisis estático | sin errores |
+| Supply chain | npm audit + build | vulnerabilidades y compilación | sin vulnerabilidades conocidas |
 
-La cobertura no sustituye los casos funcionales. Los umbrales se aplican
-separadamente a Python y frontend para impedir que un componente oculte la falta
-de pruebas de otro.
+La cobertura no sustituye casos de gobernanza. Python y frontend aplican umbrales
+independientes.
 
 ## 4. Entorno
 
-- Python 3.11+ con dependencias de `services/api` y `services/mcp`.
-- Node.js 20+ y dependencias de `apps/web`.
-- Chromium instalado mediante Playwright.
-- Puertos libres: 3000, 8000 y 8001.
-- Docker no es necesario para la suite; Playwright inicia procesos locales.
+- Python 3.11+, Node.js 20+, npm y Chromium Playwright.
+- Docker Compose v2 solo para la validación de despliegue.
+- Puertos E2E dedicados: 3100, 8100 y 8101.
+- `AI_PROVIDER=disabled` en CI.
+- `OPENAI_API_KEY` solo para smoke manual de proveedor real; nunca en fixtures.
 
-## 5. Casos de prueba
+## 5. Matriz de casos
 
-| ID | Área | Caso | Resultado esperado | Automatización |
-| --- | --- | --- | --- | --- |
-| WEB-001 | Web | Abrir `/` | HTTP 200 y título del proyecto | Playwright |
-| WEB-002 | Web | Consultar estado MVP-0 | Estado visible “Base técnica disponible” | Playwright |
-| WEB-003 | Web | Revisar límites | Se muestran los cuatro límites aprobados | Playwright |
-| WEB-004 | Accesibilidad | Estructura semántica | Un `main`, un `h1`, idioma `es` | Playwright |
-| WEB-005 | Accesibilidad | Navegación por teclado | Sin trampas ni foco oculto | Playwright |
-| WEB-006 | Responsive | Vista móvil 375×667 | Contenido visible sin scroll horizontal | Playwright |
-| WEB-007 | Cumplimiento | Recursos visuales | No se renderizan imágenes/pictogramas | Playwright |
-| WEB-008 | Cumplimiento | Tráfico de página | No hay peticiones a hosts externos | Playwright |
-| API-001 | API | `GET /health` | 200 y contrato exacto | Pytest + Playwright |
-| API-002 | API | Método no permitido | 405 estructurado | Playwright |
-| API-003 | API | Ruta inexistente | 404 estructurado | Playwright |
-| MCP-001 | MCP | `GET /health` | 200 y servicio placeholder | Pytest + Playwright |
-| MCP-002 | MCP | `GET /mcp/status` | `enabled=false`, `tools=[]` | Pytest + Playwright |
-| MCP-003 | MCP | Método no permitido | 405 sin efectos | Playwright |
-| MCP-004 | MCP | Ruta/tool inexistente | 404; no ejecución arbitraria | Playwright |
-| MCP-005 | MCP | Inicialización stdio | Lista solo tres tools allowlisted | Pytest |
-| MCP-006 | MCP | Schemas | Inputs cerrados y outputs estructurados | Pytest |
-| PIC-001 | ARASAAC | Buscar | Candidatos reales normalizados | Pytest + live opt-in |
-| PIC-002 | ARASAAC | Obtener por ID | Referencia oficial y trazabilidad | Pytest |
-| PIC-003 | ARASAAC | Sugerir por texto | Búsqueda determinista, sin IA | Pytest |
-| MAT-001 | Agenda | Crear draft | Pasos ordenados y atribuidos | Pytest + Playwright |
-| MAT-002 | Tablero | Crear draft | Entre 2 y 24 celdas | Pytest + Playwright |
-| MAT-003 | Edición | Preview | Texto, orden y eliminación por teclado | Vitest |
-| REV-001 | Revisión | Enviar | `draft` pasa a `in_review` | Pytest + Playwright |
-| REV-002 | Revisión | Aprobar | Solo decisión humana confirmada | Pytest + Playwright |
-| REV-003 | Revisión | Transición inválida | 409 sin mutación | Pytest |
-| EXP-001 | Export | Bloquear draft | 409 sin archivo | Pytest + Playwright |
-| EXP-002 | Export | HTML aprobado | Pictogramas, escaping y atribución | Pytest + Playwright |
-| EXP-003 | Export | PDF aprobado | Pictogramas y atribución extraíble | Pytest |
-| EXP-004 | Export | Manifiesto | IDs, licencia y revisión | Pytest |
-| AUD-001 | Auditoría | Lifecycle | Eventos append-only ordenados | Pytest |
-| DB-001 | Persistencia | Reinicio | Material/eventos sobreviven | Pytest SQLite |
-| DB-002 | Persistencia | Payload corrupto | Rechazado por Pydantic | Pytest |
-| A11Y-001 | WCAG | Axe | Sin violaciones serias/críticas | Playwright |
-| FND-001 | Fundación | Archivos obligatorios | Estructura completa | Pytest smoke |
-| FND-002 | Seguridad | Código MCP | Sin subprocess, shell ni tools | Pytest smoke |
-| FND-003 | Operación | `make start/stop` | Comandos Compose seguros presentes | Pytest smoke |
-| COV-001 | Cobertura | Backend/MCP | Total ≥75% | pytest-cov |
-| COV-002 | Cobertura | Frontend | Cada métrica global ≥75% | Vitest V8 |
+| ID | Área | Caso | Resultado esperado |
+| --- | --- | --- | --- |
+| WEB-001 | Web | Abrir `/` | HTTP 200 y flujo completo |
+| WEB-002 | Semántica | Estructura | `lang=es`, un `main`, un `h1` |
+| WEB-003 | Responsive | 375×667 | Sin scroll horizontal |
+| WEB-004 | Teclado | Recorrer controles | Sin trampas y foco visible |
+| A11Y-001 | WCAG | Axe A/AA | Sin violaciones serious/critical |
+| API-001 | API | `GET /health` | Contrato exacto y 200 |
+| API-002 | API | Métodos/rutas inválidos | 405/404 sin efectos |
+| AI-001 | Estado | IA desactivada | API sana, `available=false` |
+| AI-002 | Estado | IA configurada | Proveedor/modelo, nunca clave |
+| AI-003 | Input | Campos extra | 422 por schema cerrado |
+| AI-004 | Privacidad | Email/teléfono/DNI/URL | 422 antes del proveedor |
+| AI-005 | Uso | Lenguaje diagnóstico | 422 antes del proveedor |
+| AI-006 | Confirmación | Falta confirmación literal | 422 |
+| AI-007 | Provider | Structured output | Pydantic parse y `store=false` |
+| AI-008 | Provider | Tools/imágenes | No se envían ni habilitan |
+| AI-009 | Provider | Sin clave | 503 controlado; manual operativo |
+| AI-010 | Provider | Timeout/fallo/refusal | 504/502 sin material |
+| AI-011 | Output | Cantidad incorrecta | Rechazo antes de ARASAAC |
+| AI-012 | Output | PII/diagnóstico devuelto | Rechazo por segunda validación |
+| AI-013 | Resolución | Término válido | Tres candidatos ARASAAC como máximo |
+| AI-014 | Decisión | Plan mostrado | Ningún elemento auto-seleccionado |
+| AI-015 | Decisión | Botón elegir | Solo entonces llega al editor |
+| AI-016 | Persistencia | Plan IA | Prompt/respuesta no se almacenan |
+| PIC-001 | ARASAAC | Buscar | Referencias reales normalizadas |
+| PIC-002 | ARASAAC | Obtener por ID | Metadatos y URL oficial |
+| PIC-003 | ARASAAC | Fallo externo | 502 controlado |
+| MAT-001 | Agenda | Crear borrador | Pasos ordenados y atribuidos |
+| MAT-002 | Tablero | Crear borrador | Entre 2 y 24 celdas |
+| MAT-003 | Editor | Editar/ordenar/eliminar | Vista previa consistente |
+| REV-001 | Revisión | Enviar | `draft → in_review` |
+| REV-002 | Revisión | Aprobar | Solo confirmación humana |
+| REV-003 | Revisión | Rechazar/transición inválida | Estado gobernado/409 |
+| EXP-001 | Export | Borrador | 409, ningún archivo |
+| EXP-002 | Export | HTML aprobado | Atribución y escaping |
+| EXP-003 | Export | PDF aprobado | Pictogramas reales y atribución |
+| EXP-004 | Export | Manifiesto | IDs, licencia y revisión |
+| AUD-001 | Auditoría | Lifecycle | Eventos append-only ordenados |
+| DB-001 | Persistencia | Reinicio | Material/eventos sobreviven |
+| DB-002 | Persistencia | Payload corrupto | Rechazado por Pydantic |
+| MCP-001 | MCP | Allowlist | Solo tres tools aprobadas |
+| MCP-002 | MCP | Schemas | Inputs/outputs cerrados |
+| MCP-003 | MCP | Ejecución arbitraria | No existe shell/filesystem/eval |
+| FND-001 | Fundación | Estructura | Archivos y comandos obligatorios |
+| FND-002 | Secretos | Escaneo | Sin claves privadas o tokens |
+| FND-003 | Assets | Repositorio | Sin imágenes de pictogramas |
+| DEP-001 | Compose | `config --quiet` | Configuración válida |
+| COV-001 | Cobertura | Python | Total ≥75% |
+| COV-002 | Cobertura | Frontend | Lines/functions/branches/statements ≥75% |
 
-## 6. Comandos
+## 6. Flujos E2E críticos
+
+1. Manual: buscar → seleccionar → editar → crear → enviar → aprobar → exportar.
+2. IA: confirmar privacidad → generar plan textual → verificar cero selección
+   automática → elegir ARASAAC → editar.
+3. Bloqueo: intentar exportar antes de aprobación.
+4. Degradación: IA desactivada y flujo manual plenamente utilizable.
+5. Accesibilidad: teclado, responsive y axe sobre la pantalla completa.
+
+## 7. Comandos
 
 ```bash
 make setup
-make test-unit
-make test-e2e
 make test
 make lint
 make typecheck
+make openspec-verify
+NEXT_TELEMETRY_DISABLED=1 npm --prefix apps/web run build
+npm audit --prefix apps/web --audit-level=low
+docker compose config --quiet
 ```
 
-`make test` es la suite completa y constituye el gate de la versión.
-
-La comprobación live del contrato oficial es deliberadamente opt-in:
+Contrato ARASAAC real opt-in:
 
 ```bash
 ARASAAC_LIVE_TEST=1 .venv/bin/pytest \
   services/api/tests/test_arasaac_connector.py -m integration
 ```
 
-## 7. Criterios de entrada y salida
+## 8. Criterios de salida
 
-Entrada:
+- Todas las suites obligatorias pasan.
+- Cobertura backend y frontend ≥75%.
+- No hay secretos, PII, pictogramas locales ni endpoints de imagen IA.
+- El plan IA no crea material y la exportación sigue bloqueada hasta aprobación.
+- La atribución ARASAAC permanece visible.
+- Cualquier limitación ambiental o smoke real no ejecutado queda registrada.
 
-- OpenSpec 0001 disponible;
-- dependencias instaladas;
-- puertos requeridos libres.
+## 9. Riesgos
 
-Salida:
-
-- todos los casos automatizados pasan;
-- cobertura Python y frontend ≥75%;
-- lint y typecheck sin errores;
-- cualquier limitación ambiental queda documentada;
-- no se detectan regresiones contra las reglas de `AGENTS.md`.
-
-## 8. Riesgos
-
-- Un puerto ocupado impide iniciar el entorno E2E: detener el proceso o usar la
-  demo Compose existente con `reuseExistingServer`.
-- La primera ejecución requiere descargar Chromium.
-- Playwright valida esta versión mínima; nuevas capacidades requieren nuevos casos
-  en su OpenSpec correspondiente.
+- CI no valida credenciales ni coste del proveedor real; usa dobles estructurales.
+- ARASAAC y OpenAI son dependencias externas con latencia y disponibilidad.
+- El guard regex reduce exposición evidente, pero no convierte texto libre en un
+  canal apto para datos personales: la confirmación y formación siguen siendo
+  controles obligatorios.
+- En producción se requiere gestor de secretos, evaluación de privacidad,
+  observabilidad sin contenido y revisión jurídica del proveedor.

@@ -14,6 +14,23 @@ test("API-002/003: API rejects unsupported methods and unknown routes", async ({
   expect((await request.get("http://127.0.0.1:8100/unknown")).status()).toBe(404);
 });
 
+test("AI-API-001: disabled AI fails closed without affecting API health", async ({
+  request,
+}) => {
+  const status = await request.get("http://127.0.0.1:8100/api/ai/status");
+
+  expect(status.status()).toBe(200);
+  expect(await status.json()).toEqual({
+    available: false,
+    provider: "disabled",
+    model: null,
+    reason: "La capa IA está desactivada.",
+    generates_pictograms: false,
+    requires_human_selection: true,
+    stores_input: false,
+  });
+});
+
 test("MCP-001/002: placeholder is healthy, disabled, and has no tools", async ({
   request,
 }) => {

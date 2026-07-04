@@ -22,6 +22,10 @@ services:
       - "8000:8000"
     environment:
       DATABASE_URL: postgresql+psycopg://arasaac:local-development-only@db:5432/arasaac_mvp
+      AI_PROVIDER: ${AI_PROVIDER:-disabled}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5.4-mini}
+      AI_TIMEOUT_SECONDS: ${AI_TIMEOUT_SECONDS:-20}
     depends_on:
       db:
         condition: service_healthy

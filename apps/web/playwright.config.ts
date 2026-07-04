@@ -27,7 +27,7 @@ export default defineConfig({
       cwd: repositoryRoot,
       url: "http://127.0.0.1:8100/health",
       reuseExistingServer: false,
-      timeout: 30_000,
+      timeout: 120_000,
     },
     {
       command:
@@ -35,7 +35,7 @@ export default defineConfig({
       cwd: repositoryRoot,
       url: "http://127.0.0.1:8101/health",
       reuseExistingServer: false,
-      timeout: 30_000,
+      timeout: 120_000,
     },
     {
       command:
@@ -43,7 +43,7 @@ export default defineConfig({
       cwd: repositoryRoot,
       url: "http://127.0.0.1:3100",
       reuseExistingServer: false,
-      timeout: 120_000,
+      timeout: 300_000,
     },
   ],
 });

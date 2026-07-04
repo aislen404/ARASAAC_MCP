@@ -4,7 +4,7 @@ MVP_OPENSPECS = 0001-project-foundation 0002-arasaac-license-governance \
 	0008-communication-board-generator 0012-export-engine 0013-web-app-shell-aa \
 	0014-guided-creation-flow 0015-preview-editor 0016-review-workflow \
 	0017-audit-observability 0019-testing-quality-gates \
-	0020-docker-compose-deployment
+	0020-docker-compose-deployment 0021-governed-ai-assistant
 
 .PHONY: setup start stop reset-data dev-api dev-mcp mcp-stdio dev-web test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down
 
@@ -21,6 +21,7 @@ start:
 	@echo "Demo MVP-0 iniciada:"
 	@echo "  Web:             http://localhost:3000"
 	@echo "  API healthcheck: http://localhost:8000/health"
+	@echo "  Estado IA:       http://localhost:8000/api/ai/status"
 	@echo "  MCP placeholder: http://localhost:8001/mcp/status"
 
 stop:
@@ -31,7 +32,8 @@ reset-data:
 	docker compose down --volumes --remove-orphans
 
 dev-api:
-	.venv/bin/uvicorn arasaac_platform.main:app --app-dir services/api/src --reload --port 8000
+	@set -a; [ ! -f .env ] || . ./.env; set +a; \
+		exec .venv/bin/uvicorn arasaac_platform.main:app --app-dir services/api/src --reload --port 8000
 
 dev-mcp:
 	.venv/bin/uvicorn safe_mcp.main:app --app-dir services/mcp/src --reload --port 8001

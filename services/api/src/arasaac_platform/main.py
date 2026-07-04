@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
+from arasaac_platform.api.ai import router as ai_router
 from arasaac_platform.api.pictograms import router as pictograms_router
 from arasaac_platform.api.materials import router as materials_router
 
@@ -13,8 +14,11 @@ class HealthResponse(BaseModel):
 
 app = FastAPI(
     title="ARASAAC Social MCP Platform API",
-    description="MVP-0 foundation API; no ARASAAC integration or material processing.",
-    version="0.1.0",
+    description=(
+        "API gobernada para materiales con pictogramas reales ARASAAC y "
+        "planificación IA opcional."
+    ),
+    version="0.2.0",
 )
 app.add_middleware(
     CORSMiddleware,
@@ -28,6 +32,7 @@ app.add_middleware(
 )
 app.include_router(pictograms_router)
 app.include_router(materials_router)
+app.include_router(ai_router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])

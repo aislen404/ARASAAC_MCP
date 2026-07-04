@@ -10,12 +10,18 @@ make stop
 Servicios: PostgreSQL 17, API, MCP status y Web App. El volumen
 `postgres_data` conserva materiales y auditoría tras `make stop`.
 
+La IA está desactivada por defecto. Para activarla, crea `.env` desde
+`.env.example`, configura `AI_PROVIDER=openai` y `OPENAI_API_KEY`, y vuelve a
+ejecutar `make start`. La clave se inyecta en el contenedor API en runtime, no en
+la imagen ni en el navegador.
+
 ## Verificación
 
 ```bash
 docker compose config --quiet
 docker compose ps
 curl --fail http://localhost:8000/health
+curl --fail http://localhost:8000/api/ai/status
 curl --fail http://localhost:8001/health
 curl --fail http://localhost:3000
 ```
@@ -30,6 +36,10 @@ docker compose exec db pg_dump -U arasaac arasaac_mvp > arasaac_mvp.sql
 
 El fichero resultante puede contener materiales operativos y no debe subirse al
 repositorio.
+
+No captures ni publiques la salida completa de `docker compose config` cuando
+hay una clave real interpolada. Usa `docker compose config --quiet` para validar
+la sintaxis sin imprimir configuración.
 
 ## Resolución de problemas
 

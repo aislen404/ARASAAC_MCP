@@ -15,6 +15,16 @@ const pictogram = {
   retrieved_at: "2026-07-04T00:00:00Z",
 };
 
+const aiStatus = {
+  available: true,
+  provider: "openai",
+  model: "gpt-5.4-mini",
+  reason: null,
+  generates_pictograms: false,
+  requires_human_selection: true,
+  stores_input: false,
+};
+
 function response(body: unknown, ok = true, status = 200) {
   return Promise.resolve({
     ok,
@@ -46,6 +56,9 @@ describe("guided material flow", () => {
     const fetchMock = vi.mocked(fetch);
     fetchMock.mockImplementation((input) => {
       const url = String(input);
+      if (url.endsWith("/api/ai/status")) {
+        return response(aiStatus);
+      }
       if (url.endsWith("/api/pictograms/search")) {
         return response({ candidates: [pictogram], requires_human_selection: true });
       }
@@ -76,7 +89,10 @@ describe("guided material flow", () => {
       screen.getByLabelText("Título genérico, sin nombres personales"),
       "Rutina de entrada",
     );
-    await user.type(screen.getByLabelText("Buscar pictogramas reales ARASAAC"), "casa");
+    await user.type(
+      screen.getByLabelText("Buscar pictogramas reales ARASAAC manualmente"),
+      "casa",
+    );
     await user.click(screen.getByRole("button", { name: "Buscar" }));
     await user.click(
       await screen.findByRole("button", { name: "Seleccionar casa" }),
@@ -98,8 +114,10 @@ describe("guided material flow", () => {
 
   it("supports board selection, reordering, removal, and validation messages", async () => {
     const fetchMock = vi.mocked(fetch);
-    fetchMock.mockImplementation(() =>
-      response({ candidates: [pictogram], requires_human_selection: true }),
+    fetchMock.mockImplementation((input) =>
+      String(input).endsWith("/api/ai/status")
+        ? response(aiStatus)
+        : response({ candidates: [pictogram], requires_human_selection: true }),
     );
     const user = userEvent.setup();
     render(<MaterialBuilder />);
@@ -108,7 +126,10 @@ describe("guided material flow", () => {
     await user.click(screen.getByRole("button", { name: "Crear borrador" }));
     expect(screen.getByRole("status").textContent).toContain("dos celdas");
 
-    await user.type(screen.getByLabelText("Buscar pictogramas reales ARASAAC"), "casa");
+    await user.type(
+      screen.getByLabelText("Buscar pictogramas reales ARASAAC manualmente"),
+      "casa",
+    );
     await user.click(screen.getByRole("button", { name: "Buscar" }));
     const select = await screen.findByRole("button", { name: "Seleccionar casa" });
     await user.click(select);
@@ -119,22 +140,116 @@ describe("guided material flow", () => {
   });
 
   it("keeps work and announces controlled API failures", async () => {
-    vi.mocked(fetch).mockImplementation(() =>
-      response({ detail: "Servicio ARASAAC no disponible." }, false, 502),
+    vi.mocked(fetch).mockImplementation((input) =>
+      String(input).endsWith("/api/ai/status")
+        ? response(aiStatus)
+        : response({ detail: "Servicio ARASAAC no disponible." }, false, 502),
     );
     const user = userEvent.setup();
     render(<MaterialBuilder />);
 
-    await user.type(screen.getByLabelText("Buscar pictogramas reales ARASAAC"), "casa");
+    await user.type(
+      screen.getByLabelText("Buscar pictogramas reales ARASAAC manualmente"),
+      "casa",
+    );
     await user.click(screen.getByRole("button", { name: "Buscar" }));
 
     await waitFor(() =>
       expect(screen.getByRole("status").textContent).toContain("no disponible"),
     );
     expect(
-      (screen.getByLabelText("Buscar pictogramas reales ARASAAC") as HTMLInputElement)
-        .value,
+      (
+        screen.getByLabelText(
+          "Buscar pictogramas reales ARASAAC manualmente",
+        ) as HTMLInputElement
+      ).value,
     ).toBe("casa");
+  });
+
+  it("uses an AI text plan but requires explicit ARASAAC selection", async () => {
+    const fetchMock = vi.mocked(fetch);
+    fetchMock.mockImplementation((input) => {
+      const url = String(input);
+      if (url.endsWith("/api/ai/status")) return response(aiStatus);
+      if (url.endsWith("/api/ai/plan")) {
+        return response({
+          summary: "Visita genérica",
+          items: [
+            {
+              text: "Entrar",
+              search_term: "biblioteca",
+              candidates: [pictogram],
+            },
+          ],
+          provider: "openai",
+          model: "gpt-5.4-mini",
+          requires_human_selection: true,
+          creates_material: false,
+          stores_input: false,
+          warning: "Revisión humana obligatoria.",
+        });
+      }
+      throw new Error(`Unexpected request: ${url}`);
+    });
+    const user = userEvent.setup();
+    render(<MaterialBuilder />);
+
+    await waitFor(() => expect(screen.getByText(/Disponible/)).toBeTruthy());
+    await user.type(
+      screen.getByLabelText("Situación genérica, sin nombres ni diagnósticos"),
+      "Preparar una visita genérica a la biblioteca",
+    );
+    await user.click(
+      screen.getByLabelText(/Confirmo que el texto es genérico/),
+    );
+    await user.clear(screen.getByLabelText("Número de conceptos"));
+    await user.type(screen.getByLabelText("Número de conceptos"), "1");
+    await user.click(
+      screen.getByRole("button", { name: "Generar propuesta textual" }),
+    );
+
+    expect(await screen.findByText("Visita genérica")).toBeTruthy();
+    expect(screen.queryAllByLabelText(/Texto del elemento/)).toHaveLength(0);
+    await user.click(
+      screen.getByRole("button", { name: "Elegir casa para Entrar" }),
+    );
+    expect(
+      (screen.getByLabelText("Texto del elemento 1") as HTMLInputElement).value,
+    ).toBe("Entrar");
+
+    const planCall = fetchMock.mock.calls.find(([input]) =>
+      String(input).endsWith("/api/ai/plan"),
+    );
+    expect(JSON.parse(String(planCall?.[1]?.body))).toMatchObject({
+      no_personal_data_confirmed: true,
+      item_count: 1,
+    });
+  });
+
+  it("keeps the manual flow available when AI status cannot be loaded", async () => {
+    vi.mocked(fetch).mockRejectedValue(new Error("status unavailable"));
+
+    render(<MaterialBuilder />);
+
+    expect(
+      await screen.findByText("No se pudo consultar el estado de la IA.", {
+        exact: false,
+      }),
+    ).toBeTruthy();
+    expect(
+      (
+        screen.getByRole("button", {
+          name: "Generar propuesta textual",
+        }) as HTMLButtonElement
+      ).disabled,
+    ).toBe(true);
+    expect(
+      (
+        screen.getByLabelText(
+          "Buscar pictogramas reales ARASAAC manualmente",
+        ) as HTMLInputElement
+      ).disabled,
+    ).toBe(false);
   });
 });
 
