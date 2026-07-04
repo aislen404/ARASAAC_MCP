@@ -800,8 +800,21 @@ Capa **IDE-neutral** compartida por todo el equipo. Los packs por IDE se **gener
 ## Regenerar
 
 ```bash
-python3 scripts/sync_agent_packs.py
+make agent-packs-sync
+# equivalente: python3 scripts/sync_agent_packs.py
 ```
+
+## Verificar sincronía
+
+```bash
+make agent-packs-verify
+# equivalente: python3 scripts/verify_agent_packs_sync.py
+```
+
+El CI (`.github/workflows/agent-packs.yml`) ejecuta la verificación en PRs y en
+`main` cuando cambian rutas de agent packs.
+
+Guía completa: [docs/agents/multi-ide-agent-packs.md](../docs/agents/multi-ide-agent-packs.md).
 
 ## Conteos actuales
 
