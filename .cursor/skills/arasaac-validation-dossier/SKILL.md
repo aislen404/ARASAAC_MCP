@@ -4,6 +4,7 @@ description: Preparar dossier institucional para validación ARASAAC/Gobierno de
 metadata:
   type: workflow
   source_id: arasaac_validation_dossier
+disable-model-invocation: true
 ---
 
 # Workflow: arasaac_validation_dossier
@@ -25,4 +26,5 @@ metadata:
 - Atribución visible en toda exportación.
 - Sin datos personales en MVP.
 - OpenSpec aprobada para cambios de producto/código.
+
 

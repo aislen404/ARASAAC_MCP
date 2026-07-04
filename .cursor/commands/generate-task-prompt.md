@@ -1,4 +1,4 @@
-# Cursor Task Prompt Template
+# Cursor Agent Task Prompt Template
 
 ## Context
 

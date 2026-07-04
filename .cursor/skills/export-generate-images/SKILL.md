@@ -1,6 +1,7 @@
 ---
 name: export-generate-images
 description: Skill export/generate images para ARASAAC Social MCP Platform. Gates críticos: license, privacy, human_review. Requiere OpenSpec aprobada.
+disable-model-invocation: true
 metadata:
   domain: export
   requires_openspec: true
@@ -42,4 +43,3 @@ next_actions: <acciones>
 - `license`
 - `privacy`
 - `human_review`
-

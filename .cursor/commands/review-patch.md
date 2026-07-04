@@ -1,4 +1,4 @@
-# Cursor Review Prompt Template
+# Cursor Agent Review Prompt Template
 
 Review the patch for:
 

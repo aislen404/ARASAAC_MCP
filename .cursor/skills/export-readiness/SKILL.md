@@ -4,6 +4,7 @@ description: Validar readiness global antes de exportar: PII, licencia, pictogra
 metadata:
   type: workflow
   source_id: export_readiness
+disable-model-invocation: true
 ---
 
 # Workflow: export_readiness
@@ -27,4 +28,5 @@ metadata:
 - Atribución visible en toda exportación.
 - Sin datos personales en MVP.
 - OpenSpec aprobada para cambios de producto/código.
+
 
