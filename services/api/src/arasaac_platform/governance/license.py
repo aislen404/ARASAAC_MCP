@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import Protocol
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -11,18 +12,34 @@ ARASAAC_ATTRIBUTION_ES = (
 
 
 class PictogramUsage(Protocol):
-    origin: str
-    author: str
-    owner: str
-    license: str
+    @property
+    def origin(self) -> str: ...
+
+    @property
+    def author(self) -> str: ...
+
+    @property
+    def owner(self) -> str: ...
+
+    @property
+    def license(self) -> str: ...
 
 
 class MaterialForCompliance(Protocol):
-    material_type: str
-    pictograms: list[PictogramUsage]
-    attribution_visible: bool
-    arasaac_logo_included: bool
-    commercial_use: bool
+    @property
+    def material_type(self) -> object: ...
+
+    @property
+    def pictograms(self) -> Sequence[PictogramUsage]: ...
+
+    @property
+    def attribution_visible(self) -> bool: ...
+
+    @property
+    def arasaac_logo_included(self) -> bool: ...
+
+    @property
+    def commercial_use(self) -> bool: ...
 
 
 class AttributionNotice(BaseModel):

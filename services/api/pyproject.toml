@@ -9,6 +9,7 @@ requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.115,<1",
   "pydantic>=2.10,<3",
+  "reportlab>=4.4,<5",
   "uvicorn[standard]>=0.34,<1",
 ]
 
@@ -16,9 +17,11 @@ dependencies = [
 dev = [
   "httpx>=0.28,<1",
   "mypy>=1.15,<2",
+  "pypdf>=6,<7",
   "pytest>=8.3,<9",
   "pytest-cov>=7.1,<8",
   "ruff>=0.11,<1",
+  "types-reportlab>=4.4,<5",
 ]
 
 [tool.hatch.build.targets.wheel]

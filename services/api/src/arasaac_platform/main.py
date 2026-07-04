@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from arasaac_platform.api.pictograms import router as pictograms_router
+from arasaac_platform.api.materials import router as materials_router
 
 
 class HealthResponse(BaseModel):
@@ -15,6 +16,7 @@ app = FastAPI(
     version="0.1.0",
 )
 app.include_router(pictograms_router)
+app.include_router(materials_router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])
