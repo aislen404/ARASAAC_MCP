@@ -1,4 +1,12 @@
-.PHONY: setup start stop dev-api dev-mcp mcp-stdio dev-web test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down
+MVP_OPENSPECS = 0001-project-foundation 0002-arasaac-license-governance \
+	0003-arasaac-connector 0004-mcp-server-core 0005-pictogram-search-tools \
+	0006-material-domain-model 0007-visual-agenda-generator \
+	0008-communication-board-generator 0012-export-engine 0013-web-app-shell-aa \
+	0014-guided-creation-flow 0015-preview-editor 0016-review-workflow \
+	0017-audit-observability 0019-testing-quality-gates \
+	0020-docker-compose-deployment
+
+.PHONY: setup start stop reset-data dev-api dev-mcp mcp-stdio dev-web test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down
 
 setup:
 	python3 -m venv .venv
@@ -17,6 +25,10 @@ start:
 
 stop:
 	docker compose down --remove-orphans
+
+reset-data:
+	@echo "Eliminando contenedores y volumen PostgreSQL local..."
+	docker compose down --volumes --remove-orphans
 
 dev-api:
 	.venv/bin/uvicorn arasaac_platform.main:app --app-dir services/api/src --reload --port 8000
@@ -52,10 +64,13 @@ typecheck:
 	npm --prefix apps/web run typecheck
 
 openspec-verify:
-	test -s openspec/changes/0001-project-foundation/proposal.md
-	test -s openspec/changes/0001-project-foundation/design.md
-	test -s openspec/changes/0001-project-foundation/tasks.md
-	test -s openspec/changes/0001-project-foundation/spec.md
+	@for change in $(MVP_OPENSPECS); do \
+		test -s "openspec/changes/$$change/proposal.md"; \
+		test -s "openspec/changes/$$change/design.md"; \
+		test -s "openspec/changes/$$change/tasks.md"; \
+		test -s "openspec/changes/$$change/spec.md"; \
+	done
+	@echo "OpenSpecs MVP verificadas."
 
 docker-up:
 	$(MAKE) start

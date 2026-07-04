@@ -1,3 +1,4 @@
+import os
 from typing import Annotated, Literal
 from uuid import UUID
 
@@ -6,7 +7,8 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from arasaac_platform.domain.materials import AuditAction, AuditEvent
 from arasaac_platform.domain.workflow import InvalidMaterialTransition
-from arasaac_platform.repositories.memory import InMemoryRepository, MaterialNotFound
+from arasaac_platform.repositories import Repository, create_repository
+from arasaac_platform.repositories.memory import MaterialNotFound
 from arasaac_platform.schemas.materials import (
     AuditEventsResult,
     CreateAgendaInput,
@@ -32,14 +34,14 @@ from arasaac_platform.services.materials import (
 
 
 router = APIRouter(prefix="/api/materials", tags=["materials"])
-repository = InMemoryRepository()
+repository = create_repository(os.getenv("DATABASE_URL"))
 
 
-def get_repository() -> InMemoryRepository:
+def get_repository() -> Repository:
     return repository
 
 
-RepositoryDependency = Annotated[InMemoryRepository, Depends(get_repository)]
+RepositoryDependency = Annotated[Repository, Depends(get_repository)]
 
 
 @router.post("/agendas", response_model=MaterialResult, status_code=201)

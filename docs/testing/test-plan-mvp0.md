@@ -63,6 +63,25 @@ de pruebas de otro.
 | MCP-002 | MCP | `GET /mcp/status` | `enabled=false`, `tools=[]` | Pytest + Playwright |
 | MCP-003 | MCP | Método no permitido | 405 sin efectos | Playwright |
 | MCP-004 | MCP | Ruta/tool inexistente | 404; no ejecución arbitraria | Playwright |
+| MCP-005 | MCP | Inicialización stdio | Lista solo tres tools allowlisted | Pytest |
+| MCP-006 | MCP | Schemas | Inputs cerrados y outputs estructurados | Pytest |
+| PIC-001 | ARASAAC | Buscar | Candidatos reales normalizados | Pytest + live opt-in |
+| PIC-002 | ARASAAC | Obtener por ID | Referencia oficial y trazabilidad | Pytest |
+| PIC-003 | ARASAAC | Sugerir por texto | Búsqueda determinista, sin IA | Pytest |
+| MAT-001 | Agenda | Crear draft | Pasos ordenados y atribuidos | Pytest + Playwright |
+| MAT-002 | Tablero | Crear draft | Entre 2 y 24 celdas | Pytest + Playwright |
+| MAT-003 | Edición | Preview | Texto, orden y eliminación por teclado | Vitest |
+| REV-001 | Revisión | Enviar | `draft` pasa a `in_review` | Pytest + Playwright |
+| REV-002 | Revisión | Aprobar | Solo decisión humana confirmada | Pytest + Playwright |
+| REV-003 | Revisión | Transición inválida | 409 sin mutación | Pytest |
+| EXP-001 | Export | Bloquear draft | 409 sin archivo | Pytest + Playwright |
+| EXP-002 | Export | HTML aprobado | Pictogramas, escaping y atribución | Pytest + Playwright |
+| EXP-003 | Export | PDF aprobado | Pictogramas y atribución extraíble | Pytest |
+| EXP-004 | Export | Manifiesto | IDs, licencia y revisión | Pytest |
+| AUD-001 | Auditoría | Lifecycle | Eventos append-only ordenados | Pytest |
+| DB-001 | Persistencia | Reinicio | Material/eventos sobreviven | Pytest SQLite |
+| DB-002 | Persistencia | Payload corrupto | Rechazado por Pydantic | Pytest |
+| A11Y-001 | WCAG | Axe | Sin violaciones serias/críticas | Playwright |
 | FND-001 | Fundación | Archivos obligatorios | Estructura completa | Pytest smoke |
 | FND-002 | Seguridad | Código MCP | Sin subprocess, shell ni tools | Pytest smoke |
 | FND-003 | Operación | `make start/stop` | Comandos Compose seguros presentes | Pytest smoke |
@@ -81,6 +100,13 @@ make typecheck
 ```
 
 `make test` es la suite completa y constituye el gate de la versión.
+
+La comprobación live del contrato oficial es deliberadamente opt-in:
+
+```bash
+ARASAAC_LIVE_TEST=1 .venv/bin/pytest \
+  services/api/tests/test_arasaac_connector.py -m integration
+```
 
 ## 7. Criterios de entrada y salida
 

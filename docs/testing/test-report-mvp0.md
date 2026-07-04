@@ -1,6 +1,6 @@
 # Informe de ejecución — MVP-0 project-foundation
 
-Fecha: 2026-07-03
+Fecha: 2026-07-04
 
 ## Resultado
 
@@ -8,11 +8,12 @@ Fecha: 2026-07-03
 
 | Comprobación | Resultado |
 | --- | --- |
-| Pytest API, MCP y smoke | 6/6 pasan |
-| Cobertura Python | 100% |
-| Vitest frontend | 2/2 pasan |
-| Cobertura frontend | 100% statements, branches, functions y lines |
-| Playwright Chromium | 8/8 flujos pasan |
+| Pytest API, MCP, SQL y smoke | 39 pasan, 1 live opt-in omitido |
+| Contrato live ARASAAC | 1/1 pasa |
+| Cobertura Python | 89,09% |
+| Vitest frontend | 5/5 pasan |
+| Cobertura frontend | 91% statements; 76,47% branches; 88,63% functions; 95,5% lines |
+| Playwright Chromium | 11/11 flujos pasan |
 | Ruff | pasa |
 | ESLint | pasa |
 | mypy | pasa |
@@ -20,17 +21,20 @@ Fecha: 2026-07-03
 | npm audit | 0 vulnerabilidades |
 | Docker Compose config | válida |
 
-Los umbrales automáticos están configurados al 75%; la ejecución actual alcanza
-el 100% en backend/MCP y frontend.
+Los umbrales automáticos están configurados al 75% y todas las métricas los
+superan.
 
 ## Flujos E2E cubiertos
 
-- estado, título y límites de la pantalla MVP-0;
+- estado, shell y flujo guiado completo;
 - estructura semántica, idioma y navegación de teclado;
 - comportamiento responsive sin desbordamiento horizontal;
 - ausencia de imágenes/pictogramas y llamadas externas;
 - contratos nominales de API y MCP;
 - métodos no permitidos, rutas inexistentes y tool MCP inexistente.
+- creación de agenda, bloqueo de export, revisión, aprobación y descarga HTML;
+- validación mínima de tablero y selección humana;
+- axe WCAG A/AA sin violaciones serias o críticas.
 
 ## Observaciones
 
@@ -39,5 +43,6 @@ el 100% en backend/MCP y frontend.
 - El navegador integrado del entorno Codex no pudo adjuntar su webview por una
   incompatibilidad interna. La suite Playwright Chromium instalada en el proyecto
   sí ejecutó y superó los ocho flujos.
-- Docker Desktop no estaba activo; se validó `docker compose config`, mientras la
-  construcción/arranque Compose permanece como comprobación manual documentada.
+- Docker Desktop no estaba activo; `docker compose config` pasa y el repositorio
+  SQL se valida con reinicio real sobre SQLite. La construcción/arranque de las
+  imágenes PostgreSQL permanece pendiente de un daemon disponible.

@@ -10,7 +10,8 @@ no genera ni exporta materiales.
 | --- | --- | --- |
 | Web | <http://localhost:3000> | Pantalla estática de estado |
 | API | <http://localhost:8000/health> | Healthcheck |
-| MCP placeholder | <http://localhost:8001/mcp/status> | Estado seguro, sin tools |
+| MCP | <http://localhost:8001/mcp/status> | Estado de allowlist; servidor real por stdio |
+| PostgreSQL | interno | Persistencia de materiales y auditoría |
 
 ## Arranque con Docker
 
@@ -30,6 +31,15 @@ make stop
 MCP, y muestra las tres URLs de la demo. Si indica que Docker no está iniciado,
 abre Docker Desktop y vuelve a ejecutarlo. La configuración puede validarse sin
 construir imágenes mediante `docker compose config --quiet`.
+
+PostgreSQL conserva materiales y auditoría al ejecutar `make stop`. Para eliminar
+deliberadamente todos los datos locales:
+
+```bash
+make reset-data
+```
+
+No uses `reset-data` si necesitas conservar materiales de una demostración.
 
 ## Desarrollo local
 

@@ -10,7 +10,7 @@ from arasaac_platform.domain.materials import (
 )
 from arasaac_platform.domain.workflow import decide_review, submit_for_review
 from arasaac_platform.governance.license import validate_material_license
-from arasaac_platform.repositories.memory import InMemoryRepository
+from arasaac_platform.repositories.base import Repository
 from arasaac_platform.schemas.materials import (
     CreateAgendaInput,
     CreateBoardInput,
@@ -24,7 +24,7 @@ class MaterialComplianceError(ValueError):
 
 def create_agenda(
     request: CreateAgendaInput,
-    repository: InMemoryRepository,
+    repository: Repository,
 ) -> Material:
     material = Material(
         material_type=MaterialType.VISUAL_AGENDA,
@@ -43,7 +43,7 @@ def create_agenda(
 
 def create_board(
     request: CreateBoardInput,
-    repository: InMemoryRepository,
+    repository: Repository,
 ) -> Material:
     material = Material(
         material_type=MaterialType.COMMUNICATION_BOARD,
@@ -60,7 +60,7 @@ def create_board(
     return _save_created(material, repository)
 
 
-def submit(material_id: UUID, repository: InMemoryRepository) -> Material:
+def submit(material_id: UUID, repository: Repository) -> Material:
     material = submit_for_review(repository.get(material_id))
     repository.save(material)
     _audit(repository, material, AuditAction.SUBMITTED, "Enviado a revisión humana.")
@@ -70,7 +70,7 @@ def submit(material_id: UUID, repository: InMemoryRepository) -> Material:
 def review(
     material_id: UUID,
     request: ReviewMaterialInput,
-    repository: InMemoryRepository,
+    repository: Repository,
 ) -> Material:
     decision = ReviewDecision(
         outcome=request.outcome,
@@ -85,7 +85,7 @@ def review(
 
 def _save_created(
     material: Material,
-    repository: InMemoryRepository,
+    repository: Repository,
 ) -> Material:
     compliance = validate_material_license(material)
     if not compliance.valid:
@@ -96,7 +96,7 @@ def _save_created(
 
 
 def _audit(
-    repository: InMemoryRepository,
+    repository: Repository,
     material: Material,
     action: AuditAction,
     detail: str,
