@@ -1,15 +1,10 @@
-# ARASAAC Agents, Skills & Workflows Pack v2
+# Codex Pack (generado)
 
-Este paquete contiene la definición operativa ampliada de agentes, skills, workflows, prompts y plantillas Codex para el proyecto ARASAAC Social MCP Platform.
+Fuente canónica: `.agents/`. Regenerar con `python3 scripts/sync_agent_packs.py`.
 
-Archivo principal:
+- Agents nativos: `.codex/agents/*.toml`
+- Compat Cursor/legacy: `.codex/agents/*.md`
+- Prompts y plantillas: `.codex/prompts/`, `.codex/codex/`
+- Skills portables compartidos: `.agents/skills/`
 
-- `02_AGENTES_SKILLS_WORKFLOWS_V2.md`
-
-Carpetas:
-
-- `agents/`: fichas individuales y catálogo YAML.
-- `skills/`: catálogo de skills.
-- `workflows/`: workflows en Markdown/YAML/JSON.
-- `prompts/`: prompts maestros por agente y Codex.
-- `codex/`: plantillas de task, review y PR.
+Documento maestro: `.agents/02_AGENTES_SKILLS_WORKFLOWS_V2.md`

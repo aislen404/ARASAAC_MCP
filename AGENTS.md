@@ -37,7 +37,7 @@ Antes de escribir código:
 4. Redactar `tasks.md` con tareas atómicas.
 5. Redactar `spec.md` con escenarios verificables.
 6. Ejecutar verificación.
-7. Implementar con Codex.
+7. Implementar con el agente de coding del IDE (Cursor, Codex, VS Code/Copilot, Claude Code u OpenCode).
 8. Ejecutar tests.
 9. Actualizar docs.
 10. Archivar OpenSpec al completar.
@@ -116,6 +116,39 @@ El frontend debe aspirar a WCAG 2.2 AA:
 - Documentation Agent.
 - Release Manager Agent.
 
-## 10. Instrucción a Codex
+## 10. Instrucción a agentes de implementación
 
-Codex debe trabajar siempre contra una task atómica de OpenSpec. Si una tarea no tiene spec, no se implementa. Si se detecta conflicto entre productividad y cumplimiento, gana cumplimiento.
+Todo agente de coding del equipo debe trabajar siempre contra una task atómica de OpenSpec. Si una tarea no tiene spec, no se implementa. Si se detecta conflicto entre productividad y cumplimiento, gana cumplimiento.
+
+## 11. Packs agenticos multi-IDE
+
+Fuente canónica compartida: `.agents/` (catálogos, contenido neutro, skills portables).
+
+| Herramienta | Pack generado |
+|-------------|---------------|
+| Portable (todos) | `.agents/skills/` |
+| Cursor | `.cursor/` |
+| Codex | `.codex/` |
+| Claude Code | `.claude/` |
+| OpenCode | `.opencode/` |
+| VS Code / GitHub Copilot | `.github/` |
+| Obsidian (referencia humana) | `docs/obsidian/agent-pack/` |
+
+Regenerar packs tras editar `.agents/`:
+
+```bash
+python3 scripts/sync_agent_packs.py
+# o: make agent-packs-sync
+```
+
+Verificar sincronía (local o CI):
+
+```bash
+python3 scripts/verify_agent_packs_sync.py
+# o: make agent-packs-verify
+```
+
+Documentación: [docs/agents/multi-ide-agent-packs.md](../docs/agents/multi-ide-agent-packs.md).
+CI: [.github/workflows/agent-packs.yml](../.github/workflows/agent-packs.yml).
+
+Documento operativo maestro: `.agents/02_AGENTES_SKILLS_WORKFLOWS_V2.md`.
