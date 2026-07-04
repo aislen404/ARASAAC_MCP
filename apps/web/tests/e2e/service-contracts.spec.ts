@@ -23,13 +23,17 @@ test("MCP-001/002: placeholder is healthy, disabled, and has no tools", async ({
   expect(health.status()).toBe(200);
   expect(await health.json()).toEqual({
     status: "ok",
-    service: "mcp-placeholder",
+    service: "mcp-server",
   });
   expect(status.status()).toBe(200);
   expect(await status.json()).toEqual({
-    status: "placeholder",
-    enabled: false,
-    tools: [],
+    status: "active",
+    enabled: true,
+    tools: [
+      "get_pictogram",
+      "search_pictograms",
+      "suggest_pictograms_for_text",
+    ],
   });
 });
 

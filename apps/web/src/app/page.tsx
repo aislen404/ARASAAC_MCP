@@ -1,31 +1,29 @@
-const limits = [
-  "Sin integración ni consultas a ARASAAC",
-  "Sin generación o exportación de materiales",
-  "Sin autenticación ni datos personales",
-  "Servidor MCP deshabilitado y sin tools",
-];
+import { MaterialBuilder } from "./material-builder";
 
 export default function Home() {
   return (
-    <main>
-      <section aria-labelledby="project-title" className="card">
-        <p className="eyebrow">MVP-0 · Project foundation</p>
-        <h1 id="project-title">ARASAAC Social MCP Platform</h1>
+    <>
+      <a className="skipLink" href="#main-content">
+        Saltar al contenido principal
+      </a>
+      <header className="siteHeader">
+        <div>
+          <p className="eyebrow">MVP social · no comercial</p>
+          <h1>ARASAAC Social MCP Platform</h1>
+        </div>
         <p className="status">
           <span aria-hidden="true" className="statusDot" />
-          Base técnica disponible
+          Revisión humana obligatoria
         </p>
-        <p>
-          Esta entrega establece únicamente la estructura de servicios y sus
-          comprobaciones de estado.
-        </p>
-        <h2>Límites actuales</h2>
-        <ul>
-          {limits.map((limit) => (
-            <li key={limit}>{limit}</li>
-          ))}
-        </ul>
-      </section>
-    </main>
+      </header>
+      <main id="main-content">
+        <MaterialBuilder />
+      </main>
+      <footer className="siteFooter">
+        Los símbolos pictográficos utilizados son propiedad del Gobierno de Aragón
+        y han sido creados por Sergio Palao para ARASAAC, que los distribuye bajo
+        licencia Creative Commons BY-NC-SA.
+      </footer>
+    </>
   );
 }

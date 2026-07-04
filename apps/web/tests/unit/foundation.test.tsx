@@ -9,11 +9,10 @@ describe("MVP-0 status page", () => {
     const markup = renderToStaticMarkup(<Home />);
 
     expect(markup).toContain("ARASAAC Social MCP Platform");
-    expect(markup).toContain("Base técnica disponible");
-    expect(markup).toContain("Sin integración ni consultas a ARASAAC");
-    expect(markup).toContain("Sin generación o exportación de materiales");
-    expect(markup).toContain("Sin autenticación ni datos personales");
-    expect(markup).toContain("Servidor MCP deshabilitado y sin tools");
+    expect(markup).toContain("Revisión humana obligatoria");
+    expect(markup).toContain("Configura el material");
+    expect(markup).toContain("Vista previa editable");
+    expect(markup).toContain("Revisión y exportación");
   });
 
   it("provides Spanish document metadata and semantic content", () => {
@@ -24,7 +23,7 @@ describe("MVP-0 status page", () => {
     );
 
     expect(markup).toContain('<html lang="es">');
-    expect(markup).toContain("<main>");
+    expect(markup).toContain("<main ");
     expect(markup).toContain("<h1");
     expect(metadata.title).toBe("ARASAAC Social MCP Platform");
   });
