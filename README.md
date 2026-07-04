@@ -64,6 +64,15 @@ El plan y la matriz de casos están en
 El último resultado registrado está en
 [`docs/testing/test-report-mvp0.md`](docs/testing/test-report-mvp0.md).
 
+El servidor MCP local usa transporte stdio:
+
+```bash
+make mcp-stdio
+```
+
+Su allowlist actual contiene únicamente búsqueda, consulta por ID y sugerencia
+determinista de pictogramas ARASAAC.
+
 ## Límites de MVP-0
 
 - Sin conexión ni consultas a ARASAAC.

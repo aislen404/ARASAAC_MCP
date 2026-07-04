@@ -1,4 +1,4 @@
-.PHONY: setup start stop dev-api dev-mcp dev-web test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down
+.PHONY: setup start stop dev-api dev-mcp mcp-stdio dev-web test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down
 
 setup:
 	python3 -m venv .venv
@@ -23,6 +23,9 @@ dev-api:
 
 dev-mcp:
 	.venv/bin/uvicorn safe_mcp.main:app --app-dir services/mcp/src --reload --port 8001
+
+mcp-stdio:
+	.venv/bin/arasaac-mcp
 
 dev-web:
 	npm --prefix apps/web run dev

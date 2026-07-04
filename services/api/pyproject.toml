@@ -26,6 +26,9 @@ packages = ["src/arasaac_platform"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+  "integration: tests that call an approved external service",
+]
 
 [tool.mypy]
 strict = true

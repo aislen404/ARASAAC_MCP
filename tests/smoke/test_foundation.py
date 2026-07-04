@@ -17,12 +17,15 @@ def test_required_foundation_files_exist() -> None:
     assert all((ROOT / path).is_file() for path in required)
 
 
-def test_mcp_placeholder_has_no_registered_tools() -> None:
+def test_mcp_has_no_arbitrary_execution() -> None:
     source = (ROOT / "services/mcp/src/safe_mcp/main.py").read_text()
+    server = (ROOT / "services/mcp/src/safe_mcp/server.py").read_text()
 
-    assert "tools=[]" in source
     assert "subprocess" not in source
     assert "os.system" not in source
+    assert "subprocess" not in server
+    assert "os.system" not in server
+    assert "eval(" not in server
 
 
 def test_demo_lifecycle_commands_are_defined() -> None:

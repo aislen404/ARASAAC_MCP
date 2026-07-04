@@ -16,7 +16,8 @@ services:
 
   mcp:
     build:
-      context: ./services/mcp
+      context: .
+      dockerfile: services/mcp/Dockerfile
     ports:
       - "8001:8001"
     healthcheck:

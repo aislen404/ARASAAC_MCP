@@ -10,15 +10,19 @@ def test_healthcheck() -> None:
     response = client.get("/health")
 
     assert response.status_code == 200
-    assert response.json() == {"status": "ok", "service": "mcp-placeholder"}
+    assert response.json() == {"status": "ok", "service": "mcp-server"}
 
 
-def test_placeholder_has_no_tools() -> None:
+def test_status_exposes_only_allowlisted_tools() -> None:
     response = client.get("/mcp/status")
 
     assert response.status_code == 200
     assert response.json() == {
-        "status": "placeholder",
-        "enabled": False,
-        "tools": [],
+        "status": "active",
+        "enabled": True,
+        "tools": [
+            "get_pictogram",
+            "search_pictograms",
+            "suggest_pictograms_for_text",
+        ],
     }
