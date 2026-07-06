@@ -26,6 +26,7 @@ from arasaac_platform.schemas.materials import (
 )
 from arasaac_platform.services.export import (
     ExportBlockedError,
+    ImageFetcher,
     encode_export,
     export_docx,
     export_html,
@@ -52,6 +53,18 @@ def get_repository() -> Repository:
 
 
 RepositoryDependency = Annotated[Repository, Depends(get_repository)]
+
+
+def get_image_fetcher() -> ImageFetcher | None:
+    """Default ARASAAC image fetcher (None keeps export_pdf's official fetcher).
+
+    Overridable in tests via ``app.dependency_overrides`` to avoid live network calls
+    to ARASAAC when exercising the export flow end-to-end.
+    """
+    return None
+
+
+ImageFetcherDependency = Annotated[ImageFetcher | None, Depends(get_image_fetcher)]
 
 
 @router.post("/agendas", response_model=MaterialResult, status_code=201)
@@ -134,6 +147,7 @@ def audit(material_id: UUID, store: RepositoryDependency) -> AuditEventsResult:
 async def export_material(
     material_id: UUID,
     store: RepositoryDependency,
+    fetch_image: ImageFetcherDependency,
     format: Literal["html", "pdf", "docx", "pptx", "zip"] = "html",
 ) -> ExportResult:
     try:
@@ -142,7 +156,7 @@ async def export_material(
             content = export_html(material)
             media_type = "text/html"
         elif format == "pdf":
-            content = await export_pdf(material)
+            content = await export_pdf(material, fetch_image=fetch_image)
             media_type = "application/pdf"
         elif format == "docx":
             content = export_docx(material)

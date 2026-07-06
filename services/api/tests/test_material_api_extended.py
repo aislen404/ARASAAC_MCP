@@ -1,5 +1,8 @@
 from datetime import UTC, datetime
 
+from arasaac_platform.api.materials import get_image_fetcher
+from arasaac_platform.main import app
+
 
 def pictogram_payload(pictogram_id: int = 6964, label: str = "casa") -> dict[str, object]:
     return {
@@ -51,13 +54,35 @@ def test_board_creation_and_listing(client) -> None:
 
 
 def test_export_pdf_after_approval(client) -> None:
-    created = client.post("/api/materials/agendas", json=agenda_payload())
-    material_id = created.json()["material"]["material_id"]
-    approve_material(client, material_id)
+    """PDF export must not depend on live network access to ARASAAC.
 
-    exported = client.get(f"/api/materials/{material_id}/export?format=pdf")
-    assert exported.status_code == 200
-    assert exported.json()["media_type"] == "application/pdf"
+    The endpoint resolves its image fetcher through ``get_image_fetcher`` (FastAPI
+    dependency injection), so tests override it with an in-memory fake image instead
+    of calling ``static.arasaac.org``. This keeps the suite deterministic offline and
+    matches the project policy that only explicitly opt-in tests call live services.
+    """
+    app.dependency_overrides[get_image_fetcher] = lambda: (
+        lambda _url: _fake_png_bytes()
+    )
+    try:
+        created = client.post("/api/materials/agendas", json=agenda_payload())
+        material_id = created.json()["material"]["material_id"]
+        approve_material(client, material_id)
+
+        exported = client.get(f"/api/materials/{material_id}/export?format=pdf")
+        assert exported.status_code == 200
+        assert exported.json()["media_type"] == "application/pdf"
+    finally:
+        app.dependency_overrides.pop(get_image_fetcher, None)
+
+
+async def _fake_png_bytes() -> bytes:
+    # 1x1 transparent PNG, avoids any network dependency in the test suite.
+    return (
+        b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00"
+        b"\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\nIDATx\x9cc"
+        b"\x00\x01\x00\x00\x05\x00\x01\r\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82"
+    )
 
 
 def test_get_material_returns_404(client) -> None:

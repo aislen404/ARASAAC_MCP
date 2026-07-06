@@ -1,6 +1,7 @@
 .DS_Store
 .env
 .venv/
+.venv-py310/
 .coverage*
 # iCloud/Dropbox sync conflict copies
 * 2.md

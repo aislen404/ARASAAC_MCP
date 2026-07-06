@@ -9,7 +9,7 @@ MVP_OPENSPECS_ARCHIVED = 0001-project-foundation 0002-arasaac-license-governance
 
 OBSIDIAN_VAULT_PATH ?= $(HOME)/Library/Mobile Documents/iCloud~md~obsidian/Documents/ARASAAC_Project
 
-.PHONY: setup start stop reset-data dev-api dev-mcp mcp-stdio dev-web dev dev-db dev-db-migrate test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down agent-packs-sync agent-packs-verify obsidian-sync obsidian-sync-check obsidian-hooks-install db-migrate db-upgrade
+.PHONY: setup start stop reset-data dev-api dev-mcp mcp-stdio dev-web dev dev-db dev-db-migrate test test-unit test-e2e test-uat lint typecheck openspec-verify docker-up docker-down agent-packs-sync agent-packs-verify obsidian-sync obsidian-sync-check obsidian-hooks-install db-migrate db-upgrade
 
 setup:
 	python3 -m venv .venv
@@ -60,6 +60,19 @@ test-unit:
 
 test-e2e:
 	npm --prefix apps/web run test:e2e
+
+test-uat:
+	@echo "== UAT completo: lint, typecheck, unitario, E2E, OpenSpec, packs, build, audit, compose =="
+	$(MAKE) lint
+	$(MAKE) typecheck
+	$(MAKE) test-unit
+	$(MAKE) test-e2e
+	$(MAKE) openspec-verify
+	$(MAKE) agent-packs-verify
+	NEXT_TELEMETRY_DISABLED=1 npm --prefix apps/web run build
+	npm audit --prefix apps/web --audit-level=low
+	docker compose config --quiet
+	@echo "== UAT completo: todas las comprobaciones obligatorias han pasado =="
 
 lint:
 	.venv/bin/ruff check services tests scripts/sync_obsidian_vault.py
