@@ -4,15 +4,19 @@ import { describe, expect, it } from "vitest";
 import RootLayout, { metadata } from "../../src/app/layout";
 import Home from "../../src/app/page";
 
-describe("MVP-0 status page", () => {
-  it("renders project status and every approved limit", () => {
+describe("Convergencia Serena home", () => {
+  it("renders the guided product shell and governed workflow", () => {
     const markup = renderToStaticMarkup(<Home />);
 
-    expect(markup).toContain("ARASAAC Social MCP Platform");
+    expect(markup).toContain("Crear con claridad. Revisar con criterio.");
     expect(markup).toContain("Revisión humana obligatoria");
+    expect(markup).toContain("Cinco fases, una decisión humana");
+    expect(markup).toContain('aria-current="step"');
+    expect(markup).toContain("WCAG 2.2 AA");
     expect(markup).toContain("Configura el material");
     expect(markup).toContain("Vista previa editable");
     expect(markup).toContain("Revisión y exportación");
+    expect(markup).toContain("Sergio Palao");
   });
 
   it("provides Spanish document metadata and semantic content", () => {

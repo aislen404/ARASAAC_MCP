@@ -12,9 +12,18 @@ test("WEB-001/002/003: shows the complete governed workflow", async ({ page }) =
 
   expect(response?.status()).toBe(200);
   await expect(
-    page.getByRole("heading", { level: 1, name: "ARASAAC Social MCP Platform" }),
+    page.getByRole("heading", {
+      level: 1,
+      name: "Crear con claridad. Revisar con criterio.",
+    }),
   ).toBeVisible();
   await expect(page.getByText("Revisión humana obligatoria")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Cinco fases, una decisión humana" }),
+  ).toBeVisible();
+  await expect(page.locator('[aria-current="step"]')).toContainText(
+    "Definir necesidad",
+  );
   for (const section of sections) {
     await expect(page.getByRole("heading", { level: 2, name: section })).toBeVisible();
   }
@@ -43,6 +52,23 @@ test("WEB-006: remains usable at mobile viewport", async ({ page }) => {
   }));
   expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+});
+
+test("WEB-006A: switches theme with an accessible persistent control", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  const toggle = page.getByRole("button", { name: "Usar tema oscuro" });
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await toggle.click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(
+    page.getByRole("button", { name: "Usar tema claro" }),
+  ).toHaveAttribute("aria-pressed", "true");
+
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 });
 
 test("WEB-007/008: renders no pictograms and calls no external hosts", async ({

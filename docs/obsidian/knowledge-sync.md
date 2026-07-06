@@ -62,6 +62,10 @@ administrados. El sincronizador:
 - rechaza rutas fuera de la allowlist;
 - conserva notas manuales no administradas.
 
+Las copias de conflicto numeradas que macOS/iCloud pueda crear dentro del pack
+generado de agentes (`nombre 2.md`, `nombre 3.md`, etc.) no se sincronizan si
+existe el archivo canónico hermano.
+
 No edites directamente archivos bajo `Proyecto/` si esperas conservar el cambio:
 el repositorio es la fuente de verdad. Guarda notas propias fuera de esa carpeta,
 por ejemplo en `Notas/`.

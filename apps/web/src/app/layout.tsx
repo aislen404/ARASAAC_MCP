@@ -5,7 +5,8 @@ import "./styles.css";
 
 export const metadata: Metadata = {
   title: "ARASAAC Social MCP Platform",
-  description: "Estado del fundamento técnico MVP-0.",
+  description:
+    "Creación guiada de materiales accesibles con pictogramas reales de ARASAAC.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

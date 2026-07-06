@@ -23,6 +23,8 @@ def create_repository(root: Path) -> Path:
     write(root / "NOTICE-ARASAAC.md", "# Licencia\n")
     write(root / "docs/obsidian/ARASAAC_Project-Index.md", "# Inicio\n")
     write(root / "docs/architecture/design.md", "# Diseño\n")
+    write(root / "docs/obsidian/agent-pack/README.md", "# Pack\n")
+    write(root / "docs/obsidian/agent-pack/README 3.md", "# Copia de conflicto\n")
     write(root / "openspec/changes/0001/spec.md", "# Spec\n")
     write(root / ".agents/README.md", "# Agentes\n")
     write(root / ".agents/skills/example/SKILL.md", "# Skill\n")
@@ -51,6 +53,8 @@ def test_initial_sync_maps_visible_knowledge_and_writes_manifest(
     assert not (vault / "Proyecto/.agents").exists()
     assert not (vault / "Proyecto/docs/.DS_Store").exists()
     assert not (vault / "Proyecto/docs/link.md").exists()
+    assert not (vault / "Proyecto/docs/obsidian/agent-pack/README 3.md").exists()
+    assert (vault / "Proyecto/docs/obsidian/agent-pack/README.md").exists()
     manifest = json.loads((vault / MANIFEST_NAME).read_text())
     assert manifest["schema_version"] == 1
     assert "Proyecto/Agentes/skills/example/SKILL.md" in manifest["files"]

@@ -8,6 +8,7 @@ import fcntl
 import hashlib
 import json
 import os
+import re
 import sys
 import tempfile
 from contextlib import contextmanager
@@ -32,6 +33,7 @@ DIRECTORY_MAPPINGS = {
     ".agents": "Proyecto/Agentes",
 }
 IGNORED_NAMES = frozenset({".DS_Store"})
+CONFLICT_COPY_PATTERN = re.compile(r"^(?P<stem>.+) (?P<copy>[2-9][0-9]*)$")
 MANAGED_EXACT = frozenset(FILE_MAPPINGS.values())
 MANAGED_PREFIXES = tuple(f"{target}/" for target in DIRECTORY_MAPPINGS.values())
 
@@ -159,10 +161,23 @@ def collect_sources(repository_root: Path) -> dict[str, Path]:
             if source.name in IGNORED_NAMES:
                 continue
             relative_source = source.relative_to(source_root)
+            if is_generated_conflict_copy(source_root, relative_source):
+                continue
             target = PurePosixPath(target_root, *relative_source.parts).as_posix()
             ensure_managed_path(target)
             collected[target] = source
     return collected
+
+
+def is_generated_conflict_copy(source_root: Path, relative_source: Path) -> bool:
+    if relative_source.parts[:2] != ("obsidian", "agent-pack"):
+        return False
+    match = CONFLICT_COPY_PATTERN.match(relative_source.stem)
+    if match is None:
+        return False
+    canonical_name = f"{match.group('stem')}{relative_source.suffix}"
+    canonical = source_root / relative_source.parent / canonical_name
+    return canonical.is_file()
 
 
 def check_state(

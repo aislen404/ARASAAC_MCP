@@ -283,8 +283,8 @@ export function MaterialBuilder() {
   }
 
   return (
-    <div className="workspace">
-      <section aria-labelledby="create-heading" className="panel">
+    <div aria-label="Constructor de materiales" className="workspace" id="workspace">
+      <section aria-labelledby="create-heading" className="panel" id="crear">
         <p className="stepLabel">Paso 1</p>
         <h2 id="create-heading">Configura el material</h2>
         <fieldset>
