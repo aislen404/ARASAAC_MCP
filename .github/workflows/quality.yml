@@ -27,6 +27,8 @@ jobs:
         run: make setup
       - name: OpenSpec
         run: make openspec-verify
+      - name: Agent packs
+        run: make agent-packs-verify
       - name: Lint
         run: make lint
       - name: Types

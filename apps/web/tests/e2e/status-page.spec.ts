@@ -71,7 +71,7 @@ test("WEB-006A: switches theme with an accessible persistent control", async ({
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 });
 
-test("WEB-007/008: renders no pictograms and calls no external hosts", async ({
+test("WEB-007/008: renders no ARASAAC pictograms and calls no external hosts", async ({
   page,
 }) => {
   const externalHosts = new Set<string>();
@@ -83,7 +83,7 @@ test("WEB-007/008: renders no pictograms and calls no external hosts", async ({
   });
 
   await page.goto("/");
-  await expect(page.locator("img, svg, canvas")).toHaveCount(0);
+  await expect(page.locator('img[src*="arasaac"]')).toHaveCount(0);
   expect([...externalHosts]).toEqual([]);
 });
 
@@ -91,7 +91,7 @@ test("WEB-009: has no serious or critical axe violations", async ({ page }) => {
   await page.goto("/");
 
   const results = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();
   const blocking = results.violations.filter((violation) =>
     ["serious", "critical"].includes(violation.impact ?? ""),

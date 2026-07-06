@@ -4,11 +4,10 @@ import pytest
 from pydantic import ValidationError
 from sqlalchemy import create_engine, text
 
-from arasaac_platform.domain.materials import AuditAction, AuditEvent
+from arasaac_platform.domain.materials import AuditAction, AuditEvent, PictogramReference
 from arasaac_platform.repositories.sql import SqlRepository
 from arasaac_platform.schemas.materials import CreateAgendaInput, MaterialItemInput
 from arasaac_platform.services.materials import create_agenda
-from arasaac_platform.domain.materials import PictogramReference
 
 
 def request() -> CreateAgendaInput:

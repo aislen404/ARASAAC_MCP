@@ -1,0 +1,77 @@
+:root,
+[data-theme="light"] {
+  --cs-bg: #f7f3ee;
+  --cs-surface: #fffcf7;
+  --cs-surface-muted: #eef2ef;
+  --cs-surface-raised: #ffffff;
+  --cs-text: #0b1d34;
+  --cs-text-muted: #334155;
+  --cs-border: rgba(11, 29, 52, 0.14);
+  --cs-brand: #0b1d34;
+  --cs-brand-contrast: #ffffff;
+  --cs-accent: #6c8f7a;
+  --cs-accent-deep: #4d725f;
+  --cs-accent-soft: rgba(108, 143, 122, 0.14);
+  --cs-warm: #c86f4a;
+  --cs-warm-soft: rgba(200, 111, 74, 0.14);
+  --cs-eyebrow: #8f4a2e;
+  --cs-focus: #0ea5e9;
+  --cs-success: #2f8f5b;
+  --cs-warning-bg: #fff2c2;
+  --cs-warning-text: #5e3a00;
+  --cs-shadow-soft: 0 24px 80px rgba(11, 29, 52, 0.10);
+  --cs-shadow-card: 0 12px 30px rgba(11, 29, 52, 0.08);
+  --cs-shadow-focus: 0 0 0 4px rgba(14, 165, 233, 0.30);
+  --cs-hero-gradient: radial-gradient(circle at 92% 12%, rgba(200,111,74,.16), transparent 28%), linear-gradient(135deg, var(--cs-surface), var(--cs-surface-muted));
+}
+
+[data-theme="dark"] {
+  --cs-bg: #081020;
+  --cs-surface: #0f172a;
+  --cs-surface-muted: #111827;
+  --cs-surface-raised: #1f2937;
+  --cs-text: #f5f7fa;
+  --cs-text-muted: #b7c2ce;
+  --cs-border: rgba(245, 247, 250, 0.14);
+  --cs-brand: #f5f7fa;
+  --cs-brand-contrast: #081020;
+  --cs-accent: #8fb89b;
+  --cs-accent-deep: #22c55e;
+  --cs-accent-soft: rgba(143, 184, 155, 0.18);
+  --cs-warm: #f59e0b;
+  --cs-warm-soft: rgba(245, 158, 11, 0.15);
+  --cs-eyebrow: #fbbf24;
+  --cs-focus: #22d3ee;
+  --cs-success: #22c55e;
+  --cs-warning-bg: rgba(245, 158, 11, 0.18);
+  --cs-warning-text: #ffe6a7;
+  --cs-shadow-soft: 0 24px 80px rgba(0,0,0,.45);
+  --cs-shadow-card: 0 16px 44px rgba(0,0,0,.35);
+  --cs-shadow-focus: 0 0 0 4px rgba(34, 211, 238, 0.30);
+  --cs-hero-gradient: radial-gradient(circle at 92% 12%, rgba(245,158,11,.16), transparent 28%), linear-gradient(135deg, #0f172a, #111827);
+}
+
+:root {
+  --cs-font-display: ui-serif, Georgia, 'Times New Roman', serif;
+  --cs-font-sans: Inter, Source Sans 3, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --cs-radius-sm: 10px;
+  --cs-radius-md: 14px;
+  --cs-radius-lg: 20px;
+  --cs-radius-xl: 28px;
+  --cs-radius-pill: 999px;
+  --cs-header-height: 80px;
+  --cs-max-width: 1440px;
+}
+
+.cs-root {
+  min-height: 100vh;
+  max-width: 100%;
+  overflow-x: clip;
+  background: var(--cs-bg);
+  color: var(--cs-text);
+  font-family: var(--cs-font-sans);
+}
+
+.cs-root * { box-sizing: border-box; }
+.cs-root :focus-visible { outline: 3px solid var(--cs-focus); outline-offset: 3px; box-shadow: var(--cs-shadow-focus); }
+.cs-root button, .cs-root input, .cs-root textarea, .cs-root select { font: inherit; }

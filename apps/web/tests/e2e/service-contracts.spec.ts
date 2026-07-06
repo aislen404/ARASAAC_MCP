@@ -31,7 +31,7 @@ test("AI-API-001: disabled AI fails closed without affecting API health", async 
   });
 });
 
-test("MCP-001/002: placeholder is healthy, disabled, and has no tools", async ({
+test("MCP-001/002: HTTP status is healthy and lists allowlisted tools", async ({
   request,
 }) => {
   const health = await request.get("http://127.0.0.1:8101/health");
@@ -54,7 +54,7 @@ test("MCP-001/002: placeholder is healthy, disabled, and has no tools", async ({
   });
 });
 
-test("MCP-003/004: placeholder rejects mutation and unknown tools", async ({
+test("MCP-003/004: HTTP status rejects mutation and unknown tool routes", async ({
   request,
 }) => {
   expect((await request.post("http://127.0.0.1:8101/mcp/status")).status()).toBe(405);

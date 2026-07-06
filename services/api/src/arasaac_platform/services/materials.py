@@ -14,6 +14,9 @@ from arasaac_platform.repositories.base import Repository
 from arasaac_platform.schemas.materials import (
     CreateAgendaInput,
     CreateBoardInput,
+    CreateDocumentInput,
+    CreateSignageInput,
+    CreateStoryInput,
     ReviewMaterialInput,
 )
 
@@ -55,6 +58,52 @@ def create_board(
                 pictogram=item.pictogram,
             )
             for position, item in enumerate(request.cells)
+        ],
+    )
+    return _save_created(material, repository)
+
+
+def create_document(
+    request: CreateDocumentInput,
+    repository: Repository,
+) -> Material:
+    material = Material(
+        material_type=MaterialType.ACCESSIBLE_DOCUMENT,
+        title=request.title,
+        blocks=[
+            MaterialBlock(position=position, text=item.text, pictogram=item.pictogram)
+            for position, item in enumerate(request.sections)
+        ],
+    )
+    return _save_created(material, repository)
+
+
+def create_story(
+    request: CreateStoryInput,
+    repository: Repository,
+) -> Material:
+    material = Material(
+        material_type=MaterialType.SOCIAL_STORY,
+        title=request.title,
+        blocks=[
+            MaterialBlock(position=position, text=item.text, pictogram=item.pictogram)
+            for position, item in enumerate(request.scenes)
+        ],
+    )
+    return _save_created(material, repository)
+
+
+def create_signage(
+    request: CreateSignageInput,
+    repository: Repository,
+) -> Material:
+    material = Material(
+        material_type=MaterialType.SIGNAGE,
+        title=request.title,
+        arasaac_logo_included=False,
+        blocks=[
+            MaterialBlock(position=position, text=item.text, pictogram=item.pictogram)
+            for position, item in enumerate(request.signs)
         ],
     )
     return _save_created(material, repository)

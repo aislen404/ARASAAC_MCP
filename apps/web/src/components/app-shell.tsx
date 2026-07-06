@@ -50,7 +50,7 @@ export function AppShell({ children }: Readonly<{ children: ReactNode }>) {
               ))}
             </ul>
           </nav>
-          <aside aria-labelledby="help-heading" className="contextHelp">
+          <div aria-labelledby="help-heading" className="contextHelp" role="complementary">
             <p className="eyebrow">Ayuda contextual</p>
             <h2 id="help-heading">Antes de empezar</h2>
             <p>
@@ -58,7 +58,7 @@ export function AppShell({ children }: Readonly<{ children: ReactNode }>) {
               diagnósticos ni información sensible.
             </p>
             <a href="#workspace">Ir al constructor</a>
-          </aside>
+          </div>
         </aside>
         <main id="main-content">
           <section aria-labelledby="welcome-heading" className="welcome">

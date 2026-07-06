@@ -6,7 +6,6 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from arasaac_platform.domain.materials import PictogramReference
 
-
 ARASAAC_API_BASE = "https://api.arasaac.org/api"
 ARASAAC_STATIC_BASE = "https://static.arasaac.org/pictograms"
 ALLOWED_LOCALES = frozenset({"es", "en", "fr", "de", "it", "pt"})

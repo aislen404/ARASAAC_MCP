@@ -3,6 +3,18 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { MaterialBuilder } from "../../src/app/material-builder";
+import { MaterialBuilderProvider } from "../../src/features/material-builder/builder-context";
+import { MaterialFlowProvider } from "../../src/features/material-builder/flow-context";
+
+function renderBuilder() {
+  return render(
+    <MaterialFlowProvider>
+      <MaterialBuilderProvider>
+        <MaterialBuilder />
+      </MaterialBuilderProvider>
+    </MaterialFlowProvider>,
+  );
+}
 
 const pictogram = {
   pictogram_id: 6964,
@@ -84,7 +96,7 @@ describe("guided material flow", () => {
     });
 
     const user = userEvent.setup();
-    render(<MaterialBuilder />);
+    renderBuilder();
     await user.type(
       screen.getByLabelText("Título genérico, sin nombres personales"),
       "Rutina de entrada",
@@ -100,7 +112,7 @@ describe("guided material flow", () => {
     await user.clear(screen.getByLabelText("Texto del elemento 1"));
     await user.type(screen.getByLabelText("Texto del elemento 1"), "Llegar");
     await user.click(screen.getByRole("button", { name: "Crear borrador" }));
-    await waitFor(() => expect(screen.getByText("draft")).toBeTruthy());
+    await waitFor(() => expect(screen.getByText("Borrador")).toBeTruthy());
     await user.click(screen.getByRole("button", { name: "Enviar a revisión" }));
     await user.click(
       screen.getByRole("button", { name: "Aprobar tras revisión humana" }),
@@ -120,7 +132,7 @@ describe("guided material flow", () => {
         : response({ candidates: [pictogram], requires_human_selection: true }),
     );
     const user = userEvent.setup();
-    render(<MaterialBuilder />);
+    renderBuilder();
 
     await user.click(screen.getByLabelText("Tablero de comunicación"));
     await user.click(screen.getByRole("button", { name: "Crear borrador" }));
@@ -146,7 +158,7 @@ describe("guided material flow", () => {
         : response({ detail: "Servicio ARASAAC no disponible." }, false, 502),
     );
     const user = userEvent.setup();
-    render(<MaterialBuilder />);
+    renderBuilder();
 
     await user.type(
       screen.getByLabelText("Buscar pictogramas reales ARASAAC manualmente"),
@@ -192,7 +204,7 @@ describe("guided material flow", () => {
       throw new Error(`Unexpected request: ${url}`);
     });
     const user = userEvent.setup();
-    render(<MaterialBuilder />);
+    renderBuilder();
 
     await waitFor(() => expect(screen.getByText(/Disponible/)).toBeTruthy());
     await user.type(
@@ -229,7 +241,7 @@ describe("guided material flow", () => {
   it("keeps the manual flow available when AI status cannot be loaded", async () => {
     vi.mocked(fetch).mockRejectedValue(new Error("status unavailable"));
 
-    render(<MaterialBuilder />);
+    renderBuilder();
 
     expect(
       await screen.findByText("No se pudo consultar el estado de la IA.", {
@@ -250,6 +262,34 @@ describe("guided material flow", () => {
         ) as HTMLInputElement
       ).disabled,
     ).toBe(false);
+  });
+
+  it("shows AI feedback in embedded creation form", async () => {
+    vi.mocked(fetch).mockImplementation((input) =>
+      String(input).endsWith("/api/ai/status")
+        ? response(aiStatus)
+        : response({ detail: "Servicio no disponible." }, false, 502),
+    );
+    const user = userEvent.setup();
+    render(
+      <MaterialFlowProvider>
+        <MaterialBuilderProvider>
+          <MaterialBuilder embedded />
+        </MaterialBuilderProvider>
+      </MaterialFlowProvider>,
+    );
+
+    await screen.findByText(/Disponible · gpt-5.4-mini/);
+    await user.type(
+      screen.getByLabelText("Situación genérica, sin nombres ni diagnósticos"),
+      "Visita genérica a un museo sin nombres",
+    );
+    await user.click(screen.getByLabelText(/Confirmo que el texto es genérico/i));
+    await user.click(screen.getByRole("button", { name: "Generar propuesta textual" }));
+
+    await waitFor(() =>
+      expect(screen.getByRole("status").textContent).toContain("Servicio no disponible"),
+    );
   });
 });
 

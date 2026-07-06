@@ -16,7 +16,7 @@ revisar el material y aprobarlo antes de exportar.
 | Web | <http://localhost:3000> | Flujo guiado manual y asistido por IA |
 | API | <http://localhost:8000/health> | ARASAAC, materiales, revisión, exportación e IA |
 | Estado IA | <http://localhost:8000/api/ai/status> | Disponibilidad y límites públicos |
-| MCP | <http://localhost:8001/mcp/status> | Allowlist segura; servidor real por stdio |
+| MCP | <http://localhost:8001/mcp/status> | HTTP de estado y allowlist; protocolo MCP real por stdio (`make mcp-stdio`) |
 | PostgreSQL | interno | Persistencia de materiales y auditoría |
 
 ## Arranque con Docker
@@ -36,6 +36,12 @@ make stop
 `make start` construye y levanta en segundo plano web, API, MCP y PostgreSQL. Si
 indica que Docker no está iniciado, abre Docker Desktop y vuelve a ejecutarlo. La
 configuración puede validarse mediante `docker compose config --quiet`.
+
+Los iconos e ilustraciones Convergencia Serena viven en `apps/web/assets/` y se
+copian a `apps/web/public/convergencia-serena/` durante `npm run build` (y
+`npm run dev`). La imagen Docker del servicio web incluye esa carpeta `public/` en
+el contenedor final. Si los SVG aparecen rotos tras un cambio de assets, reconstruye
+el servicio web: `docker compose up --build -d web`.
 
 PostgreSQL conserva materiales y auditoría al ejecutar `make stop`. Para eliminar
 deliberadamente todos los datos locales:
@@ -71,6 +77,11 @@ La elección de `gpt-5.4-mini` prioriza latencia y coste para una tarea estructu
 puede cambiarse desde entorno. El proveedor recibe únicamente el escenario
 genérico confirmado, no recibe pictogramas ni dispone de tools.
 
+En la Web App, la sección «Proponer estructura con IA» muestra el estado del
+servidor, mensajes de carga y errores. Si la IA aparece como no configurada con
+`make start`, comprueba `.env` y consulta
+<http://localhost:3000/backend/api/ai/status> (proxy interno hacia la API).
+
 ## Desarrollo local
 
 Requisitos: Python 3.11+, Node.js 20+ y npm.
@@ -83,6 +94,15 @@ make dev-web
 ```
 
 Cada comando `dev-*` ocupa una terminal. `make dev-api` carga `.env` si existe.
+
+Sin `DATABASE_URL` en entorno, la API usa un repositorio en memoria (los datos no
+persisten). Para paridad con Docker, levanta solo PostgreSQL y configura la URL:
+
+```bash
+make dev-db    # Postgres Docker en :5433 (evita conflicto con Postgres local en :5432)
+# Añade DATABASE_URL a .env (ver .env.example)
+```
+
 Para ejecutar las comprobaciones:
 
 ```bash
@@ -111,14 +131,16 @@ El plan y la matriz de casos están en
 El último resultado registrado está en
 [`docs/testing/test-report-mvp0.md`](docs/testing/test-report-mvp0.md).
 
-El servidor MCP local usa transporte stdio:
+El servidor MCP local usa transporte **stdio** (protocolo MCP completo):
 
 ```bash
 make mcp-stdio
 ```
 
-Su allowlist contiene únicamente búsqueda, consulta por ID y sugerencia
-determinista de pictogramas ARASAAC. La IA no añade tools MCP.
+En Docker, el contenedor `mcp` expone solo un endpoint HTTP informativo
+(`/mcp/status`) con la allowlist de tools. Los clientes MCP (Cursor, Claude Code,
+etc.) deben conectarse al servidor stdio con `make mcp-stdio` o el binario
+`arasaac-mcp`.
 
 ## Bóveda de conocimiento Obsidian
 
@@ -147,4 +169,4 @@ código y preserva notas manuales. Consulta
 
 Las reglas vinculantes están en [AGENTS.md](AGENTS.md). La capa IA está
 especificada en
-[openspec/changes/0021-governed-ai-assistant](openspec/changes/0021-governed-ai-assistant).
+[openspec/changes/archive/0021-governed-ai-assistant](openspec/changes/archive/0021-governed-ai-assistant).

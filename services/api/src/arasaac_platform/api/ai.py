@@ -16,7 +16,6 @@ from arasaac_platform.arasaac.client import ArasaacClient, ArasaacConnectorError
 from arasaac_platform.schemas.ai import AIPlanInput, AIPlanResult, AIStatusResult
 from arasaac_platform.services.ai import build_ai_plan
 
-
 router = APIRouter(prefix="/api/ai", tags=["ai-assistant"])
 
 

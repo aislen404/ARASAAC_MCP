@@ -57,7 +57,16 @@ el workflow `.github/workflows/agent-packs.yml`.
 4. Ejecutar `make agent-packs-verify` antes de commit.
 5. Commit incluyendo cambios en `.agents/` **y** packs generados.
 
-## Reglas de gobierno inferidas
+## Limpieza post-sync
+
+Si iCloud/Dropbox crea copias de conflicto (`* 2.md`, `* 3.toml`, etc.):
+
+```bash
+find .codex docs/obsidian \( -name '* 2.*' -o -name '* 3.*' \) -type f -delete
+```
+
+Esos patrones están en `.gitignore`. No editar manualmente archivos con sufijo numérico.
+
 
 - **Reglas globales:** `AGENTS.md` + `.agents/rules/platform.md` → always-on.
 - **Reglas scoped:** backend, frontend, mcp, export-license con globs por IDE.

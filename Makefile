@@ -1,4 +1,4 @@
-MVP_OPENSPECS = 0001-project-foundation 0002-arasaac-license-governance \
+MVP_OPENSPECS_ARCHIVED = 0001-project-foundation 0002-arasaac-license-governance \
 	0003-arasaac-connector 0004-mcp-server-core 0005-pictogram-search-tools \
 	0006-material-domain-model 0007-visual-agenda-generator \
 	0008-communication-board-generator 0012-export-engine 0013-web-app-shell-aa \
@@ -9,7 +9,7 @@ MVP_OPENSPECS = 0001-project-foundation 0002-arasaac-license-governance \
 
 OBSIDIAN_VAULT_PATH ?= $(HOME)/Library/Mobile Documents/iCloud~md~obsidian/Documents/ARASAAC_Project
 
-.PHONY: setup start stop reset-data dev-api dev-mcp mcp-stdio dev-web test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down agent-packs-sync agent-packs-verify obsidian-sync obsidian-sync-check obsidian-hooks-install
+.PHONY: setup start stop reset-data dev-api dev-mcp mcp-stdio dev-web dev dev-db dev-db-migrate test test-unit test-e2e lint typecheck openspec-verify docker-up docker-down agent-packs-sync agent-packs-verify obsidian-sync obsidian-sync-check obsidian-hooks-install db-migrate db-upgrade
 
 setup:
 	python3 -m venv .venv
@@ -25,7 +25,8 @@ start:
 	@echo "  Web:             http://localhost:3000"
 	@echo "  API healthcheck: http://localhost:8000/health"
 	@echo "  Estado IA:       http://localhost:8000/api/ai/status"
-	@echo "  MCP placeholder: http://localhost:8001/mcp/status"
+	@echo "  MCP status HTTP: http://localhost:8001/mcp/status"
+	@echo "  MCP stdio real:  make mcp-stdio"
 
 stop:
 	docker compose down --remove-orphans
@@ -69,13 +70,20 @@ typecheck:
 	npm --prefix apps/web run typecheck
 
 openspec-verify:
-	@for change in $(MVP_OPENSPECS); do \
-		test -s "openspec/changes/$$change/proposal.md"; \
-		test -s "openspec/changes/$$change/design.md"; \
-		test -s "openspec/changes/$$change/tasks.md"; \
-		test -s "openspec/changes/$$change/spec.md"; \
+	@for change in $(MVP_OPENSPECS_ARCHIVED); do \
+		test -s "openspec/changes/archive/$$change/proposal.md"; \
+		test -s "openspec/changes/archive/$$change/design.md"; \
+		test -s "openspec/changes/archive/$$change/tasks.md"; \
+		test -s "openspec/changes/archive/$$change/spec.md"; \
 	done
-	@echo "OpenSpecs MVP verificadas."
+	@for dir in openspec/changes/*/; do \
+		case "$$dir" in */archive/) continue;; esac; \
+		test -s "$$dir/proposal.md"; \
+		test -s "$$dir/design.md"; \
+		test -s "$$dir/tasks.md"; \
+		test -s "$$dir/spec.md"; \
+	done
+	@echo "OpenSpecs verificadas (archivo MVP + changes activas)."
 
 agent-packs-sync:
 	python3 scripts/sync_agent_packs.py
@@ -99,3 +107,36 @@ docker-up:
 
 docker-down:
 	$(MAKE) stop
+
+dev-db:
+	docker compose up db -d
+	@echo "Esperando PostgreSQL..."
+	@for i in 1 2 3 4 5 6 7 8 9 10; do \
+		docker compose exec -T db pg_isready -U arasaac -d arasaac_mvp >/dev/null 2>&1 && break; \
+		sleep 2; \
+	done
+	@echo "PostgreSQL listo en localhost:5433 (Docker; puerto 5433 evita conflicto con Postgres local)"
+	@echo "Ejecuta: make db-migrate"
+
+dev-db-migrate: dev-db db-migrate
+
+dev:
+	@echo "Flujo local: make dev-db-migrate && make dev-api && make dev-mcp && make dev-web"
+
+db-migrate:
+	@set -a; \
+		if [ -f .env ]; then . ./.env; fi; \
+		if [ -z "$$DATABASE_URL" ]; then \
+			export DATABASE_URL="postgresql+psycopg://arasaac:local-development-only@localhost:5433/arasaac_mvp"; \
+		fi; \
+		set +a; \
+		cd services/api && ../../.venv/bin/alembic -c alembic.ini upgrade head || { \
+			echo ""; \
+			echo "No se pudo migrar. Comprueba:"; \
+			echo "  1) make dev-db (PostgreSQL Docker en :5433)"; \
+			echo "  2) DATABASE_URL en .env apunta a localhost:5433 (ver .env.example)"; \
+			echo "  3) Si las tablas ya existen sin Alembic: make reset-data && make dev-db-migrate"; \
+			exit 1; \
+		}
+
+db-upgrade: db-migrate

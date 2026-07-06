@@ -1,6 +1,8 @@
 services:
   db:
-    image: postgres:17
+    image: pgvector/pgvector:pg17
+    ports:
+      - "5433:5432"
     environment:
       POSTGRES_DB: arasaac_mvp
       POSTGRES_USER: arasaac

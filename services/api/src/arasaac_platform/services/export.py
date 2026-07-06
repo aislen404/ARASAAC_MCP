@@ -1,15 +1,21 @@
 import base64
 import html
+import json
+import zipfile
+from collections.abc import Awaitable, Callable
 from io import BytesIO
-from typing import Awaitable, Callable
 
 import httpx
+from docx import Document
+from pptx import Presentation
+from pptx.util import Pt
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.canvas import Canvas
 
 from arasaac_platform.domain.materials import Material, MaterialStatus
 from arasaac_platform.governance.license import validate_material_license
+from arasaac_platform.schemas.materials import ExportManifest
 
 
 class ExportBlockedError(ValueError):
@@ -21,17 +27,7 @@ ImageFetcher = Callable[[str], Awaitable[bytes]]
 
 def export_html(material: Material) -> bytes:
     _ensure_exportable(material)
-    blocks = "\n".join(
-        (
-            '<li class="material-item">'
-            f'<img src="{html.escape(str(block.pictogram.source_url))}" '
-            f'alt="{html.escape(block.pictogram.label)}">'
-            f"<p>{html.escape(block.text)}</p>"
-            "</li>"
-        )
-        for block in material.blocks
-        if block.pictogram is not None
-    )
+    blocks = "\n".join(_render_html_block(block) for block in material.blocks)
     document = f"""<!doctype html>
 <html lang="es">
 <head><meta charset="utf-8"><title>{html.escape(material.title)}</title></head>
@@ -44,6 +40,59 @@ def export_html(material: Material) -> bytes:
 </body>
 </html>"""
     return document.encode()
+
+
+def export_docx(material: Material) -> bytes:
+    _ensure_exportable(material)
+    document = Document()
+    document.add_heading(material.title, level=1)
+    for block in material.blocks:
+        if block.pictogram is None:
+            continue
+        document.add_paragraph(block.text)
+        document.add_paragraph(f"Pictograma ARASAAC: {block.pictogram.label}")
+    document.add_paragraph(material.attribution_text)
+    buffer = BytesIO()
+    document.save(buffer)
+    return buffer.getvalue()
+
+
+def export_pptx(material: Material) -> bytes:
+    _ensure_exportable(material)
+    presentation = Presentation()
+    title_slide = presentation.slides.add_slide(presentation.slide_layouts[0])
+    title_slide.shapes.title.text = material.title
+    for block in material.blocks:
+        if block.pictogram is None:
+            continue
+        slide = presentation.slides.add_slide(presentation.slide_layouts[1])
+        slide.shapes.title.text = block.pictogram.label
+        body = slide.placeholders[1]
+        body.text = block.text
+        body.text_frame.paragraphs[0].font.size = Pt(18)
+    buffer = BytesIO()
+    presentation.save(buffer)
+    return buffer.getvalue()
+
+
+def export_zip_package(material: Material) -> bytes:
+    _ensure_exportable(material)
+    manifest = ExportManifest(
+        material_id=str(material.material_id),
+        version=material.version,
+        attribution=material.attribution_text,
+        pictograms=material.pictograms,
+        human_review_approved=True,
+    )
+    buffer = BytesIO()
+    with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("material.html", export_html(material))
+        archive.writestr(
+            "manifest.json",
+            json.dumps(manifest.model_dump(mode="json"), ensure_ascii=False, indent=2),
+        )
+        archive.writestr("ATTRIBUTION.txt", material.attribution_text)
+    return buffer.getvalue()
 
 
 async def export_pdf(
@@ -92,6 +141,20 @@ async def export_pdf(
 
 def encode_export(content: bytes) -> str:
     return base64.b64encode(content).decode("ascii")
+
+
+def _render_html_block(block: object) -> str:
+    from arasaac_platform.domain.materials import MaterialBlock
+
+    if not isinstance(block, MaterialBlock) or block.pictogram is None:
+        return ""
+    return (
+        '<li class="material-item">'
+        f'<img src="{html.escape(str(block.pictogram.source_url))}" '
+        f'alt="{html.escape(block.pictogram.label)}">'
+        f"<p>{html.escape(block.text)}</p>"
+        "</li>"
+    )
 
 
 def _ensure_exportable(material: Material) -> None:

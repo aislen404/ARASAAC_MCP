@@ -11,7 +11,7 @@ def test_required_foundation_files_exist() -> None:
         "apps/web/src/app/page.tsx",
         "services/api/src/arasaac_platform/main.py",
         "services/mcp/src/safe_mcp/main.py",
-        "openspec/changes/0001-project-foundation/spec.md",
+        "openspec/changes/archive/0001-project-foundation/spec.md",
     ]
 
     assert all((ROOT / path).is_file() for path in required)

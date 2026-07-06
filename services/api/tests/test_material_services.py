@@ -22,7 +22,6 @@ from arasaac_platform.schemas.materials import (
 from arasaac_platform.services.export import ExportBlockedError, export_html, export_pdf
 from arasaac_platform.services.materials import create_agenda, create_board, review, submit
 
-
 PNG_1X1 = base64.b64decode(
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk"
     "+A8AAQUBAScY42YAAAAASUVORK5CYII="

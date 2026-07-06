@@ -4,7 +4,6 @@ from typing import Protocol, cast
 
 from arasaac_platform.schemas.ai import AIPlanInput, AIStatusResult, AITextPlan
 
-
 SYSTEM_INSTRUCTIONS = """\
 Eres un asistente de planificación de materiales accesibles no comerciales.
 Tu única tarea es convertir una situación GENÉRICA en una secuencia breve de

@@ -18,7 +18,9 @@ from arasaac_platform.governance.license import ARASAAC_ATTRIBUTION_ES
 class MaterialType(StrEnum):
     VISUAL_AGENDA = "visual_agenda"
     COMMUNICATION_BOARD = "communication_board"
-    SIGNAGE = "signage"
+    ACCESSIBLE_DOCUMENT = "accessible_document"
+    SOCIAL_STORY = "social_story"
+    SIGNAGE = "signage"  # Señalética: sin logo ARASAAC; validación en gobernanza.
 
 
 class MaterialStatus(StrEnum):
@@ -39,6 +41,8 @@ class AuditAction(StrEnum):
     SUBMITTED = "submitted"
     REVIEWED = "reviewed"
     EXPORTED = "exported"
+    AI_PLAN_REQUESTED = "ai_plan_requested"
+    AI_PLAN_REJECTED_PRIVACY = "ai_plan_rejected_privacy"
 
 
 class PictogramReference(BaseModel):

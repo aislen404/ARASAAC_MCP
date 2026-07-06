@@ -6,7 +6,7 @@ export default defineConfig({
     include: ["tests/unit/**/*.test.tsx"],
     coverage: {
       provider: "v8",
-      include: ["src/app/**/*.{ts,tsx}"],
+      include: ["src/app/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}", "src/features/**/*.{ts,tsx}"],
       reporter: ["text", "json-summary"],
       reportsDirectory: "../../coverage/frontend",
       thresholds: {

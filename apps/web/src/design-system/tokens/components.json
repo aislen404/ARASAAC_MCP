@@ -1,0 +1,29 @@
+{
+  "header": {
+    "heightDesktop": "80px",
+    "paddingX": "clamp(16px, calc((100vw - 1440px)/2 + 24px), 48px)",
+    "blur": "16px"
+  },
+  "desktopGrid": {
+    "maxWidth": "1440px",
+    "columns": "260px minmax(0,1fr) 320px",
+    "gap": "24px",
+    "mainMinHeight": "calc(100vh - 96px)"
+  },
+  "mobilePreview": {
+    "width": "260px",
+    "phoneWidth": "236px",
+    "phoneHeight": "472px",
+    "hiddenBelow": "1100px"
+  },
+  "cards": {
+    "radius": "20px",
+    "border": "1px solid var(--cs-border)",
+    "padding": "24px"
+  },
+  "focus": {
+    "outline": "3px solid var(--cs-focus)",
+    "offset": "3px",
+    "shadow": "var(--cs-shadow-focus)"
+  }
+}

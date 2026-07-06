@@ -14,6 +14,7 @@ describe("ThemeToggle", () => {
   });
 
   it("exposes state and persists the selected theme", async () => {
+    document.documentElement.dataset.theme = "light";
     render(<ThemeToggle />);
     const button = screen.getByRole("button", { name: "Usar tema oscuro" });
 

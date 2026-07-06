@@ -2,7 +2,6 @@ from fastapi.testclient import TestClient
 
 from safe_mcp.main import app
 
-
 client = TestClient(app)
 
 

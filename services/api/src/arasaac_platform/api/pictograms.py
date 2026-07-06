@@ -17,7 +17,6 @@ from arasaac_platform.services.pictograms import (
     suggest_pictograms,
 )
 
-
 router = APIRouter(prefix="/api/pictograms", tags=["pictograms"])
 
 

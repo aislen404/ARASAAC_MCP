@@ -8,16 +8,23 @@ from arasaac_platform.domain.materials import PictogramReference
 class AIPlanInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    material_type: Literal["visual_agenda", "communication_board"]
+    material_type: Literal[
+        "visual_agenda",
+        "communication_board",
+        "accessible_document",
+        "social_story",
+        "signage",
+    ]
     objective: str = Field(min_length=10, max_length=500)
     item_count: int = Field(default=6, ge=1, le=12)
     locale: Literal["es", "en", "fr", "de", "it", "pt"] = "es"
     no_personal_data_confirmed: Literal[True]
 
     @model_validator(mode="after")
-    def board_requires_two_items(self) -> "AIPlanInput":
-        if self.material_type == "communication_board" and self.item_count < 2:
-            raise ValueError("Un tablero requiere al menos dos elementos.")
+    def validate_item_count(self) -> "AIPlanInput":
+        multi_item_types = {"communication_board", "signage"}
+        if self.material_type in multi_item_types and self.item_count < 2:
+            raise ValueError("Este tipo de material requiere al menos dos elementos.")
         return self
 
 

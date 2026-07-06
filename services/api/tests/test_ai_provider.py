@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 
-import pytest
 import httpx
+import pytest
 
 from arasaac_platform.ai.provider import (
     OpenAIPlanner,
@@ -121,3 +121,27 @@ def test_planner_factory_never_exposes_or_requires_key_when_disabled() -> None:
     assert missing_key.status.provider == "openai"
     assert missing_key.status.available is False
     assert "OPENAI_API_KEY" in (missing_key.status.reason or "")
+
+
+@pytest.mark.integration
+@pytest.mark.anyio
+async def test_openai_live_smoke_when_enabled() -> None:
+    import os
+
+    if os.getenv("OPENAI_LIVE_TEST") != "1":
+        pytest.skip("OPENAI_LIVE_TEST no activado")
+    api_key = os.getenv("OPENAI_API_KEY", "").strip()
+    if not api_key:
+        pytest.skip("OPENAI_API_KEY no configurada")
+
+    planner = create_planner(
+        {
+            "AI_PROVIDER": "openai",
+            "OPENAI_API_KEY": api_key,
+            "OPENAI_MODEL": os.getenv("OPENAI_MODEL", "gpt-5.4-mini"),
+        }
+    )
+    assert planner.status.available is True
+    result = await planner.plan(request())
+    assert len(result.items) >= 1
+    assert result.requires_human_selection is True

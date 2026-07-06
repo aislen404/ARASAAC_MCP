@@ -3,7 +3,6 @@ from typing import Protocol
 
 from pydantic import BaseModel, ConfigDict, Field
 
-
 ARASAAC_ATTRIBUTION_ES = (
     "Los símbolos pictográficos utilizados son propiedad del Gobierno de Aragón "
     "y han sido creados por Sergio Palao para ARASAAC (https://arasaac.org), "
@@ -65,8 +64,8 @@ def validate_material_license(material: MaterialForCompliance) -> ComplianceResu
         errors.append("El uso comercial está prohibido en el MVP.")
     if material.pictograms and not material.attribution_visible:
         errors.append("La atribución ARASAAC debe ser visible.")
-    if material.material_type == "signage" and not material.arasaac_logo_included:
-        errors.append("La señalética debe incluir el logotipo ARASAAC.")
+    if material.material_type == "signage" and material.arasaac_logo_included:
+        errors.append("La señalética no debe incluir el logotipo ARASAAC embebido.")
 
     for pictogram in material.pictograms:
         if pictogram.origin != "ARASAAC":

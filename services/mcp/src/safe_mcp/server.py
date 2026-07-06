@@ -1,5 +1,3 @@
-from mcp.server.fastmcp import FastMCP
-
 from arasaac_platform.arasaac.client import ArasaacClient
 from arasaac_platform.domain.materials import PictogramReference
 from arasaac_platform.governance.license import ARASAAC_ATTRIBUTION_ES
@@ -19,7 +17,7 @@ from arasaac_platform.services.pictograms import (
 from arasaac_platform.services.pictograms import (
     suggest_pictograms as suggest_pictograms_service,
 )
-
+from mcp.server.fastmcp import FastMCP
 
 ALLOWED_TOOLS = frozenset(
     {

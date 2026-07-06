@@ -31,6 +31,27 @@ class CreateBoardInput(BaseModel):
     cells: list[MaterialItemInput] = Field(min_length=2, max_length=24)
 
 
+class CreateDocumentInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    title: str = Field(min_length=1, max_length=120)
+    sections: list[MaterialItemInput] = Field(min_length=1, max_length=20)
+
+
+class CreateStoryInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    title: str = Field(min_length=1, max_length=120)
+    scenes: list[MaterialItemInput] = Field(min_length=1, max_length=16)
+
+
+class CreateSignageInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    title: str = Field(min_length=1, max_length=120)
+    signs: list[MaterialItemInput] = Field(min_length=2, max_length=12)
+
+
 class ReviewMaterialInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
 

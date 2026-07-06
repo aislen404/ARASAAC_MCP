@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 64" fill="none" role="img" aria-hidden="true">
+  <path d="M20 42c160-46 320-46 600 0" stroke="#6C8F7A" stroke-width="2" opacity=".5"/>
+  <path d="M160 30c-12-14-5-28 16-32 10 17 5 29-16 32Z" fill="#6C8F7A" opacity=".32"/>
+  <path d="M320 24c-8-15 1-26 20-29 8 17 0 28-20 29Z" fill="#C86F4A" opacity=".24"/>
+  <path d="M480 31c-10-14-3-27 17-31 9 17 3 29-17 31Z" fill="#6C8F7A" opacity=".32"/>
+</svg>

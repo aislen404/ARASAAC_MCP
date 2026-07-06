@@ -1,12 +1,12 @@
-const steps = [
-  ["Definir necesidad", "Describe un escenario genérico y sin datos personales."],
-  ["Explorar pictogramas", "Consulta exclusivamente candidatos reales de ARASAAC."],
-  ["Organizar material", "Selecciona, ordena y ajusta cada elemento."],
-  ["Validar accesibilidad", "Comprueba claridad, secuencia y atribución."],
-  ["Revisar y compartir", "Una persona debe aprobar antes de exportar."],
-] as const;
+"use client";
+
+import { useMaterialFlow } from "../features/material-builder/flow-context";
+import { phaseStatus, workflowSteps } from "./convergencia-serena/workflow-steps";
 
 export function GuidedFlow() {
+  const { phase } = useMaterialFlow();
+  const activeTitle = workflowSteps[phase][0];
+
   return (
     <section aria-labelledby="guided-flow-heading" className="guidedFlow">
       <div className="sectionHeading">
@@ -15,26 +15,29 @@ export function GuidedFlow() {
           <h2 id="guided-flow-heading">Cinco fases, una decisión humana</h2>
         </div>
         <p className="progressLabel">
-          <strong>Fase activa:</strong> definir necesidad
+          <strong>Fase activa:</strong> {activeTitle.toLowerCase()}
         </p>
       </div>
       <ol className="flowSteps">
-        {steps.map(([title, description], index) => (
-          <li
-            aria-current={index === 0 ? "step" : undefined}
-            className={index === 0 ? "flowStep flowStepActive" : "flowStep"}
-            key={title}
-          >
-            <span aria-hidden="true" className="flowNumber">
-              {index + 1}
-            </span>
-            <div>
-              <strong>{title}</strong>
-              <span>{description}</span>
-              <small>{index === 0 ? "En curso" : "Pendiente"}</small>
-            </div>
-          </li>
-        ))}
+        {workflowSteps.map(([title, description], index) => {
+          const status = phaseStatus(index, phase);
+          return (
+            <li
+              aria-current={index === phase ? "step" : undefined}
+              className={index === phase ? "flowStep flowStepActive" : "flowStep"}
+              key={title}
+            >
+              <span aria-hidden="true" className="flowNumber">
+                {index + 1}
+              </span>
+              <div>
+                <strong>{title}</strong>
+                <span>{description}</span>
+                <small>{status}</small>
+              </div>
+            </li>
+          );
+        })}
       </ol>
     </section>
   );

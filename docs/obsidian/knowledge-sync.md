@@ -27,6 +27,15 @@ El sincronizador publica únicamente:
 No publica código, `.env`, secretos, `.git`, pictogramas, dependencias, builds,
 caches o `.DS_Store`.
 
+## Cambios recientes (2026-07-06)
+
+- OpenSpecs MVP archivadas en `openspec/changes/archive/`.
+- Documentación de arquitectura MCP dual: `docs/architecture/mcp-dual-surface.md`.
+- Dossier institucional: `docs/compliance/arasaac-validation-dossier.md`.
+- Plan de pruebas Release 2: `docs/testing/test-plan-release2.md`.
+
+Ejecutar `make obsidian-sync` tras actualizar documentación en el repositorio.
+
 ## Comandos
 
 Actualizar la bóveda:

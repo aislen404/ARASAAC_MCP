@@ -34,7 +34,21 @@ def test_compliant_material_is_valid() -> None:
     assert result.errors == []
 
 
-def test_signage_requires_arasaac_logo() -> None:
+def test_signage_rejects_embedded_arasaac_logo() -> None:
+    material = Material(
+        material_type=MaterialType.SIGNAGE,
+        title="Señal de ejemplo",
+        arasaac_logo_included=True,
+        blocks=[MaterialBlock(position=0, text="Entrada", pictogram=pictogram())],
+    )
+
+    result = validate_material_license(material)
+
+    assert result.valid is False
+    assert "logotipo ARASAAC" in result.errors[0]
+
+
+def test_signage_without_logo_is_valid() -> None:
     material = Material(
         material_type=MaterialType.SIGNAGE,
         title="Señal de ejemplo",
@@ -43,8 +57,7 @@ def test_signage_requires_arasaac_logo() -> None:
 
     result = validate_material_license(material)
 
-    assert result.valid is False
-    assert "logotipo ARASAAC" in result.errors[0]
+    assert result.valid is True
 
 
 def test_pictogram_rejects_non_arasaac_source() -> None:

@@ -22,7 +22,8 @@ para suplirla.
 | mypy / TypeScript | pasan |
 | Next.js build | pasa |
 | npm audit | 0 vulnerabilidades |
-| OpenSpec | pasa, 17 cambios verificados |
+| OpenSpec | pasa, 19 cambios MVP archivados verificados |
+| OpenAI smoke opt-in | `OPENAI_LIVE_TEST=1` + `test_openai_live_smoke_when_enabled` |
 | Docker Compose config | válida |
 | Smoke OpenAI real | no ejecutado: falta secreto de runtime |
 

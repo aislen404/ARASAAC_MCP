@@ -32,7 +32,8 @@ class AuditRow(Base):
 class SqlRepository:
     def __init__(self, database_url: str) -> None:
         self._engine = create_engine(database_url, pool_pre_ping=True)
-        Base.metadata.create_all(self._engine)
+        if database_url.startswith("sqlite"):
+            Base.metadata.create_all(self._engine)
 
     def save(self, material: Material) -> Material:
         row = MaterialRow(

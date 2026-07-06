@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-label="Camino guiado">
+  <rect width="320" height="200" rx="24" fill="#111827"/>
+  <circle cx="250" cy="48" r="22" fill="#F5A524" opacity=".9"/>
+  <path d="M0 138 80 70l72 68 44-42 124 80v24H0Z" fill="#315A43" opacity=".45"/>
+  <path d="M0 158c90-26 154-18 210-4 40 10 76 10 110-2v48H0Z" fill="#315A43" opacity=".65"/>
+  <path d="M124 200c30-44 46-80 40-128" fill="none" stroke="#8FB89B" stroke-width="18" stroke-linecap="round" opacity=".95"/>
+</svg>
