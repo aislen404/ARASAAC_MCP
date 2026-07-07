@@ -11,7 +11,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -23,19 +23,19 @@ jobs:
           node-version: "22"
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
       - name: Install
         run: make setup
-      - name: OpenSpec
-        run: make openspec-verify
-      - name: Agent packs
-        run: make agent-packs-verify
-      - name: Lint
-        run: make lint
-      - name: Types
-        run: make typecheck
-      - name: Tests and coverage
-        run: make test
-      - name: Production build
-        run: npm --prefix apps/web run build
-      - name: Dependency audit
-        run: npm audit --prefix apps/web --audit-level=high
+      - name: Verify agent-pack tooling
+        run: .venv/bin/python3 -c "import yaml"
+      - name: UAT gates
+        run: make test-uat
+        env:
+          NEXT_TELEMETRY_DISABLED: 1

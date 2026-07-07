@@ -141,7 +141,7 @@
 .cs-ai-status { margin: 0; font-weight: 800; }
 .cs-ai-status.loading { color: var(--cs-text-muted); }
 .cs-ai-status.available { color: var(--cs-accent); }
-.cs-ai-status.unavailable { color: var(--cs-warning, #9a6700); }
+.cs-ai-status.unavailable { color: var(--cs-warning-text); }
 .cs-ai-feedback {
   margin: 12px 0 0;
   padding: 10px 12px;

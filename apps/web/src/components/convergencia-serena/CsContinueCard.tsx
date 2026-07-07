@@ -3,6 +3,7 @@
 import { useMaterialBuilderContext } from "../../features/material-builder/builder-context";
 import { useMaterialFlow } from "../../features/material-builder/flow-context";
 import { CsIcon } from "./CsIcon";
+import { CsIllustration } from "./CsIllustration";
 import { WORKFLOW_STEP_COUNT } from "./workspace-metrics";
 
 function continueToBuilder() {
@@ -23,15 +24,17 @@ export function CsContinueCard() {
   return (
     <article className="cs-metric-card" data-cs="continue-card">
       <h3>Continuar donde lo dejaste</h3>
-      <img
+      <CsIllustration
         alt=""
+        ariaHidden
         className="cs-theme-illustration-light"
         height={160}
         src="/convergencia-serena/illustrations/landscape-light.svg"
         width={280}
       />
-      <img
+      <CsIllustration
         alt=""
+        ariaHidden
         className="cs-theme-illustration-dark"
         height={160}
         src="/convergencia-serena/illustrations/landscape-dark.svg"

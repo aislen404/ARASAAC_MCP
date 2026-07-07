@@ -99,7 +99,7 @@ test.describe("EXP-001: exportación bloqueada antes de aprobación", () => {
     await page.getByRole("button", { name: "Seleccionar casa" }).click();
     await page.getByLabel("Texto del elemento 1").fill("Llegar");
     await page.getByRole("button", { name: "Crear borrador" }).click();
-    await expect(page.getByText("draft", { exact: true })).toBeVisible();
+    await expect(page.getByText("Borrador", { exact: true })).toBeVisible();
 
     for (const label of [
       "Exportar HTML",

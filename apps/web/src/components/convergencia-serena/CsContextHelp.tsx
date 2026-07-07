@@ -1,17 +1,19 @@
+import { CsIllustration } from "./CsIllustration";
+
 export function CsContextHelp() {
   return (
     <section className="cs-help-panel" data-cs="context-help">
       <p className="cs-eyebrow">Ayuda contextual</p>
-      <img
+      <CsIllustration
         alt="Persona ofreciendo ayuda contextual"
         className="cs-helper-illustration cs-theme-illustration-light"
         height={180}
         src="/convergencia-serena/illustrations/helper-light.svg"
         width={280}
       />
-      <img
+      <CsIllustration
         alt=""
-        aria-hidden="true"
+        ariaHidden
         className="cs-helper-illustration cs-theme-illustration-dark"
         height={180}
         src="/convergencia-serena/illustrations/helper-dark.svg"

@@ -37,15 +37,15 @@ test("MVP-001: creates, reviews, approves, and exports an agenda", async ({
   await page.getByRole("button", { name: "Seleccionar casa" }).click();
   await page.getByLabel("Texto del elemento 1").fill("Llegar");
   await page.getByRole("button", { name: "Crear borrador" }).click();
-  await expect(page.getByText("draft", { exact: true })).toBeVisible();
+  await expect(page.getByText("Borrador", { exact: true })).toBeVisible();
 
   await expect(page.getByRole("button", { name: "Exportar HTML" })).toBeDisabled();
   await page.getByRole("button", { name: "Enviar a revisión" }).click();
-  await expect(page.getByText("in_review", { exact: true })).toBeVisible();
+  await expect(page.getByText("En revisión", { exact: true })).toBeVisible();
   await page
     .getByRole("button", { name: "Aprobar tras revisión humana" })
     .click();
-  await expect(page.getByText("approved", { exact: true })).toBeVisible();
+  await expect(page.getByText("Aprobado", { exact: true })).toBeVisible();
 
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Exportar HTML" }).click();

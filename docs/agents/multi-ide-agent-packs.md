@@ -30,12 +30,14 @@ python3 scripts/sync_agent_packs.py
 ```bash
 make agent-packs-verify
 # equivalente:
-python3 scripts/verify_agent_packs_sync.py
+.venv/bin/python3 scripts/verify_agent_packs_sync.py
 ```
 
 El verificador ejecuta el sync y comprueba que no haya diff en rutas generadas.
-En pull requests y pushes a `main` que toquen agent packs, GitHub Actions ejecuta
-el workflow `.github/workflows/agent-packs.yml`.
+El gate canónico de sincronía es el workflow **Quality**
+(`.github/workflows/quality.yml`), que ejecuta `make test-uat` en cada PR.
+El workflow path-filtered `.github/workflows/agent-packs.yml` ofrece feedback
+rápido cuando solo cambian packs agenticos.
 
 ## Packs por herramienta
 

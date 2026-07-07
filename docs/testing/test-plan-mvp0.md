@@ -181,3 +181,15 @@ ARASAAC_LIVE_TEST=1 .venv/bin/pytest \
   verificar los specs basados en `request` (contratos HTTP) y deben delegar la
   ejecución con `page` (interacción de navegador, teclado, axe, visual) a una
   máquina con esos requisitos, por ejemplo con `make test-uat`.
+- Los snapshots visuales de Convergencia Serena deben generarse en **Linux**
+  (mismo SO que GitHub Actions) o con el contenedor oficial Playwright
+  (`mcr.microsoft.com/playwright:v1.61.1-jammy`). No commitear solo snapshots
+  `*-chromium-darwin.png` como referencia única de CI. Regenerar:
+
+```bash
+docker run --rm -v "$PWD":/work -w /work \
+  mcr.microsoft.com/playwright:v1.61.1-jammy \
+  bash -c "apt-get update -qq && apt-get install -y -qq python3-venv python3-pip make && \
+    make setup && \
+    npm --prefix apps/web exec playwright test convergencia-serena.visual.spec.ts --update-snapshots"
+```

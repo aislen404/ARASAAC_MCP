@@ -49,12 +49,12 @@ test.describe("WEB-004 extendido: flujo completo operable solo con teclado", () 
     await createButton.focus();
     await expect(createButton).toBeFocused();
     await page.keyboard.press("Enter");
-    await expect(page.getByText("draft", { exact: true })).toBeVisible();
+    await expect(page.getByText("Borrador", { exact: true })).toBeVisible();
 
     const submitButton = page.getByRole("button", { name: "Enviar a revisión" });
     await submitButton.focus();
     await page.keyboard.press("Enter");
-    await expect(page.getByText("in_review", { exact: true })).toBeVisible();
+    await expect(page.getByText("En revisión", { exact: true })).toBeVisible();
 
     const approveButton = page.getByRole("button", {
       name: "Aprobar tras revisión humana",
@@ -62,7 +62,7 @@ test.describe("WEB-004 extendido: flujo completo operable solo con teclado", () 
     await approveButton.focus();
     await expect(approveButton).toBeFocused();
     await page.keyboard.press("Enter");
-    await expect(page.getByText("approved", { exact: true })).toBeVisible();
+    await expect(page.getByText("Aprobado", { exact: true })).toBeVisible();
 
     const exportButton = page.getByRole("button", { name: "Exportar HTML" });
     await exportButton.focus();
@@ -104,11 +104,12 @@ test.describe("WEB-006 extendido: la tarea se completa, no solo se ve, en tablet
     await page
       .getByLabel("Buscar pictogramas reales ARASAAC manualmente")
       .fill("casa");
-    await page.getByRole("button", { name: "Buscar" }).click();
+    const searchField = page.getByLabel("Buscar pictogramas reales ARASAAC manualmente");
+    await searchField.press("Enter");
     await page.getByRole("button", { name: "Seleccionar casa" }).click();
     await page.getByLabel("Texto del elemento 1").fill("Llegar");
     await page.getByRole("button", { name: "Crear borrador" }).click();
-    await expect(page.getByText("draft", { exact: true })).toBeVisible();
+    await expect(page.getByText("Borrador", { exact: true })).toBeVisible();
 
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,

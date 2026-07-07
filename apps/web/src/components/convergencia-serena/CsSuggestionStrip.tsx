@@ -1,6 +1,7 @@
 "use client";
 
 import { useMaterialFlow } from "../../features/material-builder/flow-context";
+import { CsIllustration } from "./CsIllustration";
 import { buildWorkspaceSuggestions } from "./workspace-suggestions";
 
 export function CsSuggestionStrip() {
@@ -20,8 +21,9 @@ export function CsSuggestionStrip() {
       <div className="cs-suggestion-grid">
         {suggestions.map((suggestion) => (
           <a className="cs-suggestion-card" href={suggestion.href} key={suggestion.title}>
-            <img
+            <CsIllustration
               alt=""
+              ariaHidden
               className="cs-suggestion-illustration"
               height={72}
               src={`/convergencia-serena/illustrations/${suggestion.illustration}`}

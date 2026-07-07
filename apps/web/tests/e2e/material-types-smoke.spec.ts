@@ -44,7 +44,7 @@ test.describe("Tipos de material sin cobertura previa (lectura fácil, historia,
     await page.getByRole("button", { name: "Seleccionar casa" }).click();
     await page.getByLabel("Texto del elemento 1").fill("Primer paso");
     await page.getByRole("button", { name: "Crear borrador" }).click();
-    await expect(page.getByText("draft", { exact: true })).toBeVisible();
+    await expect(page.getByText("Borrador", { exact: true })).toBeVisible();
   });
 
   test("historia social: un elemento es suficiente y numera las escenas", async ({
@@ -62,7 +62,7 @@ test.describe("Tipos de material sin cobertura previa (lectura fácil, historia,
     await page.getByRole("button", { name: "Seleccionar casa" }).click();
     await page.getByLabel("Texto del elemento 1").fill("Escena inicial");
     await page.getByRole("button", { name: "Crear borrador" }).click();
-    await expect(page.getByText("draft", { exact: true })).toBeVisible();
+    await expect(page.getByText("Borrador", { exact: true })).toBeVisible();
   });
 
   test("señalética: exige al menos dos elementos", async ({ page }) => {
@@ -87,6 +87,6 @@ test.describe("Tipos de material sin cobertura previa (lectura fácil, historia,
     await page.getByRole("button", { name: "Seleccionar adiós" }).click();
     await page.getByLabel("Texto del elemento 2").fill("Salida");
     await page.getByRole("button", { name: "Crear borrador" }).click();
-    await expect(page.getByText("draft", { exact: true })).toBeVisible();
+    await expect(page.getByText("Borrador", { exact: true })).toBeVisible();
   });
 });

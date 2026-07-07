@@ -13,7 +13,7 @@ OBSIDIAN_VAULT_PATH ?= $(HOME)/Library/Mobile Documents/iCloud~md~obsidian/Docum
 
 setup:
 	python3 -m venv .venv
-	.venv/bin/pip install -e "services/api[dev]" -e "services/mcp[dev]"
+	.venv/bin/pip install -e "services/api[dev]" -e "services/mcp[dev]" pyyaml
 	npm --prefix apps/web install
 	cd apps/web && npx playwright install chromium
 
@@ -99,10 +99,10 @@ openspec-verify:
 	@echo "OpenSpecs verificadas (archivo MVP + changes activas)."
 
 agent-packs-sync:
-	python3 scripts/sync_agent_packs.py
+	.venv/bin/python3 scripts/sync_agent_packs.py
 
 agent-packs-verify:
-	python3 scripts/verify_agent_packs_sync.py
+	.venv/bin/python3 scripts/verify_agent_packs_sync.py
 
 obsidian-sync:
 	python3 scripts/sync_obsidian_vault.py --vault "$(OBSIDIAN_VAULT_PATH)"
