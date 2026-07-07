@@ -1,8 +1,34 @@
 # Informe de ejecución — MVP gobernado con asistente IA
 
-Fecha: 2026-07-06
+Fecha: 2026-07-07
 
 ## Resultado
+
+**PASS en GitHub Actions Quality (`make test-uat`)** — El workflow Quality
+vuelve a pasar en la PR `codex/project-foundation` tras la reparación documentada
+en [openspec/changes/archive/0029-ci-quality-gate-repair](../../openspec/changes/archive/0029-ci-quality-gate-repair).
+Run de referencia: [28885303177](https://github.com/aislen404/ARASAAC_MCP/actions/runs/28885303177).
+
+| Comprobación | Resultado |
+| --- | --- |
+| GitHub Actions Quality (`make test-uat`) | **pasa** (lint, types, unit, 58/58 E2E, OpenSpec, agent-packs, build, audit low, compose) |
+| Agent packs (`pyyaml` en venv) | pasa; sin `ModuleNotFoundError: yaml` |
+| Playwright visual (linux snapshots) | 6/6 pasan en `ubuntu-latest` |
+| Branch protection `main` | configurada exigiendo check `test` |
+
+La ronda anterior (2026-07-06) quedó como **PASS parcial en sandbox local**; ver
+sección histórica al final del informe.
+
+## Reparación CI/CD (0029)
+
+| Problema | Corrección |
+| --- | --- |
+| `agent-packs-verify` sin PyYAML en Quality | `pyyaml` en `make setup`; scripts con `.venv/bin/python3` |
+| Paridad CI vs `make test-uat` incompleta | Quality ejecuta `make test-uat` único |
+| Snapshots visuales solo macOS | Baselines `*-chromium-linux.png` + workflow `update-linux-snapshots.yml` |
+| Flaky dark screenshots | Toggle accesible de tema + `animations: "disabled"` |
+
+## Resultado histórico (2026-07-06, sandbox local)
 
 **PASS con ejecución parcial por limitaciones del entorno de QA** — Se
 ejecutó una ronda de UAT no solo happy-path (backend completo, contratos API
@@ -13,8 +39,6 @@ red real a ARASAAC en los tests). La ejecución de Playwright con navegador
 (`page`) no pudo completarse en el sandbox de QA por ausencia de librerías de
 sistema de Chromium y de `root`; los specs quedan listos y se validó su
 sintaxis y sus contrapartes basadas en `request` contra los servicios reales.
-Se recomienda ejecutar `make test-uat` completo en una máquina con Docker y
-Chromium instalable (ver sección "Limitaciones del entorno de QA").
 
 | Comprobación | Resultado |
 | --- | --- |

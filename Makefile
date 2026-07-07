@@ -5,7 +5,8 @@ MVP_OPENSPECS_ARCHIVED = 0001-project-foundation 0002-arasaac-license-governance
 	0014-guided-creation-flow 0015-preview-editor 0016-review-workflow \
 	0017-audit-observability 0019-testing-quality-gates \
 	0020-docker-compose-deployment 0021-governed-ai-assistant \
-	0022-obsidian-knowledge-sync 0023-frontend-convergencia-serena
+	0022-obsidian-knowledge-sync 0023-frontend-convergencia-serena \
+	0029-ci-quality-gate-repair
 
 OBSIDIAN_VAULT_PATH ?= $(HOME)/Library/Mobile Documents/iCloud~md~obsidian/Documents/ARASAAC_Project
 
