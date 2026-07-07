@@ -19,50 +19,61 @@ async function assertShellZones(page: import("@playwright/test").Page) {
   }
 }
 
+async function enableDarkTheme(page: import("@playwright/test").Page) {
+  await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+}
+
+const screenshotOptions = {
+  fullPage: true,
+  animations: "disabled" as const,
+  timeout: 15_000,
+};
+
 test.describe("Convergencia Serena visual shell", () => {
   test("desktop light structure", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto("/");
     await assertShellZones(page);
-    await expect(page).toHaveScreenshot("home-light-desktop.png", { fullPage: true });
+    await expect(page).toHaveScreenshot("home-light-desktop.png", screenshotOptions);
   });
 
   test("desktop dark structure", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto("/");
-    await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+    await enableDarkTheme(page);
     await assertShellZones(page);
-    await expect(page).toHaveScreenshot("home-dark-desktop.png", { fullPage: true });
+    await expect(page).toHaveScreenshot("home-dark-desktop.png", screenshotOptions);
   });
 
   test("tablet light structure", async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto("/");
     await assertShellZones(page);
-    await expect(page).toHaveScreenshot("home-light-tablet.png", { fullPage: true });
+    await expect(page).toHaveScreenshot("home-light-tablet.png", screenshotOptions);
   });
 
   test("tablet dark structure", async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto("/");
-    await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+    await enableDarkTheme(page);
     await assertShellZones(page);
-    await expect(page).toHaveScreenshot("home-dark-tablet.png", { fullPage: true });
+    await expect(page).toHaveScreenshot("home-dark-tablet.png", screenshotOptions);
   });
 
   test("mobile light structure", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
     await assertShellZones(page);
-    await expect(page).toHaveScreenshot("home-light-mobile.png", { fullPage: true });
+    await expect(page).toHaveScreenshot("home-light-mobile.png", screenshotOptions);
   });
 
   test("mobile dark structure", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+    await enableDarkTheme(page);
     await assertShellZones(page);
-    await expect(page).toHaveScreenshot("home-dark-mobile.png", { fullPage: true });
+    await expect(page).toHaveScreenshot("home-dark-mobile.png", screenshotOptions);
   });
 
   test("mobile has no horizontal overflow", async ({ page }) => {
