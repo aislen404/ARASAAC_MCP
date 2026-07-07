@@ -1,7 +1,17 @@
 .DS_Store
 .env
 .venv/
+.venv-py310/
 .coverage*
+# iCloud/Dropbox sync conflict copies
+* 2.md
+* 3.md
+* 2.toml
+* 3.toml
+* 2.json
+* 3.json
+* 2.pth
+* 3.pth
 __pycache__/
 .pytest_cache/
 .mypy_cache/
@@ -14,3 +24,4 @@ coverage/
 dist/
 playwright-report/
 test-results/
+apps/web/public/convergencia-serena/

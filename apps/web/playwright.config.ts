@@ -11,7 +11,7 @@ export default defineConfig({
   workers: 4,
   reporter: [["line"], ["html", { open: "never" }]],
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: "http://127.0.0.1:3100",
     trace: "retain-on-failure",
   },
   projects: [
@@ -23,27 +23,27 @@ export default defineConfig({
   webServer: [
     {
       command:
-        ".venv/bin/uvicorn arasaac_platform.main:app --app-dir services/api/src --host 127.0.0.1 --port 8000",
+        ".venv/bin/uvicorn arasaac_platform.main:app --app-dir services/api/src --host 127.0.0.1 --port 8100",
       cwd: repositoryRoot,
-      url: "http://127.0.0.1:8000/health",
-      reuseExistingServer: true,
-      timeout: 30_000,
-    },
-    {
-      command:
-        ".venv/bin/uvicorn safe_mcp.main:app --app-dir services/mcp/src --host 127.0.0.1 --port 8001",
-      cwd: repositoryRoot,
-      url: "http://127.0.0.1:8001/health",
-      reuseExistingServer: true,
-      timeout: 30_000,
-    },
-    {
-      command:
-        "npm --prefix apps/web run build:clean && npm --prefix apps/web run start -- --hostname 127.0.0.1",
-      cwd: repositoryRoot,
-      url: "http://127.0.0.1:3000",
-      reuseExistingServer: true,
+      url: "http://127.0.0.1:8100/health",
+      reuseExistingServer: false,
       timeout: 120_000,
+    },
+    {
+      command:
+        ".venv/bin/uvicorn safe_mcp.main:app --app-dir services/mcp/src --host 127.0.0.1 --port 8101",
+      cwd: repositoryRoot,
+      url: "http://127.0.0.1:8101/health",
+      reuseExistingServer: false,
+      timeout: 120_000,
+    },
+    {
+      command:
+        "API_INTERNAL_URL=http://127.0.0.1:8100 npm --prefix apps/web run build:clean && API_INTERNAL_URL=http://127.0.0.1:8100 npm --prefix apps/web run start -- --hostname 127.0.0.1 --port 3100",
+      cwd: repositoryRoot,
+      url: "http://127.0.0.1:3100",
+      reuseExistingServer: false,
+      timeout: 300_000,
     },
   ],
 });

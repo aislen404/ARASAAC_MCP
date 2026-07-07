@@ -1,0 +1,40 @@
+@media (max-width: 1200px) {
+  .cs-grid { grid-template-columns: 220px minmax(0, 1fr); }
+  .cs-right-stack { grid-column: 1 / -1; }
+  .cs-help-panel { position: static; }
+  .cs-bottom-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  .cs-header { grid-template-columns: 1fr; align-items: stretch; }
+  .cs-header-actions { width: 100%; justify-content: flex-start; flex-direction: column; align-items: stretch; }
+  .cs-header-controls { justify-content: flex-start; }
+  .cs-badge-row { justify-content:flex-start; flex-wrap: wrap; }
+  .cs-grid { grid-template-columns: 1fr; }
+  .cs-side-rail { position: static; }
+  .cs-nav-list { display:flex; overflow-x:auto; padding-bottom:8px; max-width: 100%; }
+  .cs-nav-link { white-space:nowrap; }
+  .cs-stepper { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .cs-metric-row, .cs-two-col, .cs-three-col, .cs-suggestion-grid { grid-template-columns: 1fr; }
+  .cs-bottom-strip { grid-template-columns: 1fr; }
+  .cs-bottom-strip .cs-chip-row { flex-wrap: wrap; }
+  .cs-chip-row { flex-wrap: wrap; }
+  .cs-main-card, .cs-main-inner, .cs-shell { min-width: 0; }
+}
+
+@media (max-width: 560px) {
+  .cs-shell { padding: 14px; }
+  .cs-hero-card { padding: 24px 18px; }
+  .cs-title-display { font-size: clamp(2.2rem, 14vw, 3.4rem); }
+  .cs-stepper { grid-template-columns: 1fr; }
+  .cs-metric-row, .cs-two-col, .cs-three-col, .cs-suggestion-grid { grid-template-columns: 1fr; }
+  .cs-bottom-strip { grid-template-columns: 1fr; }
+  .cs-header { position: static; padding: 12px 14px; }
+  .cs-kbd { display: none; }
+  .cs-brand small { font-size: 0.72rem; }
+  .cs-user-chip { max-width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-root *, .cs-root *::before, .cs-root *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; scroll-behavior: auto !important; }
+}

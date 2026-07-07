@@ -30,12 +30,14 @@ python3 scripts/sync_agent_packs.py
 ```bash
 make agent-packs-verify
 # equivalente:
-python3 scripts/verify_agent_packs_sync.py
+.venv/bin/python3 scripts/verify_agent_packs_sync.py
 ```
 
 El verificador ejecuta el sync y comprueba que no haya diff en rutas generadas.
-En pull requests y pushes a `main` que toquen agent packs, GitHub Actions ejecuta
-el workflow `.github/workflows/agent-packs.yml`.
+El gate canónico de sincronía es el workflow **Quality**
+(`.github/workflows/quality.yml`), que ejecuta `make test-uat` en cada PR.
+El workflow path-filtered `.github/workflows/agent-packs.yml` ofrece feedback
+rápido cuando solo cambian packs agenticos.
 
 ## Packs por herramienta
 
@@ -57,7 +59,16 @@ el workflow `.github/workflows/agent-packs.yml`.
 4. Ejecutar `make agent-packs-verify` antes de commit.
 5. Commit incluyendo cambios en `.agents/` **y** packs generados.
 
-## Reglas de gobierno inferidas
+## Limpieza post-sync
+
+Si iCloud/Dropbox crea copias de conflicto (`* 2.md`, `* 3.toml`, etc.):
+
+```bash
+find .codex docs/obsidian \( -name '* 2.*' -o -name '* 3.*' \) -type f -delete
+```
+
+Esos patrones están en `.gitignore`. No editar manualmente archivos con sufijo numérico.
+
 
 - **Reglas globales:** `AGENTS.md` + `.agents/rules/platform.md` → always-on.
 - **Reglas scoped:** backend, frontend, mcp, export-license con globs por IDE.

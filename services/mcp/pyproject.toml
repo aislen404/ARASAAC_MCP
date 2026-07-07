@@ -3,14 +3,19 @@ requires = ["hatchling>=1.27,<2"]
 build-backend = "hatchling.build"
 
 [project]
-name = "arasaac-safe-mcp-placeholder"
+name = "arasaac-safe-mcp-server"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.115,<1",
+  "httpx>=0.28,<1",
+  "mcp>=1.27,<2",
   "pydantic>=2.10,<3",
   "uvicorn[standard]>=0.34,<1",
 ]
+
+[project.scripts]
+arasaac-mcp = "safe_mcp.server:main"
 
 [project.optional-dependencies]
 dev = [
@@ -30,3 +35,6 @@ strict = true
 [tool.ruff]
 target-version = "py311"
 line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC"]

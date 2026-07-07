@@ -1,0 +1,12 @@
+#!/bin/sh
+
+repo_root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+script="$repo_root/scripts/sync_obsidian_vault.py"
+
+if [ ! -f "$script" ]; then
+  exit 0
+fi
+
+python3 "$script" --quiet ||
+  echo "Aviso: no se pudo sincronizar ARASAAC_Project con Obsidian." >&2
+exit 0

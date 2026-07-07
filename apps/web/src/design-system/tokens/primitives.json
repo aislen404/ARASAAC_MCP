@@ -1,0 +1,66 @@
+{
+  "color": {
+    "light": {
+      "navy": "#0B1D34",
+      "graphite": "#334155",
+      "sage": "#6C8F7A",
+      "sageDeep": "#4D725F",
+      "copper": "#C86F4A",
+      "copperDeep": "#A94D2F",
+      "ivory": "#F7F3EE",
+      "paper": "#FFFCF7",
+      "mist": "#EEF2EF",
+      "cyanFocus": "#0EA5E9",
+      "amber": "#F5A524",
+      "success": "#2F8F5B",
+      "warning": "#B7791F",
+      "danger": "#B42318"
+    },
+    "dark": {
+      "midnight": "#081020",
+      "deepNavy": "#0F172A",
+      "graphite": "#111827",
+      "slate": "#1F2937",
+      "slate2": "#263244",
+      "ivory": "#F5F7FA",
+      "muted": "#B7C2CE",
+      "sage": "#8FB89B",
+      "sageGlow": "#22C55E",
+      "copper": "#F59E0B",
+      "cyan": "#22D3EE",
+      "focusBlue": "#3B82F6",
+      "danger": "#FF6B6B"
+    }
+  },
+  "radius": {
+    "xs": "6px",
+    "sm": "10px",
+    "md": "14px",
+    "lg": "20px",
+    "xl": "28px",
+    "pill": "999px"
+  },
+  "space": {
+    "1": "4px",
+    "2": "8px",
+    "3": "12px",
+    "4": "16px",
+    "5": "20px",
+    "6": "24px",
+    "8": "32px",
+    "10": "40px",
+    "12": "48px",
+    "16": "64px"
+  },
+  "font": {
+    "display": "ui-serif, Georgia, 'Times New Roman', serif",
+    "sans": "Inter, Source Sans 3, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    "mono": "ui-monospace, SFMono-Regular, Menlo, monospace"
+  },
+  "shadow": {
+    "soft": "0 24px 80px rgba(11,29,52,.10)",
+    "card": "0 12px 30px rgba(11,29,52,.08)",
+    "darkCard": "0 20px 60px rgba(0,0,0,.35)",
+    "focus": "0 0 0 4px rgba(14,165,233,.30)"
+  }
+}

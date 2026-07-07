@@ -1,0 +1,287 @@
+[
+  {
+    "path": "brand/monogram.svg",
+    "public_url": "/convergencia-serena/brand/monogram.svg",
+    "type": "brand"
+  },
+  {
+    "path": "brand/wordmark.svg",
+    "public_url": "/convergencia-serena/brand/wordmark.svg",
+    "type": "brand"
+  },
+  {
+    "path": "icons/accessibility.svg",
+    "public_url": "/convergencia-serena/icons/accessibility.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/activity.svg",
+    "public_url": "/convergencia-serena/icons/activity.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/analytics.svg",
+    "public_url": "/convergencia-serena/icons/analytics.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/aria.svg",
+    "public_url": "/convergencia-serena/icons/aria.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/bell.svg",
+    "public_url": "/convergencia-serena/icons/bell.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/book.svg",
+    "public_url": "/convergencia-serena/icons/book.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/calendar.svg",
+    "public_url": "/convergencia-serena/icons/calendar.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/chat.svg",
+    "public_url": "/convergencia-serena/icons/chat.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/check.svg",
+    "public_url": "/convergencia-serena/icons/check.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/compass.svg",
+    "public_url": "/convergencia-serena/icons/compass.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/contrast.svg",
+    "public_url": "/convergencia-serena/icons/contrast.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/copy.svg",
+    "public_url": "/convergencia-serena/icons/copy.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/download.svg",
+    "public_url": "/convergencia-serena/icons/download.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/edit.svg",
+    "public_url": "/convergencia-serena/icons/edit.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/external.svg",
+    "public_url": "/convergencia-serena/icons/external.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/eye.svg",
+    "public_url": "/convergencia-serena/icons/eye.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/filter.svg",
+    "public_url": "/convergencia-serena/icons/filter.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/folder.svg",
+    "public_url": "/convergencia-serena/icons/folder.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/grid.svg",
+    "public_url": "/convergencia-serena/icons/grid.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/heart.svg",
+    "public_url": "/convergencia-serena/icons/heart.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/help.svg",
+    "public_url": "/convergencia-serena/icons/help.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/home.svg",
+    "public_url": "/convergencia-serena/icons/home.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/info.svg",
+    "public_url": "/convergencia-serena/icons/info.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/keyboard.svg",
+    "public_url": "/convergencia-serena/icons/keyboard.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/leaf.svg",
+    "public_url": "/convergencia-serena/icons/leaf.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/list.svg",
+    "public_url": "/convergencia-serena/icons/list.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/lock.svg",
+    "public_url": "/convergencia-serena/icons/lock.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/minus.svg",
+    "public_url": "/convergencia-serena/icons/minus.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/moon.svg",
+    "public_url": "/convergencia-serena/icons/moon.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/palette.svg",
+    "public_url": "/convergencia-serena/icons/palette.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/people.svg",
+    "public_url": "/convergencia-serena/icons/people.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/plane.svg",
+    "public_url": "/convergencia-serena/icons/plane.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/plus.svg",
+    "public_url": "/convergencia-serena/icons/plus.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/route.svg",
+    "public_url": "/convergencia-serena/icons/route.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/search.svg",
+    "public_url": "/convergencia-serena/icons/search.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/settings.svg",
+    "public_url": "/convergencia-serena/icons/settings.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/shield.svg",
+    "public_url": "/convergencia-serena/icons/shield.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/spark.svg",
+    "public_url": "/convergencia-serena/icons/spark.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/success.svg",
+    "public_url": "/convergencia-serena/icons/success.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/sun.svg",
+    "public_url": "/convergencia-serena/icons/sun.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/target.svg",
+    "public_url": "/convergencia-serena/icons/target.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/trash.svg",
+    "public_url": "/convergencia-serena/icons/trash.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/upload.svg",
+    "public_url": "/convergencia-serena/icons/upload.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/user.svg",
+    "public_url": "/convergencia-serena/icons/user.svg",
+    "type": "icons"
+  },
+  {
+    "path": "icons/warning.svg",
+    "public_url": "/convergencia-serena/icons/warning.svg",
+    "type": "icons"
+  },
+  {
+    "path": "illustrations/helper-dark.svg",
+    "public_url": "/convergencia-serena/illustrations/helper-dark.svg",
+    "type": "illustrations"
+  },
+  {
+    "path": "illustrations/helper-light.svg",
+    "public_url": "/convergencia-serena/illustrations/helper-light.svg",
+    "type": "illustrations"
+  },
+  {
+    "path": "illustrations/landscape-dark.svg",
+    "public_url": "/convergencia-serena/illustrations/landscape-dark.svg",
+    "type": "illustrations"
+  },
+  {
+    "path": "illustrations/landscape-light.svg",
+    "public_url": "/convergencia-serena/illustrations/landscape-light.svg",
+    "type": "illustrations"
+  },
+  {
+    "path": "illustrations/suggest-accessibility.svg",
+    "public_url": "/convergencia-serena/illustrations/suggest-accessibility.svg",
+    "type": "illustrations"
+  },
+  {
+    "path": "illustrations/suggest-collections.svg",
+    "public_url": "/convergencia-serena/illustrations/suggest-collections.svg",
+    "type": "illustrations"
+  },
+  {
+    "path": "illustrations/suggest-guides.svg",
+    "public_url": "/convergencia-serena/illustrations/suggest-guides.svg",
+    "type": "illustrations"
+  },
+  {
+    "path": "illustrations/suggest-search.svg",
+    "public_url": "/convergencia-serena/illustrations/suggest-search.svg",
+    "type": "illustrations"
+  },
+  {
+    "path": "patterns/botanical-corner.svg",
+    "public_url": "/convergencia-serena/patterns/botanical-corner.svg",
+    "type": "patterns"
+  },
+  {
+    "path": "patterns/botanical-divider.svg",
+    "public_url": "/convergencia-serena/patterns/botanical-divider.svg",
+    "type": "patterns"
+  }
+]

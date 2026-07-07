@@ -1,0 +1,59 @@
+.cs-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  min-height: var(--cs-header-height);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px 24px;
+  align-items: center;
+  padding: 14px max(20px, calc((100vw - var(--cs-max-width)) / 2 + 24px));
+  border-bottom: 1px solid var(--cs-border);
+  background: color-mix(in srgb, var(--cs-surface) 92%, transparent);
+  backdrop-filter: blur(16px);
+}
+
+.cs-shell {
+  width: min(100%, var(--cs-max-width));
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.cs-grid {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+.cs-main-stack,
+.cs-right-stack { display: grid; gap: 20px; min-width: 0; }
+
+.cs-side-rail,
+.cs-panel,
+.cs-help-panel,
+.cs-bottom-strip,
+.cs-hero-card {
+  border: 1px solid var(--cs-border);
+  border-radius: var(--cs-radius-lg);
+  background: var(--cs-surface);
+  box-shadow: var(--cs-shadow-card);
+}
+
+.cs-main-card {
+  min-width: 0;
+  border: 1px solid var(--cs-border);
+  border-radius: var(--cs-radius-xl);
+  background: var(--cs-surface);
+  box-shadow: var(--cs-shadow-soft);
+  overflow: hidden;
+}
+
+.cs-main-inner { padding: clamp(20px, 2.5vw, 32px); }
+.cs-section { margin-top: 24px; }
+.cs-two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .85fr); gap: 20px; }
+.cs-three-col { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+
+.cs-bottom-strip { margin-top: 24px; padding: 18px; display: grid; grid-template-columns: minmax(280px, .8fr) repeat(5, minmax(0, 1fr)); gap: 14px; }
+
+.cs-side-rail { padding: 18px; position: sticky; top: calc(var(--cs-header-height) + 24px); }

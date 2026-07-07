@@ -1,0 +1,41 @@
+name: Update Linux Visual Snapshots
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - codex/project-foundation
+    paths:
+      - .github/workflows/update-linux-snapshots.yml
+      - apps/web/tests/e2e/convergencia-serena.visual.spec.ts
+      - apps/web/src/components/convergencia-serena/**
+      - apps/web/src/design-system/**
+
+permissions:
+  contents: read
+
+jobs:
+  update-snapshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Install
+        run: make setup
+      - name: Update Convergencia Serena visual snapshots
+        run: NEXT_TELEMETRY_DISABLED=1 npm --prefix apps/web run test:e2e -- convergencia-serena.visual.spec.ts --update-snapshots
+      - name: Upload Linux snapshots artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: convergencia-serena-linux-snapshots
+          path: apps/web/tests/e2e/convergencia-serena.visual.spec.ts-snapshots/
+          if-no-files-found: error
