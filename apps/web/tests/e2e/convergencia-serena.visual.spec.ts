@@ -20,7 +20,8 @@ async function assertShellZones(page: import("@playwright/test").Page) {
 }
 
 async function enableDarkTheme(page: import("@playwright/test").Page) {
-  await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+  const toggle = page.getByRole("button", { name: "Usar tema oscuro" });
+  await toggle.click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 }
 
@@ -41,8 +42,8 @@ test.describe("Convergencia Serena visual shell", () => {
   test("desktop dark structure", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto("/");
-    await enableDarkTheme(page);
     await assertShellZones(page);
+    await enableDarkTheme(page);
     await expect(page).toHaveScreenshot("home-dark-desktop.png", screenshotOptions);
   });
 
@@ -56,8 +57,8 @@ test.describe("Convergencia Serena visual shell", () => {
   test("tablet dark structure", async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto("/");
-    await enableDarkTheme(page);
     await assertShellZones(page);
+    await enableDarkTheme(page);
     await expect(page).toHaveScreenshot("home-dark-tablet.png", screenshotOptions);
   });
 
@@ -71,8 +72,8 @@ test.describe("Convergencia Serena visual shell", () => {
   test("mobile dark structure", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    await enableDarkTheme(page);
     await assertShellZones(page);
+    await enableDarkTheme(page);
     await expect(page).toHaveScreenshot("home-dark-mobile.png", screenshotOptions);
   });
 
