@@ -2,6 +2,14 @@ name: Update Linux Visual Snapshots
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - codex/project-foundation
+    paths:
+      - .github/workflows/update-linux-snapshots.yml
+      - apps/web/tests/e2e/convergencia-serena.visual.spec.ts
+      - apps/web/src/components/convergencia-serena/**
+      - apps/web/src/design-system/**
 
 permissions:
   contents: read
