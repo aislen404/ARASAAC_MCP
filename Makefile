@@ -23,10 +23,10 @@ start:
 	docker compose up --build --detach
 	@echo ""
 	@echo "Demo MVP-0 iniciada:"
-	@echo "  Web:             http://localhost:3000"
-	@echo "  API healthcheck: http://localhost:8000/health"
-	@echo "  Estado IA:       http://localhost:8000/api/ai/status"
-	@echo "  MCP status HTTP: http://localhost:8001/mcp/status"
+	@echo "  Web:             http://localhost:3002"
+	@echo "  API healthcheck: http://localhost:8002/health"
+	@echo "  Estado IA:       http://localhost:8002/api/ai/status"
+	@echo "  MCP status HTTP: http://localhost:8003/mcp/status"
 	@echo "  MCP stdio real:  make mcp-stdio"
 
 stop:
@@ -38,10 +38,10 @@ reset-data:
 
 dev-api:
 	@set -a; [ ! -f .env ] || . ./.env; set +a; \
-		exec .venv/bin/uvicorn arasaac_platform.main:app --app-dir services/api/src --reload --port 8000
+		exec .venv/bin/uvicorn arasaac_platform.main:app --app-dir services/api/src --reload --port 8002
 
 dev-mcp:
-	.venv/bin/uvicorn safe_mcp.main:app --app-dir services/mcp/src --reload --port 8001
+	.venv/bin/uvicorn safe_mcp.main:app --app-dir services/mcp/src --reload --port 8003
 
 mcp-stdio:
 	.venv/bin/arasaac-mcp

@@ -300,6 +300,20 @@ fieldset label {
   border: 1px solid var(--color-border);
   border-radius: 0.65rem;
   text-align: center;
+  gap: 0.5rem;
+}
+
+.resultCardSelected {
+  border-width: 2px;
+  border-color: var(--color-accent, #0ea5e9);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent, #0ea5e9) 22%, transparent);
+  background: color-mix(in srgb, var(--color-surface, #ffffff) 92%, var(--color-accent, #0ea5e9));
+}
+
+.selectionHint {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .resultCard img,

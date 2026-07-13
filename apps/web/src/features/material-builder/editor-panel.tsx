@@ -8,7 +8,8 @@ export function EditorPanel({
   builder,
   embedded = false,
 }: Readonly<{ builder: Builder; embedded?: boolean }>) {
-  const { type, items, material, busy, updateText, move, remove, createMaterial } = builder;
+  const { type, items, material, message, busy, updateText, move, remove, createMaterial } =
+    builder;
 
   const previewClass =
     type === "signage"
@@ -81,6 +82,13 @@ export function EditorPanel({
         Pictogramas: Sergio Palao. Origen: ARASAAC. Propietario: Gobierno de Aragón. Licencia:
         CC BY-NC-SA.
       </div>
+      <p
+        aria-live="polite"
+        className={embedded ? "cs-ai-feedback" : "message"}
+        role="status"
+      >
+        {message}
+      </p>
       <button
         className={embedded ? "cs-button" : undefined}
         disabled={busy || material !== null}

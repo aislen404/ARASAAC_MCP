@@ -120,7 +120,11 @@ describe("guided material flow", () => {
     await user.click(screen.getByRole("button", { name: "Exportar HTML" }));
 
     await waitFor(() =>
-      expect(screen.getByRole("status").textContent).toContain("preparada"),
+      expect(
+        screen
+          .getAllByRole("status")
+          .some((element) => element.textContent?.includes("preparada")),
+      ).toBe(true),
     );
   });
 
@@ -136,7 +140,11 @@ describe("guided material flow", () => {
 
     await user.click(screen.getByLabelText("Tablero de comunicación"));
     await user.click(screen.getByRole("button", { name: "Crear borrador" }));
-    expect(screen.getByRole("status").textContent).toContain("dos celdas");
+    expect(
+      screen
+        .getAllByRole("status")
+        .some((element) => element.textContent?.includes("dos celdas")),
+    ).toBe(true);
 
     await user.type(
       screen.getByLabelText("Buscar pictogramas reales ARASAAC manualmente"),
@@ -149,6 +157,33 @@ describe("guided material flow", () => {
     await user.click(screen.getAllByRole("button", { name: "Subir" })[1]);
     await user.click(screen.getAllByRole("button", { name: "Eliminar" })[0]);
     expect(screen.getAllByLabelText(/Texto del elemento/)).toHaveLength(1);
+  });
+
+  it("shows a visible and semantic selected state for chosen pictograms", async () => {
+    const fetchMock = vi.mocked(fetch);
+    fetchMock.mockImplementation((input) =>
+      String(input).endsWith("/api/ai/status")
+        ? response(aiStatus)
+        : response({ candidates: [pictogram], requires_human_selection: true }),
+    );
+    const user = userEvent.setup();
+    renderBuilder();
+
+    await user.type(
+      screen.getByLabelText("Buscar pictogramas reales ARASAAC manualmente"),
+      "casa",
+    );
+    await user.click(screen.getByRole("button", { name: "Buscar" }));
+
+    const select = await screen.findByRole("button", { name: "Seleccionar casa" });
+    expect(select.getAttribute("aria-pressed")).toBe("false");
+
+    await user.click(select);
+
+    expect(
+      await screen.findByRole("button", { name: "casa seleccionado" }),
+    ).toBeTruthy();
+    expect(screen.getByText("Seleccionado en la vista previa")).toBeTruthy();
   });
 
   it("keeps work and announces controlled API failures", async () => {
@@ -167,7 +202,11 @@ describe("guided material flow", () => {
     await user.click(screen.getByRole("button", { name: "Buscar" }));
 
     await waitFor(() =>
-      expect(screen.getByRole("status").textContent).toContain("no disponible"),
+      expect(
+        screen
+          .getAllByRole("status")
+          .some((element) => element.textContent?.includes("no disponible")),
+      ).toBe(true),
     );
     expect(
       (
@@ -288,8 +327,59 @@ describe("guided material flow", () => {
     await user.click(screen.getByRole("button", { name: "Generar propuesta textual" }));
 
     await waitFor(() =>
-      expect(screen.getByRole("status").textContent).toContain("Servicio no disponible"),
+      expect(
+        screen
+          .getAllByRole("status")
+          .some((element) => element.textContent?.includes("Servicio no disponible")),
+      ).toBe(true),
     );
+  });
+
+  it("shows visible draft feedback in embedded mode after creating a draft", async () => {
+    const fetchMock = vi.mocked(fetch);
+    fetchMock.mockImplementation((input) => {
+      const url = String(input);
+      if (url.endsWith("/api/ai/status")) {
+        return response(aiStatus);
+      }
+      if (url.endsWith("/api/pictograms/search")) {
+        return response({ candidates: [pictogram], requires_human_selection: true });
+      }
+      if (url.endsWith("/api/materials/agendas")) {
+        return response({ material: material("draft") }, true, 201);
+      }
+      throw new Error(`Unexpected request: ${url}`);
+    });
+
+    const user = userEvent.setup();
+    render(
+      <MaterialFlowProvider>
+        <MaterialBuilderProvider>
+          <MaterialBuilder embedded />
+        </MaterialBuilderProvider>
+      </MaterialFlowProvider>,
+    );
+
+    await screen.findByText(/Disponible · gpt-5.4-mini/);
+    await user.type(
+      screen.getByLabelText("Título genérico, sin nombres personales"),
+      "Rutina de entrada",
+    );
+    await user.type(
+      screen.getByLabelText("Buscar pictogramas reales ARASAAC manualmente"),
+      "casa",
+    );
+    await user.click(screen.getByRole("button", { name: "Buscar" }));
+    await user.click(await screen.findByRole("button", { name: "Seleccionar casa" }));
+    await user.click(screen.getByRole("button", { name: "Crear borrador" }));
+
+    await waitFor(() => {
+      expect(screen.getAllByText("Borrador creado. Revisa la vista previa antes de enviarlo.")).toHaveLength(3);
+    });
+    expect(screen.getByText("Borrador")).toBeTruthy();
+    expect(
+      (screen.getByRole("button", { name: "Enviar a revisión" }) as HTMLButtonElement).disabled,
+    ).toBe(false);
   });
 });
 

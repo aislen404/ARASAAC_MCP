@@ -37,9 +37,14 @@ test.describe("WEB-004 extendido: flujo completo operable solo con teclado", () 
 
     const selectButton = page.getByRole("button", { name: "Seleccionar casa" });
     await expect(selectButton).toBeVisible();
+    await expect(selectButton).toHaveAttribute("aria-pressed", "false");
     await selectButton.focus();
     await expect(selectButton).toBeFocused();
     await page.keyboard.press("Enter");
+    await expect(
+      page.getByRole("button", { name: "casa seleccionado" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByText("Seleccionado en la vista previa")).toBeVisible();
 
     const itemText = page.getByLabel("Texto del elemento 1");
     await itemText.focus();

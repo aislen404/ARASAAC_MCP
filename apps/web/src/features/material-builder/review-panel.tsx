@@ -22,9 +22,9 @@ export function ReviewPanel({
       <p
         aria-live="polite"
         className={embedded ? "cs-ai-feedback" : "message"}
-        role={embedded ? undefined : "status"}
+        role="status"
       >
-        {embedded ? null : message}
+        {message}
       </p>
       <p>
         Estado: <strong>{formatMaterialStatus(material?.status)}</strong>

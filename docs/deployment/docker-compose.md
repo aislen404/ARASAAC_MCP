@@ -21,10 +21,10 @@ se inyecta en el contenedor API en runtime, no en la imagen ni en el navegador.
 ```bash
 docker compose config --quiet
 docker compose ps
-curl --fail http://localhost:8000/health
-curl --fail http://localhost:8000/api/ai/status
-curl --fail http://localhost:8001/health
-curl --fail http://localhost:3000
+curl --fail http://localhost:8002/health
+curl --fail http://localhost:8002/api/ai/status
+curl --fail http://localhost:8003/health
+curl --fail http://localhost:3002
 ```
 
 ## Datos

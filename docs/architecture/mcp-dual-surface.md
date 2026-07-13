@@ -4,7 +4,7 @@
 
 | Superficie | Puerto / transporte | Función |
 |------------|---------------------|---------|
-| HTTP status | `:8001` (Docker `mcp`) | `GET /health`, `GET /mcp/status` — allowlist informativa |
+| HTTP status | `:8003` (Docker `mcp`) | `GET /health`, `GET /mcp/status` — allowlist informativa |
 | MCP stdio | `arasaac-mcp` / `make mcp-stdio` | Protocolo MCP real con tools ejecutables |
 
 Los clientes IDE (Cursor, Claude Code, Codex) deben usar **stdio**. El contenedor Docker no expone stdio; documenta `make mcp-stdio` para integración local.

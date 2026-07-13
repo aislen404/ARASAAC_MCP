@@ -24,7 +24,7 @@ class HealthResponse(BaseModel):
 def _cors_origins() -> list[str]:
     raw = os.getenv(
         "CORS_ORIGINS",
-        "http://localhost:3000,http://127.0.0.1:3000",
+        "http://localhost:3002,http://127.0.0.1:3002",
     )
     return [origin.strip() for origin in raw.split(",") if origin.strip()]
 

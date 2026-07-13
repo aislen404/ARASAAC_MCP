@@ -13,10 +13,10 @@ revisar el material y aprobarlo antes de exportar.
 
 | Servicio | URL | Función |
 | --- | --- | --- |
-| Web | <http://localhost:3000> | Flujo guiado manual y asistido por IA |
-| API | <http://localhost:8000/health> | ARASAAC, materiales, revisión, exportación e IA |
-| Estado IA | <http://localhost:8000/api/ai/status> | Disponibilidad y límites públicos |
-| MCP | <http://localhost:8001/mcp/status> | HTTP de estado y allowlist; protocolo MCP real por stdio (`make mcp-stdio`) |
+| Web | <http://localhost:3002> | Flujo guiado manual y asistido por IA |
+| API | <http://localhost:8002/health> | ARASAAC, materiales, revisión, exportación e IA |
+| Estado IA | <http://localhost:8002/api/ai/status> | Disponibilidad y límites públicos |
+| MCP | <http://localhost:8003/mcp/status> | HTTP de estado y allowlist; protocolo MCP real por stdio (`make mcp-stdio`) |
 | PostgreSQL | interno | Persistencia de materiales y auditoría |
 
 ## Arranque con Docker
@@ -104,7 +104,7 @@ Tras editar `.env`, recrea el contenedor API para cargar las variables:
 
 ```bash
 docker compose up -d api
-curl http://localhost:8000/api/ai/status
+curl http://localhost:8002/api/ai/status
 ```
 
 Respuesta esperada con IA activa:
@@ -123,7 +123,7 @@ pictogramas ni dispone de tools.
 En la Web App, la sección «Proponer estructura con IA» muestra el estado del
 servidor, mensajes de carga y errores. Si la IA aparece como no configurada con
 `make start`, comprueba `.env`, recrea la API con `docker compose up -d api` y
-consulta <http://localhost:3000/backend/api/ai/status> (proxy interno hacia la API).
+consulta <http://localhost:3002/backend/api/ai/status> (proxy interno hacia la API).
 
 ## Desarrollo local
 

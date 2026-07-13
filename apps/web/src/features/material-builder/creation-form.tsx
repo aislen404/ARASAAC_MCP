@@ -20,6 +20,10 @@ function buttonClass(embedded: boolean) {
   return embedded ? "cs-button" : undefined;
 }
 
+function selectionKey(pictogramId: number, text?: string) {
+  return `${pictogramId}::${text ?? ""}`;
+}
+
 export function CreationForm({
   builder,
   embedded = false,
@@ -49,6 +53,10 @@ export function CreationForm({
 
   const minimumItems =
     type === "agenda" || type === "story" || type === "document" ? 1 : 2;
+
+  const selectedKeys = new Set(
+    builder.items.map((item) => selectionKey(item.pictogram.pictogram_id, item.text)),
+  );
 
   const aiStatusClass = embedded
     ? aiStatus === null
@@ -223,8 +231,19 @@ export function CreationForm({
                   ) : (
                     <div className="aiCandidates">
                       {plannedItem.candidates.map((pictogram) => (
+                        (() => {
+                          const isSelected = selectedKeys.has(
+                            selectionKey(pictogram.pictogram_id, plannedItem.text),
+                          );
+
+                          return (
                         <article
-                          className="resultCard"
+                          aria-label={
+                            isSelected
+                              ? `${pictogram.label} seleccionado para ${plannedItem.text}`
+                              : undefined
+                          }
+                          className={`resultCard${isSelected ? " resultCardSelected" : ""}`}
                           key={`${itemIndex}-${pictogram.pictogram_id}`}
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -236,13 +255,21 @@ export function CreationForm({
                           />
                           <p>{pictogram.label}</p>
                           <button
+                            aria-pressed={isSelected}
                             className={buttonClass(embedded)}
                             onClick={() => selectPictogram(pictogram, plannedItem.text)}
                             type="button"
                           >
-                            Elegir {pictogram.label} para {plannedItem.text}
+                            {isSelected
+                              ? `${pictogram.label} seleccionado para ${plannedItem.text}`
+                              : `Elegir ${pictogram.label} para ${plannedItem.text}`}
                           </button>
+                          {isSelected ? (
+                            <p className="selectionHint">Seleccionado en la vista previa</p>
+                          ) : null}
                         </article>
+                          );
+                        })()
                       ))}
                     </div>
                   )}
@@ -277,8 +304,15 @@ export function CreationForm({
       </form>
       <p className="helpText">No introduzcas nombres, diagnósticos ni información personal.</p>
       <div aria-label="Resultados de búsqueda" className="results" role="region">
-        {results.map((pictogram) => (
-          <article className="resultCard" key={pictogram.pictogram_id}>
+        {results.map((pictogram) => {
+          const isSelected = selectedKeys.has(selectionKey(pictogram.pictogram_id, pictogram.label));
+
+          return (
+          <article
+            aria-label={isSelected ? `${pictogram.label} seleccionado` : undefined}
+            className={`resultCard${isSelected ? " resultCardSelected" : ""}`}
+            key={pictogram.pictogram_id}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt={pictogram.label}
@@ -288,14 +322,17 @@ export function CreationForm({
             />
             <p>{pictogram.label}</p>
             <button
+              aria-pressed={isSelected}
               className={buttonClass(embedded)}
               onClick={() => selectPictogram(pictogram)}
               type="button"
             >
-              Seleccionar {pictogram.label}
+              {isSelected ? `${pictogram.label} seleccionado` : `Seleccionar ${pictogram.label}`}
             </button>
+            {isSelected ? <p className="selectionHint">Seleccionado en la vista previa</p> : null}
           </article>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

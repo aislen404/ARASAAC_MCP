@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 type RouteContext = { params: Promise<{ path: string[] }> };
 
 function getBackendBaseUrl(): string {
-  return (process.env.API_INTERNAL_URL ?? "http://127.0.0.1:8000").replace(
+  return (process.env.API_INTERNAL_URL ?? "http://127.0.0.1:8002").replace(
     /\/$/,
     "",
   );
