@@ -1,6 +1,7 @@
 import json
 import os
 from typing import Protocol, cast
+from urllib.parse import urlparse
 
 from arasaac_platform.schemas.ai import AIPlanInput, AIStatusResult, AITextPlan
 
@@ -14,6 +15,10 @@ devuelve solo un texto visible claro y un término breve que posteriormente se
 buscará en el catálogo oficial ARASAAC. No afirmes que un término corresponde a un
 pictograma concreto. Sigue exactamente el schema y el número solicitado.
 """
+
+ALLOWED_AZURE_HOST_SUFFIXES = (".openai.azure.com", ".services.ai.azure.com")
+AZURE_OPENAI_API_PATH = "/openai/v1"
+FOUNDRY_PROJECT_PATH_PREFIX = "/api/projects/"
 
 
 class PlannerError(RuntimeError):
@@ -82,27 +87,30 @@ class OpenAIPlanner:
         api_key: str,
         model: str = "gpt-5.4-mini",
         timeout_seconds: float = 20.0,
+        provider: str = "openai",
+        base_url: str | None = None,
         client: _OpenAIClient | None = None,
     ) -> None:
         self._model = model
+        self._provider = provider
         if client is None:
             from openai import AsyncOpenAI
 
-            client = cast(
-                _OpenAIClient,
-                AsyncOpenAI(
-                    api_key=api_key,
-                    timeout=timeout_seconds,
-                    max_retries=1,
-                ),
-            )
+            client_kwargs: dict[str, object] = {
+                "api_key": api_key,
+                "timeout": timeout_seconds,
+                "max_retries": 1,
+            }
+            if base_url is not None:
+                client_kwargs["base_url"] = base_url
+            client = cast(_OpenAIClient, AsyncOpenAI(**client_kwargs))
         self._client = client
 
     @property
     def status(self) -> AIStatusResult:
         return AIStatusResult(
             available=True,
-            provider="openai",
+            provider=self._provider,
             model=self._model,
             reason=None,
         )
@@ -126,15 +134,7 @@ class OpenAIPlanner:
                 store=False,
             )
         except Exception as exc:
-            from openai import APITimeoutError
-
-            if isinstance(exc, APITimeoutError):
-                raise PlannerTimeoutError(
-                    "El proveedor IA no respondió dentro del tiempo permitido."
-                ) from exc
-            raise PlannerResponseError(
-                "No se pudo obtener una propuesta segura del proveedor IA."
-            ) from exc
+            raise _map_provider_error(exc) from exc
 
         parsed = response.output_parsed
         if parsed is None:
@@ -147,14 +147,24 @@ class OpenAIPlanner:
 def create_planner(environ: dict[str, str] | None = None) -> AIPlanner:
     env = os.environ if environ is None else environ
     provider = env.get("AI_PROVIDER", "disabled").strip().lower()
-    if provider != "openai":
-        reason = (
-            "La capa IA está desactivada."
-            if provider == "disabled"
-            else "AI_PROVIDER no está permitido."
-        )
-        return UnavailablePlanner(provider=provider or "disabled", reason=reason)
+    timeout = _safe_timeout(env.get("AI_TIMEOUT_SECONDS"))
 
+    if provider == "disabled":
+        return UnavailablePlanner(provider="disabled", reason="La capa IA está desactivada.")
+
+    if provider == "openai":
+        return _create_openai_planner(env, timeout_seconds=timeout)
+
+    if provider == "azure":
+        return _create_azure_planner(env, timeout_seconds=timeout)
+
+    return UnavailablePlanner(
+        provider=provider or "disabled",
+        reason="AI_PROVIDER no está permitido.",
+    )
+
+
+def _create_openai_planner(env: dict[str, str], *, timeout_seconds: float) -> AIPlanner:
     api_key = env.get("OPENAI_API_KEY", "").strip()
     if not api_key:
         return UnavailablePlanner(
@@ -162,8 +172,115 @@ def create_planner(environ: dict[str, str] | None = None) -> AIPlanner:
             reason="Falta OPENAI_API_KEY en el entorno del servidor.",
         )
     model = env.get("OPENAI_MODEL", "gpt-5.4-mini").strip() or "gpt-5.4-mini"
-    timeout = _safe_timeout(env.get("AI_TIMEOUT_SECONDS"))
-    return OpenAIPlanner(api_key=api_key, model=model, timeout_seconds=timeout)
+    return OpenAIPlanner(api_key=api_key, model=model, timeout_seconds=timeout_seconds)
+
+
+def _create_azure_planner(env: dict[str, str], *, timeout_seconds: float) -> AIPlanner:
+    endpoint_raw = env.get("AZURE_OPENAI_ENDPOINT", "").strip()
+    if not endpoint_raw:
+        return UnavailablePlanner(
+            provider="azure",
+            reason="Falta AZURE_OPENAI_ENDPOINT en el entorno del servidor.",
+        )
+
+    endpoint_error = _validate_azure_endpoint(endpoint_raw)
+    if endpoint_error is not None:
+        return UnavailablePlanner(provider="azure", reason=endpoint_error)
+
+    api_key = env.get("AZURE_OPENAI_API_KEY", "").strip()
+    if not api_key:
+        return UnavailablePlanner(
+            provider="azure",
+            reason="Falta AZURE_OPENAI_API_KEY en el entorno del servidor.",
+        )
+
+    model = (
+        env.get("AZURE_OPENAI_MODEL", env.get("OPENAI_MODEL", "gpt-5.4-mini")).strip()
+        or "gpt-5.4-mini"
+    )
+    return OpenAIPlanner(
+        api_key=api_key,
+        model=model,
+        timeout_seconds=timeout_seconds,
+        provider="azure",
+        base_url=normalize_azure_endpoint(endpoint_raw),
+    )
+
+
+def normalize_azure_endpoint(raw: str) -> str:
+    endpoint = raw.strip().rstrip("/")
+    if endpoint.endswith("/responses"):
+        endpoint = endpoint[: -len("/responses")].rstrip("/")
+
+    parsed = urlparse(endpoint)
+    host = (parsed.hostname or "").lower()
+    path = parsed.path.rstrip("/")
+
+    if host.endswith(".services.ai.azure.com"):
+        return endpoint
+
+    if not path.endswith(AZURE_OPENAI_API_PATH):
+        endpoint = f"{endpoint}{AZURE_OPENAI_API_PATH}"
+    return endpoint
+
+
+def _validate_azure_endpoint(raw: str) -> str | None:
+    normalized = normalize_azure_endpoint(raw)
+    parsed = urlparse(normalized)
+    host = (parsed.hostname or "").lower()
+    path = parsed.path.rstrip("/")
+
+    if parsed.scheme != "https":
+        return "AZURE_OPENAI_ENDPOINT debe usar HTTPS."
+    if not any(host.endswith(suffix) for suffix in ALLOWED_AZURE_HOST_SUFFIXES):
+        return (
+            "AZURE_OPENAI_ENDPOINT debe pertenecer a un recurso "
+            "*.openai.azure.com o *.services.ai.azure.com."
+        )
+
+    if host.endswith(".services.ai.azure.com"):
+        if not path.startswith(FOUNDRY_PROJECT_PATH_PREFIX):
+            return (
+                "AZURE_OPENAI_ENDPOINT de Foundry debe incluir "
+                "/api/projects/<id>/openai/v1."
+            )
+        if not path.endswith(AZURE_OPENAI_API_PATH):
+            return f"AZURE_OPENAI_ENDPOINT debe terminar en {AZURE_OPENAI_API_PATH}."
+        parts = [part for part in path.split("/") if part]
+        if (
+            len(parts) != 5
+            or parts[0] != "api"
+            or parts[1] != "projects"
+            or not parts[2]
+            or parts[3] != "openai"
+            or parts[4] != "v1"
+        ):
+            return (
+                "AZURE_OPENAI_ENDPOINT de Foundry debe tener la forma "
+                "/api/projects/<id>/openai/v1."
+            )
+        return None
+
+    if path != AZURE_OPENAI_API_PATH:
+        return f"AZURE_OPENAI_ENDPOINT debe apuntar a {AZURE_OPENAI_API_PATH}."
+    return None
+
+
+def _map_provider_error(exc: Exception) -> PlannerError:
+    from openai import APITimeoutError, RateLimitError
+
+    if isinstance(exc, APITimeoutError):
+        return PlannerTimeoutError(
+            "El proveedor IA no respondió dentro del tiempo permitido."
+        )
+    if isinstance(exc, RateLimitError):
+        return PlannerResponseError(
+            "El proveedor IA rechazó la petición por límite de cuota o tasa. "
+            "Comprueba la capacidad del despliegue y la facturación del recurso."
+        )
+    return PlannerResponseError(
+        "No se pudo obtener una propuesta segura del proveedor IA."
+    )
 
 
 def _safe_timeout(raw: str | None) -> float:

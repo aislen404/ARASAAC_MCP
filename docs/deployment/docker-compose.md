@@ -11,9 +11,10 @@ Servicios: PostgreSQL 17, API, MCP status y Web App. El volumen
 `postgres_data` conserva materiales y auditoría tras `make stop`.
 
 La IA está desactivada por defecto. Para activarla, crea `.env` desde
-`.env.example`, configura `AI_PROVIDER=openai` y `OPENAI_API_KEY`, y vuelve a
-ejecutar `make start`. La clave se inyecta en el contenedor API en runtime, no en
-la imagen ni en el navegador.
+`.env.example` y configura Azure Foundry (`AI_PROVIDER=azure`,
+`AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_API_KEY`) u OpenAI directo
+(`AI_PROVIDER=openai`, `OPENAI_API_KEY`). Vuelve a ejecutar `make start`. La clave
+se inyecta en el contenedor API en runtime, no en la imagen ni en el navegador.
 
 ## Verificación
 

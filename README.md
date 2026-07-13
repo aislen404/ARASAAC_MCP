@@ -55,13 +55,42 @@ No uses `reset-data` si necesitas conservar materiales de una demostración.
 ## Activar la capa IA
 
 La integración usa Responses API con salida estructurada y la clave permanece
-exclusivamente en el servidor. Para una demo con IA real:
+exclusivamente en el servidor.
 
 ```bash
 cp .env.example .env
 ```
 
-Edita `.env` localmente:
+### Opción recomendada: Azure AI Foundry (proyecto)
+
+En el portal de Foundry, copia el **endpoint del proyecto** y el **nombre del
+despliegue** (deployment name). La URL puede aparecer con `/responses` al final;
+en `.env` usa la base sin ese sufijo — el servidor lo normaliza automáticamente.
+
+```dotenv
+AI_PROVIDER=azure
+AZURE_OPENAI_ENDPOINT=https://<recurso>.services.ai.azure.com/api/projects/<project-id>/openai/v1
+AZURE_OPENAI_API_KEY=tu_clave_azure
+AZURE_OPENAI_MODEL=<nombre-del-despliegue>
+AI_TIMEOUT_SECONDS=20
+```
+
+Ejemplo de forma (sustituye por tus valores reales):
+
+```dotenv
+AZURE_OPENAI_ENDPOINT=https://mi-recurso.services.ai.azure.com/api/projects/proj-MiProyecto/openai/v1
+AZURE_OPENAI_MODEL=mi-despliegue_gpt-5.4-mini
+```
+
+Solo se aceptan endpoints HTTPS validados en servidor:
+
+- `https://*.services.ai.azure.com/api/projects/<id>/openai/v1` (Foundry)
+- `https://*.openai.azure.com/openai/v1` (Azure OpenAI clásico)
+
+`AZURE_OPENAI_MODEL` debe coincidir con el **deployment name** en Azure, no con el
+nombre comercial del modelo.
+
+### Opción alternativa: OpenAI directo
 
 ```dotenv
 AI_PROVIDER=openai
@@ -69,18 +98,32 @@ OPENAI_API_KEY=tu_clave_local
 OPENAI_MODEL=gpt-5.4-mini
 ```
 
-Después ejecuta `make start`. `.env` está ignorado por Git. No pegues la clave en
-capturas, incidencias, materiales ni logs. Sin clave, `/api/ai/status` informa que
-la función está desactivada y el flujo manual sigue disponible.
+### Aplicar cambios y comprobar
 
-La elección de `gpt-5.4-mini` prioriza latencia y coste para una tarea estructurada;
-puede cambiarse desde entorno. El proveedor recibe únicamente el escenario
-genérico confirmado, no recibe pictogramas ni dispone de tools.
+Tras editar `.env`, recrea el contenedor API para cargar las variables:
+
+```bash
+docker compose up -d api
+curl http://localhost:8000/api/ai/status
+```
+
+Respuesta esperada con IA activa:
+
+```json
+{"available": true, "provider": "azure", "model": "<tu-despliegue>"}
+```
+
+`.env` está ignorado por Git. No pegues la clave en capturas, incidencias,
+materiales ni logs. Sin clave, `/api/ai/status` informa que la función está
+desactivada y el flujo manual sigue disponible.
+
+El proveedor recibe únicamente el escenario genérico confirmado, no recibe
+pictogramas ni dispone de tools.
 
 En la Web App, la sección «Proponer estructura con IA» muestra el estado del
 servidor, mensajes de carga y errores. Si la IA aparece como no configurada con
-`make start`, comprueba `.env` y consulta
-<http://localhost:3000/backend/api/ai/status> (proxy interno hacia la API).
+`make start`, comprueba `.env`, recrea la API con `docker compose up -d api` y
+consulta <http://localhost:3000/backend/api/ai/status> (proxy interno hacia la API).
 
 ## Desarrollo local
 
@@ -169,4 +212,6 @@ código y preserva notas manuales. Consulta
 
 Las reglas vinculantes están en [AGENTS.md](AGENTS.md). La capa IA está
 especificada en
-[openspec/changes/archive/0021-governed-ai-assistant](openspec/changes/archive/0021-governed-ai-assistant).
+[openspec/changes/archive/0021-governed-ai-assistant](openspec/changes/archive/0021-governed-ai-assistant)
+y el soporte Azure Foundry en
+[openspec/changes/0030-azure-foundry-ai-provider](openspec/changes/0030-azure-foundry-ai-provider).

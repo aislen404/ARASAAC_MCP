@@ -115,15 +115,83 @@ async def test_openai_planner_maps_invalid_provider_response() -> None:
 def test_planner_factory_never_exposes_or_requires_key_when_disabled() -> None:
     disabled = create_planner({"AI_PROVIDER": "disabled"})
     missing_key = create_planner({"AI_PROVIDER": "openai"})
+    missing_azure_key = create_planner(
+        {
+            "AI_PROVIDER": "azure",
+            "AZURE_OPENAI_ENDPOINT": (
+                "https://example.openai.azure.com/openai/v1"
+            ),
+        }
+    )
 
     assert disabled.status.provider == "disabled"
     assert disabled.status.available is False
     assert missing_key.status.provider == "openai"
     assert missing_key.status.available is False
     assert "OPENAI_API_KEY" in (missing_key.status.reason or "")
+    assert missing_azure_key.status.provider == "azure"
+    assert missing_azure_key.status.available is False
+    assert "AZURE_OPENAI_API_KEY" in (missing_azure_key.status.reason or "")
 
 
-@pytest.mark.integration
+def test_azure_endpoint_is_normalized_and_validated() -> None:
+    from arasaac_platform.ai.provider import normalize_azure_endpoint
+
+    assert (
+        normalize_azure_endpoint("https://example.openai.azure.com")
+        == "https://example.openai.azure.com/openai/v1"
+    )
+    assert (
+        normalize_azure_endpoint(
+            "https://example.services.ai.azure.com/api/projects/proj-test/openai/v1/responses"
+        )
+        == "https://example.services.ai.azure.com/api/projects/proj-test/openai/v1"
+    )
+
+    invalid_host = create_planner(
+        {
+            "AI_PROVIDER": "azure",
+            "AZURE_OPENAI_ENDPOINT": "https://evil.example.com/openai/v1",
+            "AZURE_OPENAI_API_KEY": "test-only",
+        }
+    )
+    assert invalid_host.status.available is False
+    assert "services.ai.azure.com" in (invalid_host.status.reason or "")
+
+    ready = create_planner(
+        {
+            "AI_PROVIDER": "azure",
+            "AZURE_OPENAI_ENDPOINT": (
+                "https://es-fasttrackdevelopment-delta-eu-llm.services.ai.azure.com/"
+                "api/projects/proj-ES_FastTrackDevelopment_DELTA_EU_LLM/openai/v1"
+            ),
+            "AZURE_OPENAI_API_KEY": "test-only",
+            "AZURE_OPENAI_MODEL": "FFD_DELTA_JSBV_gpt-5.4-mini",
+        }
+    )
+    assert ready.status.available is True
+    assert ready.status.provider == "azure"
+
+
+@pytest.mark.anyio
+async def test_openai_planner_maps_rate_limit_to_clear_message() -> None:
+    from openai import RateLimitError
+
+    planner = OpenAIPlanner(
+        api_key="test-only",
+        client=RaisingOpenAI(
+            RateLimitError(
+                "quota exceeded",
+                response=httpx.Response(429, request=httpx.Request("POST", "https://api.openai.com")),
+                body=None,
+            )
+        ),
+    )
+
+    with pytest.raises(PlannerResponseError, match="cuota o tasa"):
+        await planner.plan(request())
+
+
 @pytest.mark.anyio
 async def test_openai_live_smoke_when_enabled() -> None:
     import os
