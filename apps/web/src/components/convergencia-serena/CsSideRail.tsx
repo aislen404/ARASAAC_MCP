@@ -1,9 +1,9 @@
 import { CsIcon, type CsIconName } from "./CsIcon";
 
 const nav: Array<{ label: string; href: string; icon: CsIconName; current?: boolean; soft?: boolean }> = [
-  { label: "Inicio", href: "#cs-main", icon: "home", current: true },
-  { label: "Explorar", href: "#cs-builder", icon: "search" },
-  { label: "Colecciones", href: "#cs-builder", icon: "folder" },
+  { label: "Inicio", href: "/", icon: "home", current: true },
+  { label: "Mis materiales", href: "#cs-builder", icon: "folder" },
+  { label: "Nuevo", href: "#cs-builder", icon: "search" },
   { label: "Asistente guiado", href: "#cs-workflow", icon: "check", soft: true },
   { label: "Validación", href: "#cs-review", icon: "shield" },
   { label: "Accesibilidad", href: "#cs-accessibility", icon: "accessibility" },

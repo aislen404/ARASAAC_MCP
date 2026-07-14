@@ -1,8 +1,9 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
-import { api } from "./api";
+import { api, buildWorkspacePath, validateMaterial } from "./api";
 import { computeFlowPhase, useMaterialFlow } from "./flow-context";
 import type {
   AIPlanResponse,
@@ -14,9 +15,12 @@ import type {
   Pictogram,
   SearchResponse,
   SelectedItem,
+  ValidationReport,
 } from "./types";
 
 export function useMaterialBuilder() {
+  const params = useParams<{ slug?: string }>();
+  const slug = typeof params?.slug === "string" ? params.slug : "";
   const { setPhase } = useMaterialFlow();
   const [type, setType] = useState<MaterialBuilderType>("agenda");
   const [title, setTitle] = useState("");
@@ -29,8 +33,70 @@ export function useMaterialBuilder() {
   const [aiPlan, setAIPlan] = useState<AIPlanResponse | null>(null);
   const [items, setItems] = useState<SelectedItem[]>([]);
   const [material, setMaterial] = useState<Material | null>(null);
+  const [validationReport, setValidationReport] = useState<ValidationReport | null>(null);
   const [message, setMessage] = useState("Prepara un borrador sin datos personales.");
   const [busy, setBusy] = useState(false);
+
+  function loadMaterial(source: Material) {
+    setMaterial(source);
+    setTitle(source.title);
+
+    const payload = source.payload;
+    if (!payload || typeof payload !== "object") {
+      setItems([]);
+      return;
+    }
+
+    const entries = [
+      "steps",
+      "cells",
+      "sections",
+      "scenes",
+      "signs",
+    ].flatMap((key) => {
+      const value = payload[key as keyof typeof payload];
+      return Array.isArray(value) ? value : [];
+    });
+
+    setItems(
+      entries.flatMap((entry) => {
+        if (!entry || typeof entry !== "object") return [];
+        const candidate = entry as {
+          text?: unknown;
+          pictogram?: unknown;
+        };
+        const pictogram = candidate.pictogram;
+        if (!pictogram || typeof pictogram !== "object") return [];
+        const typedPictogram = pictogram as Pictogram;
+        if (
+          typeof typedPictogram.pictogram_id !== "number" ||
+          typeof typedPictogram.label !== "string" ||
+          typeof typedPictogram.source_url !== "string"
+        ) {
+          return [];
+        }
+        return [
+          {
+            key: crypto.randomUUID(),
+            text:
+              typeof candidate.text === "string" && candidate.text.trim().length > 0
+                ? candidate.text
+                : typedPictogram.label,
+            pictogram: typedPictogram,
+          },
+        ];
+      }),
+    );
+
+    const typeByMaterial = {
+      visual_agenda: "agenda",
+      communication_board: "board",
+      accessible_document: "document",
+      social_story: "story",
+      signage: "signage",
+    } as const;
+    setType(typeByMaterial[source.material_type]);
+  }
 
   useEffect(() => {
     setPhase(
@@ -137,12 +203,14 @@ export function useMaterialBuilder() {
   }
 
   function updateText(key: string, text: string) {
+    if (material?.status === "approved") return;
     setItems((current) =>
       current.map((item) => (item.key === key ? { ...item, text } : item)),
     );
   }
 
   function move(key: string, offset: -1 | 1) {
+    if (material?.status === "approved") return;
     setItems((current) => {
       const index = current.findIndex((item) => item.key === key);
       const target = index + offset;
@@ -154,6 +222,7 @@ export function useMaterialBuilder() {
   }
 
   function remove(key: string) {
+    if (material?.status === "approved") return;
     setItems((current) => current.filter((item) => item.key !== key));
   }
 
@@ -171,11 +240,11 @@ export function useMaterialBuilder() {
     await run(async () => {
       const collection = items.map(({ text, pictogram }) => ({ text, pictogram }));
       const pathByType = {
-        agenda: "/api/materials/agendas",
-        board: "/api/materials/boards",
-        document: "/api/materials/documents",
-        story: "/api/materials/stories",
-        signage: "/api/materials/signage",
+        agenda: "/materials/agendas",
+        board: "/materials/boards",
+        document: "/materials/documents",
+        story: "/materials/stories",
+        signage: "/materials/signage",
       } as const;
       const bodyByType = {
         agenda: { title: title.trim(), steps: collection },
@@ -184,20 +253,53 @@ export function useMaterialBuilder() {
         story: { title: title.trim(), scenes: collection },
         signage: { title: title.trim(), signs: collection },
       } as const;
-      const response = await api<MaterialResponse>(pathByType[type], {
+      const response = await api<MaterialResponse>(buildWorkspacePath(slug, pathByType[type]), {
         method: "POST",
         body: JSON.stringify(bodyByType[type]),
       });
       setMaterial(response.material);
+      setValidationReport(null);
       setMessage("Borrador creado. Revisa la vista previa antes de enviarlo.");
+    });
+  }
+
+  async function runValidation() {
+    if (!material) return;
+
+    const currentVersion = material.version ?? 0;
+    if (validationReport && validationReport.material_version === currentVersion) {
+      setMessage(
+        validationReport.is_blocking
+          ? "La validación sigue bloqueando la revisión. Corrige los findings antes de continuar."
+          : "Validación ya actualizada para esta versión del material.",
+      );
+      return;
+    }
+
+    await run(async () => {
+      const report = await validateMaterial(
+        buildWorkspacePath(slug, `/materials/${material.material_id}/validate`),
+      );
+      setValidationReport(report);
+      setMessage(
+        report.is_blocking
+          ? "La validación ha detectado bloqueos. Revísalos antes de enviar a revisión."
+          : report.warning_count > 0
+            ? "Validación completada con avisos. Puedes continuar tras revisarlos."
+            : "Validación completada sin incidencias bloqueantes.",
+      );
     });
   }
 
   async function submitReview() {
     if (!material) return;
+    if (validationReport?.is_blocking) {
+      setMessage("No puedes enviar a revisión mientras existan bloqueos de validación.");
+      return;
+    }
     await run(async () => {
       const response = await api<MaterialResponse>(
-        `/api/materials/${material.material_id}/submit`,
+        buildWorkspacePath(slug, `/materials/${material.material_id}/submit`),
         { method: "POST" },
       );
       setMaterial(response.material);
@@ -209,7 +311,7 @@ export function useMaterialBuilder() {
     if (!material) return;
     await run(async () => {
       const response = await api<MaterialResponse>(
-        `/api/materials/${material.material_id}/review`,
+        buildWorkspacePath(slug, `/materials/${material.material_id}/review`),
         {
           method: "POST",
           body: JSON.stringify({
@@ -235,7 +337,7 @@ export function useMaterialBuilder() {
     if (!material) return;
     await run(async () => {
       const response = await api<ExportResponse>(
-        `/api/materials/${material.material_id}/export?format=${format}`,
+        `${buildWorkspacePath(slug, `/materials/${material.material_id}/export`)}?format=${format}`,
       );
       const bytes = Uint8Array.from(atob(response.content_base64), (value) =>
         value.charCodeAt(0),
@@ -268,8 +370,11 @@ export function useMaterialBuilder() {
     aiPlan,
     items,
     material,
+    validationReport,
     message,
     busy,
+    isReadOnly: material?.status === "approved",
+    loadMaterial,
     generateAIPlan,
     search,
     selectPictogram,
@@ -277,6 +382,7 @@ export function useMaterialBuilder() {
     move,
     remove,
     createMaterial,
+    runValidation,
     submitReview,
     decide,
     download,

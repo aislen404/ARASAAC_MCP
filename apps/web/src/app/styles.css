@@ -380,6 +380,104 @@ fieldset label {
   margin: 0;
 }
 
+.welcomeMain {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.welcomeCard,
+.workspacePanel,
+.workspaceHeader {
+  width: min(100%, 72rem);
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.welcomeActions,
+.workspaceHeader,
+.workspacePanelHeader,
+.workspaceItemActions,
+.workspaceDialogActions,
+.workspacePagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.welcomePanel {
+  flex: 1 1 20rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-surface-muted);
+}
+
+.workspaceLabel,
+.workspaceSlug,
+.workspaceFeedback,
+.workspaceReason,
+.workspaceWarning {
+  margin: 0;
+}
+
+.workspaceDialogBackdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(11 29 52 / 0.72);
+  padding: 1rem;
+}
+
+.workspaceDialogCard {
+  width: min(100%, 40rem);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.workspaceWarning {
+  color: var(--color-warning-text);
+  font-weight: 800;
+}
+
+.workspaceList {
+  display: grid;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+}
+
+.workspaceListItem,
+.workspaceEmptyState {
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-surface-muted);
+}
+
+.workspaceLinkButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.65rem 1rem;
+  border: 2px solid var(--color-brand);
+  border-radius: 0.55rem;
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
+  font-weight: 700;
+  text-decoration: none;
+}
+
 :focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 3px;

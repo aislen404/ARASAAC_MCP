@@ -50,6 +50,11 @@ independientes.
 | A11Y-001 | WCAG | Axe A/AA | Sin violaciones serious/critical |
 | API-001 | API | `GET /health` | Contrato exacto y 200 |
 | API-002 | API | Métodos/rutas inválidos | 405/404 sin efectos |
+| WS-001 | Workspace | Crear workspace | Devuelve `slug`, `workspace_id` y diálogo de custodia |
+| WS-002 | Workspace | Abrir desde slug o URL | Navega a `/w/[slug]/mis-materiales` |
+| WS-003 | Workspace | Slug inválido | 404 accesible con CTA a inicio |
+| WS-004 | Workspace | Material cruzado | 404 accesible, nunca 403 |
+| WS-005 | Workspace | Reinicio API | Persistencia real de bandeja y detalle |
 | AI-001 | Estado | IA desactivada | API sana, `available=false` |
 | AI-002 | Estado | IA configurada | Proveedor/modelo, nunca clave |
 | AI-003 | Input | Campos extra | 422 por schema cerrado |
@@ -75,6 +80,10 @@ independientes.
 | REV-001 | Revisión | Enviar | `draft → in_review` |
 | REV-002 | Revisión | Aprobar | Solo confirmación humana |
 | REV-003 | Revisión | Rechazar/transición inválida | Estado gobernado/409 |
+| VAL-001 | Validación | Material con dato personal | Bloquea envío a revisión |
+| VAL-002 | Validación | Pictograma desconocido | Bloquea y deja trazabilidad |
+| VAL-003 | Validación | Densidad visual alta | Aviso visible, permite avanzar |
+| VAL-004 | Validación | Revalidación sin cambios | Reutiliza versión en cliente |
 | EXP-001 | Export | Borrador | 409, ningún archivo |
 | EXP-002 | Export | HTML aprobado | Atribución y escaping |
 | EXP-003 | Export | PDF aprobado | Pictogramas reales y atribución |
@@ -111,6 +120,12 @@ independientes.
    proveedor; error transitorio del proveedor (504) informado sin crear
    material; plan con cero candidatos exige búsqueda manual
    (`ai-governance-negative.spec.ts`).
+7. Validación de material: blocker por dato personal, warning por densidad alta
+  y caché por versión en el panel de validación (`material-builder.test.tsx`,
+  `material-lifecycle-negative.spec.ts`).
+8. Workspace: crear → guardar enlace → abrir en nueva sesión → bandeja vacía →
+  crear material → deep-link → modo lectura si aprobado → 404 accesible para
+  slug inválido o material cruzado.
 7. Ciclo de revisión negativo: aprobar sin enviar a revisión (409, sin cambio
    de estado); rechazar y reenviar hasta aprobar en un segundo intento;
    límites del tablero (24 celdas aceptadas, 25 y 1 rechazadas con 422); payload
@@ -157,6 +172,7 @@ ARASAAC_LIVE_TEST=1 .venv/bin/pytest \
 - No hay secretos, PII, pictogramas locales ni endpoints de imagen IA.
 - El plan IA no crea material y la exportación sigue bloqueada hasta aprobación.
 - La atribución ARASAAC permanece visible.
+- La custodia del enlace del workspace queda validada sin usar storage cliente.
 - Cualquier limitación ambiental o smoke real no ejecutado queda registrada.
 
 ## 9. Riesgos

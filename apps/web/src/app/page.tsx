@@ -1,14 +1,5 @@
-import { ConvergenciaSerenaApp } from "../components/convergencia-serena/ConvergenciaSerenaApp";
-import { MaterialBuilderProvider } from "../features/material-builder/builder-context";
-import { MaterialFlowProvider } from "../features/material-builder/flow-context";
-import { MaterialBuilder } from "./material-builder";
+import { WelcomePage } from "../features/workspaces/welcome-page";
 
 export default function Home() {
-  return (
-    <MaterialFlowProvider>
-      <MaterialBuilderProvider>
-        <ConvergenciaSerenaApp builder={<MaterialBuilder embedded />} />
-      </MaterialBuilderProvider>
-    </MaterialFlowProvider>
-  );
+  return <WelcomePage />;
 }

@@ -40,10 +40,6 @@ export function CsHeader() {
           </span>
         </div>
         <div className="cs-header-controls">
-          <span className="cs-user-chip">
-            <CsIcon label="Usuario" name="user" />
-            Equipo editorial
-          </span>
           <CsThemeToggle />
         </div>
       </div>

@@ -44,7 +44,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self._limit = limit
         self._window = window_seconds
         self._hits: defaultdict[str, list[float]] = defaultdict(list)
-        self._paths = {"/api/pictograms/search", "/api/ai/plan"}
+        self._paths = {"/api/pictograms/search", "/api/ai/plan", "/api/workspaces"}
 
     async def dispatch(
         self,

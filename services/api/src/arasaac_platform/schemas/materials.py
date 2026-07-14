@@ -8,6 +8,7 @@ from arasaac_platform.domain.materials import (
     PictogramReference,
     ReviewOutcome,
 )
+from arasaac_platform.domain.workspaces import Workspace, WorkspaceSummary
 
 
 class MaterialItemInput(BaseModel):
@@ -64,12 +65,35 @@ class MaterialResult(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     material: Material
+    workspace: WorkspaceSummary | None = None
 
 
 class MaterialListResult(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     materials: list[Material]
+    total: int
+    limit: int
+    offset: int
+    workspace: WorkspaceSummary
+
+
+class WorkspaceCreateInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    display_name: str | None = Field(default=None, min_length=1, max_length=120)
+
+
+class WorkspaceUpdateInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    display_name: str | None = Field(default=None, min_length=1, max_length=120)
+
+
+class WorkspaceResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    workspace: Workspace
 
 
 class AuditEventsResult(BaseModel):

@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 import pytest
 
 from arasaac_platform.domain.materials import PictogramReference
+from arasaac_platform.domain.workspaces import Workspace
 from arasaac_platform.repositories.sql import SqlRepository
 from arasaac_platform.schemas.materials import CreateAgendaInput, MaterialItemInput
 from arasaac_platform.services.materials import create_agenda
@@ -17,6 +18,7 @@ def test_postgres_repository_persists_material() -> None:
 
     repository = SqlRepository(database_url)
     repository.clear()
+    workspace = repository.save_workspace(Workspace(slug="tejon-calmo-valle"))
     pictogram = PictogramReference(
         pictogram_id=6964,
         label="casa",
@@ -28,6 +30,7 @@ def test_postgres_repository_persists_material() -> None:
             title="Persistencia Postgres",
             steps=[MaterialItemInput(text="Entrar", pictogram=pictogram)],
         ),
+        workspace,
         repository,
     )
     loaded = repository.get(material.material_id)

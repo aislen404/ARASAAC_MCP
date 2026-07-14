@@ -381,14 +381,83 @@ describe("guided material flow", () => {
       (screen.getByRole("button", { name: "Enviar a revisión" }) as HTMLButtonElement).disabled,
     ).toBe(false);
   });
+
+  it("blocks review when validation reports blocker findings and reuses cached version", async () => {
+    const status = "draft";
+    const fetchMock = vi.mocked(fetch);
+    fetchMock.mockImplementation((input) => {
+      const url = String(input);
+      if (url.endsWith("/api/ai/status")) {
+        return response(aiStatus);
+      }
+      if (url.endsWith("/api/pictograms/search")) {
+        return response({ candidates: [pictogram], requires_human_selection: true });
+      }
+      if (url.endsWith("/api/materials/agendas")) {
+        return response({ material: material(status, 3) }, true, 201);
+      }
+      if (url.endsWith("/validate")) {
+        return response({
+          material_id: material(status, 3).material_id,
+          material_version: 3,
+          findings: [
+            {
+              code: "no_personal_data",
+              severity: "blocker",
+              message: "Se ha detectado un posible dato personal.",
+              field: "items[0].text",
+            },
+          ],
+          blocker_count: 1,
+          warning_count: 0,
+          ok_count: 2,
+          is_blocking: true,
+        });
+      }
+      throw new Error(`Unexpected request: ${url}`);
+    });
+
+    const user = userEvent.setup();
+    renderBuilder();
+    await user.type(
+      screen.getByLabelText("Título genérico, sin nombres personales"),
+      "Rutina de entrada",
+    );
+    await user.type(
+      screen.getByLabelText("Buscar pictogramas reales ARASAAC manualmente"),
+      "casa",
+    );
+    await user.click(screen.getByRole("button", { name: "Buscar" }));
+    await user.click(await screen.findByRole("button", { name: "Seleccionar casa" }));
+    await user.click(screen.getByRole("button", { name: "Crear borrador" }));
+
+    await user.click(screen.getByRole("button", { name: "Validar material" }));
+    expect(await screen.findByText(/Se ha detectado un posible dato personal/)).toBeTruthy();
+
+    await user.click(screen.getByRole("button", { name: "Enviar a revisión" }));
+
+    await waitFor(() =>
+      expect(
+        screen
+          .getAllByRole("status")
+          .some((element) =>
+            element.textContent?.includes("No puedes enviar a revisión mientras existan bloqueos"),
+          ),
+      ).toBe(true),
+    );
+
+    await user.click(screen.getByRole("button", { name: "Validar material" }));
+    expect(fetchMock.mock.calls.filter(([input]) => String(input).endsWith("/validate"))).toHaveLength(1);
+  });
 });
 
-function material(status: string) {
+function material(status: string, version = 1) {
   return {
     material_id: "00000000-0000-4000-8000-000000000001",
     title: "Rutina de entrada",
     material_type: "visual_agenda",
     status,
     attribution_text: "Atribución ARASAAC",
+    version,
   };
 }

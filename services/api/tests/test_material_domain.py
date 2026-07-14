@@ -12,6 +12,7 @@ from arasaac_platform.domain.materials import (
     ReviewDecision,
     ReviewOutcome,
 )
+from arasaac_platform.domain.workspaces import Workspace
 from arasaac_platform.domain.workflow import (
     InvalidMaterialTransition,
     decide_review,
@@ -43,7 +44,9 @@ def test_pictogram_metadata_is_immutable() -> None:
 
 
 def test_human_review_controls_approval() -> None:
+    workspace = Workspace(slug="tortuga-ligero-sendero")
     draft = Material(
+        workspace_id=workspace.workspace_id,
         material_type=MaterialType.COMMUNICATION_BOARD,
         title="Tablero genérico",
         blocks=[MaterialBlock(position=0, text="Sí")],
@@ -65,7 +68,9 @@ def test_human_review_controls_approval() -> None:
 
 
 def test_approval_cannot_skip_review() -> None:
+    workspace = Workspace(slug="ciervo-vivo-brisa")
     draft = Material(
+        workspace_id=workspace.workspace_id,
         material_type=MaterialType.VISUAL_AGENDA,
         title="Agenda genérica",
     )

@@ -3,11 +3,12 @@ import logging
 import os
 
 from fastapi import FastAPI, Response
+from fastapi import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from arasaac_platform.api.ai import router as ai_router
-from arasaac_platform.api.materials import router as materials_router
+from arasaac_platform.api.materials import get_repository, router as materials_router
 from arasaac_platform.api.pictograms import router as pictograms_router
 from arasaac_platform.api.preferences import router as preferences_router
 from arasaac_platform.observability.metrics import export_counter, mcp_tool_counter, review_counter
@@ -54,6 +55,12 @@ app.include_router(ai_router)
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])
 def health() -> HealthResponse:
+    if not os.getenv("DATABASE_URL"):
+        raise HTTPException(status_code=503, detail="DATABASE_URL no configurada")
+    try:
+        get_repository().ping()
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible") from exc
     return HealthResponse(status="ok", service="api")
 
 

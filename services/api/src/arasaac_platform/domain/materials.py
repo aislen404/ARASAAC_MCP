@@ -36,10 +36,13 @@ class ReviewOutcome(StrEnum):
 
 
 class AuditAction(StrEnum):
+    WORKSPACE_CREATED = "workspace_created"
+    MATERIAL_ACCESSED = "material_accessed"
     CREATED = "created"
     UPDATED = "updated"
     SUBMITTED = "submitted"
     REVIEWED = "reviewed"
+    VALIDATED = "validated"
     EXPORTED = "exported"
     AI_PLAN_REQUESTED = "ai_plan_requested"
     AI_PLAN_REJECTED_PRIVACY = "ai_plan_rejected_privacy"
@@ -95,7 +98,8 @@ class AuditEvent(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     event_id: UUID = Field(default_factory=uuid4)
-    material_id: UUID
+    workspace_id: UUID
+    material_id: UUID | None = None
     action: AuditAction
     occurred_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     correlation_id: UUID = Field(default_factory=uuid4)
@@ -106,6 +110,7 @@ class Material(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     material_id: UUID = Field(default_factory=uuid4)
+    workspace_id: UUID
     material_type: MaterialType
     title: str = Field(min_length=1, max_length=120)
     version: int = Field(default=1, ge=1)
@@ -115,6 +120,7 @@ class Material(BaseModel):
     attribution_visible: bool = True
     arasaac_logo_included: bool = False
     commercial_use: Literal[False] = False
+    usage_context: Literal["non_commercial"] = "non_commercial"
     review: ReviewDecision | None = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

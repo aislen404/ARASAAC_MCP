@@ -143,6 +143,125 @@ test.describe("MAT-002: límites del tablero de comunicación", () => {
   });
 });
 
+test.describe("VAL-003: panel de validación del material", () => {
+  test("bloquea el envío a revisión cuando la validación devuelve blocker", async ({
+    page,
+  }) => {
+    const validationSummary = page.getByText(
+      "1 bloqueos, 0 avisos y 2 comprobaciones correctas.",
+      { exact: true },
+    );
+    const reviewStep = page.getByLabel("Revisión y exportación");
+
+    await page.route("**/backend/api/pictograms/search", async (route) => {
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({ candidates: [pictogram], requires_human_selection: true }),
+      });
+    });
+
+    let validateCalls = 0;
+    await page.route("**/backend/api/materials/*/validate", async (route) => {
+      validateCalls += 1;
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({
+          material_id: "00000000-0000-4000-8000-000000000001",
+          material_version: 1,
+          findings: [
+            {
+              code: "no_personal_data",
+              severity: "blocker",
+              message: "Se ha detectado un posible dato personal.",
+              field: "items[0].text",
+            },
+          ],
+          blocker_count: 1,
+          warning_count: 0,
+          ok_count: 2,
+          is_blocking: true,
+        }),
+      });
+    });
+
+    await page.goto("/");
+    await page.getByLabel("Título genérico, sin nombres personales").fill("Rutina UAT");
+    await page
+      .getByLabel("Buscar pictogramas reales ARASAAC manualmente")
+      .fill("casa");
+    await page.getByRole("button", { name: "Buscar" }).click();
+    await page.getByRole("button", { name: "Seleccionar casa" }).click();
+    await page.getByLabel("Texto del elemento 1").fill("Llegar");
+    await page.getByRole("button", { name: "Crear borrador" }).click();
+
+    await page.getByRole("button", { name: "Validar material" }).click();
+    await expect(validationSummary).toBeVisible();
+    await expect(page.getByText("Bloqueo: Se ha detectado un posible dato personal.")).toBeVisible();
+
+    await page.getByRole("button", { name: "Enviar a revisión" }).click();
+    await expect(
+      reviewStep.getByText("No puedes enviar a revisión mientras existan bloqueos de validación."),
+    ).toBeVisible();
+    await expect(page.getByText("Borrador", { exact: true })).toBeVisible();
+
+    await page.getByRole("button", { name: "Validar material" }).click();
+    expect(validateCalls).toBe(1);
+  });
+
+  test("muestra avisos sin bloquear el envío a revisión", async ({ page }) => {
+    const validationSummary = page.getByText(
+      "0 bloqueos, 1 avisos y 3 comprobaciones correctas.",
+      { exact: true },
+    );
+
+    await page.route("**/backend/api/pictograms/search", async (route) => {
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({ candidates: [pictogram], requires_human_selection: true }),
+      });
+    });
+
+    await page.route("**/backend/api/materials/*/validate", async (route) => {
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({
+          material_id: "00000000-0000-4000-8000-000000000001",
+          material_version: 1,
+          findings: [
+            {
+              code: "visual_density",
+              severity: "warning",
+              message: "La densidad visual es alta; revisa el contenido.",
+              field: null,
+            },
+          ],
+          blocker_count: 0,
+          warning_count: 1,
+          ok_count: 3,
+          is_blocking: false,
+        }),
+      });
+    });
+
+    await page.goto("/");
+    await page.getByLabel("Título genérico, sin nombres personales").fill("Rutina UAT");
+    await page
+      .getByLabel("Buscar pictogramas reales ARASAAC manualmente")
+      .fill("casa");
+    await page.getByRole("button", { name: "Buscar" }).click();
+    await page.getByRole("button", { name: "Seleccionar casa" }).click();
+    await page.getByLabel("Texto del elemento 1").fill("Llegar");
+    await page.getByRole("button", { name: "Crear borrador" }).click();
+
+    await page.getByRole("button", { name: "Validar material" }).click();
+  await expect(validationSummary).toBeVisible();
+    await expect(page.getByText("Aviso: La densidad visual es alta; revisa el contenido.")).toBeVisible();
+
+    await page.getByRole("button", { name: "Enviar a revisión" }).click();
+    await expect(page.getByText("En revisión", { exact: true })).toBeVisible();
+  });
+});
+
 test.describe("DB-002 / esquema cerrado: payload corrupto o con campos extra", () => {
   test("rechaza campos adicionales no declarados", async ({ request }) => {
     const response = await request.post("http://127.0.0.1:8100/api/materials/agendas", {

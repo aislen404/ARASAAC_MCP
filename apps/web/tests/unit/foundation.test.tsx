@@ -4,6 +4,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import RootLayout, { metadata } from "../../src/app/layout";
 import Home from "../../src/app/page";
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
+
 describe("Convergencia Serena home", () => {
   beforeEach(() => {
     vi.stubGlobal(
@@ -23,18 +27,19 @@ describe("Convergencia Serena home", () => {
     }));
   });
 
-  it("renders the guided product shell and governed workflow", () => {
+  it("renders the workspace welcome entry point", () => {
     render(<Home />);
 
-    expect(screen.getByRole("heading", { level: 1, name: "Crear con claridad. Revisar con criterio." })).toBeTruthy();
-    expect(screen.getAllByText("Revisión humana obligatoria").length).toBeGreaterThan(0);
-    expect(screen.getByRole("heading", { name: "Cinco fases, una decisión humana" })).toBeTruthy();
-    expect(screen.getByRole("listitem", { current: "step" }).textContent).toContain("Definir necesidad");
-    expect(screen.getByText("WCAG 2.2 AA")).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Configura el material" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Vista previa editable" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Revisión y exportación" })).toBeTruthy();
-    expect(screen.getAllByText(/Sergio Palao/).length).toBeGreaterThan(0);
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "Guarda tu enlace. Si lo pierdes, perderás el acceso.",
+      }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Crear workspace" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Abrir workspace existente" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Crear workspace" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Abrir workspace existente" })).toBeTruthy();
   });
 
   it("provides Spanish document metadata", () => {

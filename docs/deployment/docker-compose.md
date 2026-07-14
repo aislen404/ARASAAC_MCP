@@ -10,6 +10,11 @@ make stop
 Servicios: PostgreSQL 17, API, MCP status y Web App. El volumen
 `postgres_data` conserva materiales y auditoría tras `make stop`.
 
+Desde OpenSpec `0034`, PostgreSQL es obligatorio también para workspaces. El
+servicio `api` debe arrancar con `DATABASE_URL` configurado y ejecutar las
+migraciones que crean `workspaces` y sus FKs sobre `materials` y
+`audit_events`. No existe fallback silencioso a memoria en runtime.
+
 La IA está desactivada por defecto. Para activarla, crea `.env` desde
 `.env.example` y configura Azure Foundry (`AI_PROVIDER=azure`,
 `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_API_KEY`) u OpenAI directo
@@ -26,6 +31,13 @@ curl --fail http://localhost:8002/api/ai/status
 curl --fail http://localhost:8003/health
 curl --fail http://localhost:3002
 ```
+
+Comprobaciones funcionales adicionales para `0034`:
+
+- crear un workspace y verificar que devuelve `slug` legible;
+- reiniciar `api` y confirmar que la bandeja `/w/<slug>/mis-materiales` sigue
+	mostrando los materiales del workspace;
+- validar que `GET /api/health` responde degradado si falla Postgres.
 
 ## Datos
 

@@ -8,6 +8,7 @@ from arasaac_platform.domain.materials import (
     MaterialType,
     ReviewDecision,
 )
+from arasaac_platform.domain.workspaces import Workspace
 from arasaac_platform.domain.workflow import decide_review, submit_for_review
 from arasaac_platform.governance.license import validate_material_license
 from arasaac_platform.repositories.base import Repository
@@ -27,9 +28,11 @@ class MaterialComplianceError(ValueError):
 
 def create_agenda(
     request: CreateAgendaInput,
+    workspace: Workspace,
     repository: Repository,
 ) -> Material:
     material = Material(
+        workspace_id=workspace.workspace_id,
         material_type=MaterialType.VISUAL_AGENDA,
         title=request.title,
         blocks=[
@@ -46,9 +49,11 @@ def create_agenda(
 
 def create_board(
     request: CreateBoardInput,
+    workspace: Workspace,
     repository: Repository,
 ) -> Material:
     material = Material(
+        workspace_id=workspace.workspace_id,
         material_type=MaterialType.COMMUNICATION_BOARD,
         title=request.title,
         blocks=[
@@ -65,9 +70,11 @@ def create_board(
 
 def create_document(
     request: CreateDocumentInput,
+    workspace: Workspace,
     repository: Repository,
 ) -> Material:
     material = Material(
+        workspace_id=workspace.workspace_id,
         material_type=MaterialType.ACCESSIBLE_DOCUMENT,
         title=request.title,
         blocks=[
@@ -80,9 +87,11 @@ def create_document(
 
 def create_story(
     request: CreateStoryInput,
+    workspace: Workspace,
     repository: Repository,
 ) -> Material:
     material = Material(
+        workspace_id=workspace.workspace_id,
         material_type=MaterialType.SOCIAL_STORY,
         title=request.title,
         blocks=[
@@ -95,9 +104,11 @@ def create_story(
 
 def create_signage(
     request: CreateSignageInput,
+    workspace: Workspace,
     repository: Repository,
 ) -> Material:
     material = Material(
+        workspace_id=workspace.workspace_id,
         material_type=MaterialType.SIGNAGE,
         title=request.title,
         arasaac_logo_included=False,
@@ -152,6 +163,7 @@ def _audit(
 ) -> None:
     repository.append_event(
         AuditEvent(
+            workspace_id=material.workspace_id,
             material_id=material.material_id,
             action=action,
             detail=detail,

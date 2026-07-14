@@ -17,6 +17,25 @@ export type SelectedItem = {
 
 export type MaterialStatus = "draft" | "in_review" | "approved" | "rejected";
 
+export type Severity = "blocker" | "warning" | "ok";
+
+export type ValidationFinding = {
+  code: string;
+  severity: Severity;
+  message: string;
+  field: string | null;
+};
+
+export type ValidationReport = {
+  material_id: string;
+  material_version: number;
+  findings: ValidationFinding[];
+  blocker_count: number;
+  warning_count: number;
+  ok_count: number;
+  is_blocking: boolean;
+};
+
 export type Material = {
   material_id: string;
   title: string;
@@ -28,6 +47,8 @@ export type Material = {
     | "signage";
   status: MaterialStatus;
   attribution_text: string;
+  version?: number;
+  payload?: Record<string, unknown>;
 };
 
 export type SearchResponse = {
@@ -64,6 +85,11 @@ export type AIPlanResponse = {
 
 export type MaterialResponse = {
   material: Material;
+  workspace?: {
+    workspace_id: string;
+    slug: string;
+    display_name: string | null;
+  };
 };
 
 export type ExportResponse = {

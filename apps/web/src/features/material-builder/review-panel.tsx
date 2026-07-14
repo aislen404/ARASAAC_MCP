@@ -1,6 +1,7 @@
 "use client";
 
 import { formatMaterialStatus } from "./status-labels";
+import { ValidationPanel } from "./validation-panel";
 import type { useMaterialBuilder } from "./use-material-builder";
 
 type Builder = ReturnType<typeof useMaterialBuilder>;
@@ -17,6 +18,7 @@ export function ReviewPanel({
       className={embedded ? "cs-panel cs-builder-panel reviewPanel" : "panel reviewPanel"}
       id="cs-review"
     >
+      <ValidationPanel builder={builder} embedded={embedded} />
       <p className={embedded ? "cs-eyebrow" : "stepLabel"}>Paso 3</p>
       <h2 id="review-heading">Revisión y exportación</h2>
       <p

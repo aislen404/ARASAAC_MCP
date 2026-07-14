@@ -12,6 +12,7 @@ from arasaac_platform.domain.materials import (
     PictogramReference,
     ReviewOutcome,
 )
+from arasaac_platform.domain.workspaces import Workspace
 from arasaac_platform.repositories.memory import InMemoryRepository
 from arasaac_platform.schemas.materials import (
     CreateAgendaInput,
@@ -55,18 +56,22 @@ def approve(material_id, repository: InMemoryRepository):
 
 def test_generators_create_attributed_drafts_and_audit() -> None:
     repository = InMemoryRepository()
+    workspace = repository.save_workspace(Workspace(slug="zorro-alegre-piedra"))
     agenda = create_agenda(
         CreateAgendaInput(title="Agenda genérica", steps=[item()]),
+        workspace,
         repository,
     )
     board = create_board(
         CreateBoardInput(title="Tablero genérico", cells=[item("Sí"), item("No")]),
+        workspace,
         repository,
     )
 
     assert agenda.status == MaterialStatus.DRAFT
     assert board.status == MaterialStatus.DRAFT
     assert agenda.attribution_visible is True
+    assert agenda.workspace_id == workspace.workspace_id
     assert [event.action for event in repository.events_for(agenda.material_id)] == [
         "created"
     ]
@@ -74,17 +79,21 @@ def test_generators_create_attributed_drafts_and_audit() -> None:
 
 def test_repository_preserves_concurrent_creations() -> None:
     repository = InMemoryRepository()
+    workspace = repository.save_workspace(Workspace(slug="lince-sereno-rio"))
 
     def create(index: int) -> None:
         create_agenda(
             CreateAgendaInput(title=f"Agenda {index}", steps=[item()]),
+            workspace,
             repository,
         )
 
     with ThreadPoolExecutor(max_workers=4) as executor:
         list(executor.map(create, range(20)))
 
-    assert len(repository.list_materials()) == 20
+    materials, total = repository.list_materials()
+    assert len(materials) == 20
+    assert total == 20
 
 
 def test_board_rejects_too_few_cells_and_extra_pii() -> None:
@@ -102,8 +111,10 @@ def test_board_rejects_too_few_cells_and_extra_pii() -> None:
 
 def test_export_blocks_draft_and_escapes_html_after_approval() -> None:
     repository = InMemoryRepository()
+    workspace = repository.save_workspace(Workspace(slug="nutria-claro-bosque"))
     draft = create_agenda(
         CreateAgendaInput(title="<Agenda>", steps=[item("<Actividad>")]),
+        workspace,
         repository,
     )
     with pytest.raises(ExportBlockedError):
@@ -121,8 +132,10 @@ def test_export_blocks_draft_and_escapes_html_after_approval() -> None:
 @pytest.mark.anyio
 async def test_pdf_contains_attribution_after_approval() -> None:
     repository = InMemoryRepository()
+    workspace = repository.save_workspace(Workspace(slug="garza-amable-nube"))
     draft = create_agenda(
         CreateAgendaInput(title="Agenda", steps=[item()]),
+        workspace,
         repository,
     )
     approved = approve(draft.material_id, repository)

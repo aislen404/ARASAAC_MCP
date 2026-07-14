@@ -46,6 +46,7 @@ export function CreationForm({
     aiPlan,
     busy,
     message,
+    isReadOnly,
     generateAIPlan,
     search,
     selectPictogram,
@@ -84,6 +85,7 @@ export function CreationForm({
         <label>
           <input
             checked={type === "agenda"}
+            disabled={isReadOnly}
             name="material-type"
             onChange={() => setType("agenda")}
             type="radio"
@@ -93,6 +95,7 @@ export function CreationForm({
         <label>
           <input
             checked={type === "board"}
+            disabled={isReadOnly}
             name="material-type"
             onChange={() => setType("board")}
             type="radio"
@@ -102,6 +105,7 @@ export function CreationForm({
         <label>
           <input
             checked={type === "document"}
+            disabled={isReadOnly}
             name="material-type"
             onChange={() => setType("document")}
             type="radio"
@@ -111,6 +115,7 @@ export function CreationForm({
         <label>
           <input
             checked={type === "story"}
+            disabled={isReadOnly}
             name="material-type"
             onChange={() => setType("story")}
             type="radio"
@@ -120,6 +125,7 @@ export function CreationForm({
         <label>
           <input
             checked={type === "signage"}
+            disabled={isReadOnly}
             name="material-type"
             onChange={() => setType("signage")}
             type="radio"
@@ -134,6 +140,7 @@ export function CreationForm({
         className={inputClass(embedded)}
         id="material-title"
         maxLength={120}
+        disabled={isReadOnly}
         onChange={(event) => setTitle(event.target.value)}
         placeholder="Ej.: Rutina de entrada"
         value={title}
@@ -173,6 +180,7 @@ export function CreationForm({
           className={embedded ? "cs-textarea" : undefined}
           id="ai-objective"
           maxLength={500}
+          disabled={isReadOnly}
           onChange={(event) => setAIObjective(event.target.value)}
           placeholder="Ej.: Preparar una visita genérica a la biblioteca"
           rows={3}
@@ -185,6 +193,7 @@ export function CreationForm({
           className={inputClass(embedded)}
           id="ai-item-count"
           max={12}
+          disabled={isReadOnly}
           min={minimumItems}
           onChange={(event) => setAIItemCount(event.target.value)}
           type="number"
@@ -193,6 +202,7 @@ export function CreationForm({
         <label className="checkLabel">
           <input
             checked={privacyConfirmed}
+            disabled={isReadOnly}
             onChange={(event) => setPrivacyConfirmed(event.target.checked)}
             type="checkbox"
           />
@@ -203,6 +213,7 @@ export function CreationForm({
           className={buttonClass(embedded)}
           disabled={
             busy ||
+            isReadOnly ||
             !privacyConfirmed ||
             aiObjective.trim().length < 10 ||
             aiStatus?.available === false
@@ -259,6 +270,7 @@ export function CreationForm({
                             className={buttonClass(embedded)}
                             onClick={() => selectPictogram(pictogram, plannedItem.text)}
                             type="button"
+                                            disabled={isReadOnly}
                           >
                             {isSelected
                               ? `${pictogram.label} seleccionado para ${plannedItem.text}`
@@ -293,11 +305,12 @@ export function CreationForm({
             className={inputClass(embedded)}
             id="pictogram-query"
             maxLength={120}
+            disabled={isReadOnly}
             onChange={(event) => setQuery(event.target.value)}
             required
             value={query}
           />
-          <button className={buttonClass(embedded)} disabled={busy} type="submit">
+          <button className={buttonClass(embedded)} disabled={busy || isReadOnly} type="submit">
             Buscar
           </button>
         </div>
@@ -324,6 +337,7 @@ export function CreationForm({
             <button
               aria-pressed={isSelected}
               className={buttonClass(embedded)}
+              disabled={isReadOnly}
               onClick={() => selectPictogram(pictogram)}
               type="button"
             >

@@ -1,6 +1,7 @@
 from datetime import UTC, datetime
 
 from arasaac_platform.domain.materials import PictogramReference
+from arasaac_platform.domain.workspaces import Workspace
 from arasaac_platform.repositories.memory import InMemoryRepository
 from arasaac_platform.schemas.materials import (
     CreateDocumentInput,
@@ -47,11 +48,13 @@ def approve(repository: InMemoryRepository, material_id) -> None:
 
 def test_release2_generators_and_docx_export() -> None:
     repository = InMemoryRepository()
+    workspace = repository.save_workspace(Workspace(slug="koala-noble-hoja"))
     document = create_document(
         CreateDocumentInput(
             title="Guía genérica",
             sections=[item("Entrada", 6964, "entrada")],
         ),
+        workspace,
         repository,
     )
     story = create_story(
@@ -59,6 +62,7 @@ def test_release2_generators_and_docx_export() -> None:
             title="Historia genérica",
             scenes=[item("Saludo", 2280, "hola")],
         ),
+        workspace,
         repository,
     )
     signage = create_signage(
@@ -69,6 +73,7 @@ def test_release2_generators_and_docx_export() -> None:
                 item("Salida", 2280, "salida"),
             ],
         ),
+        workspace,
         repository,
     )
     assert document.material_type == "accessible_document"

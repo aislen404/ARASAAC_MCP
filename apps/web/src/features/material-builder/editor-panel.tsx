@@ -8,7 +8,7 @@ export function EditorPanel({
   builder,
   embedded = false,
 }: Readonly<{ builder: Builder; embedded?: boolean }>) {
-  const { type, items, material, message, busy, updateText, move, remove, createMaterial } =
+  const { type, items, material, message, busy, isReadOnly, updateText, move, remove, createMaterial } =
     builder;
 
   const previewClass =
@@ -46,6 +46,7 @@ export function EditorPanel({
               <label htmlFor={`text-${item.key}`}>Texto del elemento {index + 1}</label>
               <input
                 className={embedded ? "cs-input" : undefined}
+                disabled={isReadOnly}
                 id={`text-${item.key}`}
                 maxLength={240}
                 onChange={(event) => updateText(item.key, event.target.value)}
@@ -54,7 +55,7 @@ export function EditorPanel({
               <div className="itemActions">
                 <button
                   className={embedded ? "cs-button secondary" : undefined}
-                  disabled={index === 0}
+                  disabled={isReadOnly || index === 0}
                   onClick={() => move(item.key, -1)}
                   type="button"
                 >
@@ -62,7 +63,7 @@ export function EditorPanel({
                 </button>
                 <button
                   className={embedded ? "cs-button secondary" : undefined}
-                  disabled={index === items.length - 1}
+                  disabled={isReadOnly || index === items.length - 1}
                   onClick={() => move(item.key, 1)}
                   type="button"
                 >
@@ -70,6 +71,7 @@ export function EditorPanel({
                 </button>
                 <button
                   className={embedded ? "cs-button secondary" : undefined}
+                  disabled={isReadOnly}
                   onClick={() => remove(item.key)} type="button">
                   Eliminar
                 </button>
@@ -91,7 +93,7 @@ export function EditorPanel({
       </p>
       <button
         className={embedded ? "cs-button" : undefined}
-        disabled={busy || material !== null}
+        disabled={busy || material !== null || isReadOnly}
         onClick={createMaterial}
         type="button"
       >
