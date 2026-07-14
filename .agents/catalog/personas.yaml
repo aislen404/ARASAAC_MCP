@@ -1,0 +1,161 @@
+# Personas de dominio — invocadas internamente por los agentes-fase
+# NO son seleccionables en la UI de ningún IDE.
+# Cada persona es una checklist reutilizable con criterios verificables.
+version: 1
+
+personas:
+  # === Producto / Dominio social ===
+  - name: product-owner-social
+    role: Product Owner Social
+    scope: [openspec, backlog, priorities]
+    gates_enforced: []
+    file: personas/product-owner-social.persona.md
+
+  - name: ngo-cee-domain
+    role: NGO / CEE / Fundaciones Domain Expert
+    scope: [openspec, materials, workflows]
+    gates_enforced: []
+    file: personas/ngo-cee-domain.persona.md
+
+  - name: caasaac-methodology
+    role: CAA/SAAC Methodology Expert
+    scope: [materials, validation]
+    gates_enforced: []
+    file: personas/caasaac-methodology.persona.md
+
+  - name: a11y-cognitive
+    role: Cognitive Accessibility Expert
+    scope: [materials, docs, ui]
+    gates_enforced: []
+    file: personas/a11y-cognitive.persona.md
+
+  - name: arasaac-liaison
+    role: ARASAAC Institutional Liaison
+    scope: [openspec, docs, compliance]
+    gates_enforced: [license]
+    file: personas/arasaac-liaison.persona.md
+
+  # === Compliance / Legal / Seguridad ===
+  - name: license-legal
+    role: License & Legal Compliance
+    scope: [export, material, arasaac]
+    gates_enforced: [license]
+    file: personas/license-legal.persona.md
+
+  - name: privacy-ethics
+    role: Privacy & Ethics Officer
+    scope: [material, backend, logs]
+    gates_enforced: [privacy]
+    file: personas/privacy-ethics.persona.md
+
+  - name: security
+    role: Security Reviewer
+    scope: [mcp, backend, infra]
+    gates_enforced: []
+    file: personas/security.persona.md
+
+  # === Arquitectura / Implementación ===
+  - name: solution-architect
+    role: Solution Architect
+    scope: [openspec, design]
+    gates_enforced: []
+    file: personas/solution-architect.persona.md
+
+  - name: mcp-architect
+    role: MCP Tools/Resources/Prompts Architect
+    scope: [mcp, contracts]
+    gates_enforced: []
+    file: personas/mcp-architect.persona.md
+
+  - name: backend
+    role: Backend Engineer (FastAPI/Pydantic/Postgres)
+    scope: [services/api, packages/domain, packages/contracts]
+    gates_enforced: []
+    file: personas/backend.persona.md
+
+  - name: frontend
+    role: Frontend Engineer (Next.js/React/TypeScript)
+    scope: [apps/web, packages/ui]
+    gates_enforced: []
+    file: personas/frontend.persona.md
+
+  - name: data-connector
+    role: Data Connector (ARASAAC API + cache + metadata)
+    scope: [services/api, integrations]
+    gates_enforced: [license]
+    file: personas/data-connector.persona.md
+
+  - name: semantic-search
+    role: Semantic Search Engineer
+    scope: [services/api, packages/domain]
+    gates_enforced: []
+    file: personas/semantic-search.persona.md
+
+  - name: export-document
+    role: Export / Document Engineer (HTML/PDF/DOCX/PPTX/ZIP)
+    scope: [packages/export, templates]
+    gates_enforced: [license]
+    file: personas/export-document.persona.md
+
+  - name: devops
+    role: DevOps (Docker Compose, CI, deploy)
+    scope: [.github/workflows, docker-compose.yml, infra]
+    gates_enforced: []
+    file: personas/devops.persona.md
+
+  # === Calidad / Verificación ===
+  - name: qa
+    role: Functional QA
+    scope: [tests, e2e]
+    gates_enforced: [human_review]
+    file: personas/qa.persona.md
+
+  - name: accessibility-qa
+    role: Accessibility QA (WCAG 2.2 AA + cognitive)
+    scope: [apps/web, tests]
+    gates_enforced: []
+    file: personas/accessibility-qa.persona.md
+
+  - name: test-automation
+    role: Test Automation (unit + contract + E2E)
+    scope: [tests, ci]
+    gates_enforced: []
+    file: personas/test-automation.persona.md
+
+  - name: observability
+    role: Observability (events, metrics, audit logs)
+    scope: [services/api, infra]
+    gates_enforced: []
+    file: personas/observability.persona.md
+
+  # === Documentación / UX ===
+  - name: documentation
+    role: Documentation Writer
+    scope: [docs, README]
+    gates_enforced: []
+    file: personas/documentation.persona.md
+
+  - name: easy-reading
+    role: Easy Reading / Plain Language Editor
+    scope: [docs, materials]
+    gates_enforced: []
+    file: personas/easy-reading.persona.md
+
+  - name: ux-accessibility
+    role: UX Accessibility Designer
+    scope: [apps/web, design-system]
+    gates_enforced: []
+    file: personas/ux-accessibility.persona.md
+
+  # === Gobernanza / Release ===
+  - name: openspec-steward
+    role: OpenSpec Steward
+    scope: [openspec]
+    gates_enforced: []
+    file: personas/openspec-steward.persona.md
+
+  - name: release-manager
+    role: Release Manager
+    scope: [openspec, changelog, releases]
+    gates_enforced: [human_review]
+    file: personas/release-manager.persona.md

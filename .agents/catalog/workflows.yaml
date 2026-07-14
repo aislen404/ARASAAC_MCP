@@ -1,76 +1,43 @@
+# Workflows ejecutables — cada uno se traduce a slash-command/prompt por IDE
+# 1 canónico (spec-build-verify) + 3 de negocio.
+version: 2
+
 workflows:
-  development_openspec_codex:
-  - intake
-  - proposal
-  - design
-  - compliance_precheck
-  - atomic_tasks
-  - codex_implementation
-  - tests
-  - review
-  - archive
-  create_visual_agenda:
-  - guided_intake
-  - privacy_check
-  - caasaac_strategy
-  - draft_steps
-  - search_pictograms
-  - edit
-  - validate
-  - human_review
-  - export
-  create_communication_board:
-  - guided_intake
-  - domain_categories
-  - caasaac_balance
-  - search_pictograms
-  - edit_grid
-  - validate
-  - human_review
-  - export
-  easy_reading_document:
-  - source_intake
-  - privacy_check
-  - extract_key_messages
-  - simplify
-  - map_concepts
-  - search_pictograms
-  - edit
-  - validate
-  - review
-  - export
-  cee_conacee_kit:
-  - select_process
-  - domain_template
-  - caasaac_review
-  - search_pictograms
-  - generate_pack
-  - expert_review_flag
-  - validate
-  - export
-  cermi_foundation_kit:
-  - select_goal
-  - easy_reading
-  - cognitive_review
-  - search_pictograms
-  - edit
-  - institutional_review
-  - export
-  export_readiness:
-  - no_pii
-  - real_ids
-  - no_modified_pictograms
-  - license_visible
-  - non_commercial
-  - plain_language
-  - visual_density
-  - human_review
-  - manifest
-  arasaac_validation_dossier:
-  - collect_purpose
-  - collect_controls
-  - examples
-  - legal_review
-  - dossier
-  - human_approval
-  - send
+  - name: spec-build-verify
+    kind: canonical
+    title: OpenSpec Lifecycle (canonical)
+    description: >-
+      Ciclo maestro OpenSpec: intake → proposal → design → tasks → spec →
+      implementación → tests → docs → archive.
+    uses_agents: [spec, build, verify, docs, release]
+    file: workflows/spec-build-verify.workflow.md
+
+  - name: create-visual-agenda
+    kind: business
+    title: Crear agenda visual accesible
+    description: >-
+      Agenda visual con pictogramas ARASAAC reales, intake guiado, validación
+      CAA/SAAC, revisión humana y exportación con manifest.
+    uses_agents: [spec, build, verify, docs]
+    uses_skills: [material-pipeline, arasaac-fetch, human-review-gate, export-with-manifest, compliance-scan, a11y-audit]
+    file: workflows/create-visual-agenda.workflow.md
+
+  - name: create-communication-board
+    kind: business
+    title: Crear tablero de comunicación
+    description: >-
+      Tablero de comunicación con categorías, pictogramas reales y balance
+      CAA/SAAC. Revisión humana obligatoria antes de exportar.
+    uses_agents: [spec, build, verify, docs]
+    uses_skills: [material-pipeline, arasaac-fetch, human-review-gate, export-with-manifest, compliance-scan, a11y-audit]
+    file: workflows/create-communication-board.workflow.md
+
+  - name: create-easy-reading
+    kind: business
+    title: Crear documento en lectura fácil
+    description: >-
+      Adaptar documento a lectura fácil con apoyo pictográfico ARASAAC. Requiere
+      revisión humana profesional y verifica plain-language.
+    uses_agents: [spec, build, verify, docs]
+    uses_skills: [material-pipeline, arasaac-fetch, human-review-gate, export-with-manifest, compliance-scan, a11y-audit]
+    file: workflows/create-easy-reading.workflow.md

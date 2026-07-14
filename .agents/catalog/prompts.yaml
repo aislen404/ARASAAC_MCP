@@ -1,0 +1,39 @@
+# Prompts base — se traducen a slash-command en cada IDE
+# 4 prompts alineados con los 5 agentes-fase (docs es implícito en implement/verify)
+version: 1
+
+prompts:
+  - name: new-spec
+    invokes_agent: spec
+    slash_command: /new-spec
+    parameters:
+      - change_id       # e.g. "0037"
+      - short_title     # e.g. "onboarding-guided-tour"
+      - problem_summary # 1-2 sentence
+    description: Crear una nueva change OpenSpec completa (proposal + design + tasks + spec).
+    file: prompts/new-spec.prompt.md
+
+  - name: implement-task
+    invokes_agent: build
+    slash_command: /implement-task
+    parameters:
+      - change_id       # e.g. "0036"
+      - task_id         # e.g. "C5" o el label textual
+    description: Implementar una task atómica de una change OpenSpec aprobada.
+    file: prompts/implement-task.prompt.md
+
+  - name: verify-change
+    invokes_agent: verify
+    slash_command: /verify-change
+    parameters:
+      - change_id
+    description: Verificar tests, lint, typecheck, a11y y los 3 gates críticos sobre una change.
+    file: prompts/verify-change.prompt.md
+
+  - name: archive-change
+    invokes_agent: release
+    slash_command: /archive-change
+    parameters:
+      - change_id
+    description: Archivar una change OpenSpec completada, actualizar índices y release notes.
+    file: prompts/archive-change.prompt.md

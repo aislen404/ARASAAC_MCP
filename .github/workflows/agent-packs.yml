@@ -9,6 +9,9 @@ on:
       - .claude/**
       - .opencode/**
       - .github/agents/**
+      - .github/personas/**
+      - .github/skills/**
+      - .github/workflows-agents/**
       - .github/prompts/**
       - .github/instructions/**
       - .github/copilot-instructions.md
@@ -25,6 +28,9 @@ on:
       - .claude/**
       - .opencode/**
       - .github/agents/**
+      - .github/personas/**
+      - .github/skills/**
+      - .github/workflows-agents/**
       - .github/prompts/**
       - .github/instructions/**
       - .github/copilot-instructions.md
@@ -45,8 +51,9 @@ jobs:
           python-version: "3.11"
           cache: pip
 
-      - name: Install and verify agent packs
+      - name: Install dependencies and verify agent packs
         run: |
           python3 -m venv .venv
+          .venv/bin/pip install --upgrade pip
           .venv/bin/pip install pyyaml
           make agent-packs-verify

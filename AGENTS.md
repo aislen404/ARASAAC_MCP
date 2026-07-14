@@ -1,5 +1,9 @@
 # AGENTS.md — ARASAAC Social MCP Platform
 
+Este documento es la **fuente humana de reglas del repositorio**. La configuración operativa completa vive en [`.agents/00_OPERATING_MODEL.md`](.agents/00_OPERATING_MODEL.md).
+
+---
+
 ## 1. Identidad del proyecto
 
 Este repositorio implementa una plataforma social no comercial para generar materiales accesibles usando exclusivamente pictogramas reales de ARASAAC, con MCP, Web App accesible AA, revisión humana, atribución visible y trazabilidad completa.
@@ -17,6 +21,8 @@ Este repositorio implementa una plataforma social no comercial para generar mate
 9. No implementar ejecución arbitraria en MCP.
 10. No añadir tools MCP sin schema estricto, tests y revisión de seguridad.
 
+> Estas 10 reglas son **inmutables**. Cualquier PR que las contradiga se rechaza sin excepción.
+
 ## 3. Stack aprobado
 
 - Backend: Python + FastAPI + Pydantic.
@@ -27,128 +33,94 @@ Este repositorio implementa una plataforma social no comercial para generar mate
 - Auth MVP: sin auth; futuro Keycloak.
 - Export: HTML/PDF primero; DOCX/PPTX/ZIP después.
 
-## 4. Flujo OpenSpec obligatorio
+## 4. Modelo agentico (v2)
+
+El sistema opera con **5 agentes-fase** que orquestan **25 personas** de dominio, invocan **10 skills** ejecutables y siguen **4 workflows** parametrizables mediante **4 prompts** (`/new-spec`, `/implement-task`, `/verify-change`, `/archive-change`).
+
+| Fase | Agente | Propósito |
+|------|--------|-----------|
+| Spec | `spec` | Convertir necesidad social en OpenSpec change (proposal/design/tasks/spec). |
+| Build | `build` | Implementar contra task atómica respetando stack y reglas. |
+| Verify | `verify` | Tests + gates críticos (license, privacy, human_review) + a11y AA. |
+| Docs | `docs` | Actualizar READMEs, manuales y notas de release. |
+| Release | `release` | Empaquetar, archivar OpenSpec y publicar. |
+
+Las 25 personas (arquitecto, backend, frontend, mcp-architect, license-legal, privacy-ethics, caasaac-methodology, easy-reading, ux-accessibility, product-owner-social, qa, security, devops, observability, release-manager, arasaac-liaison, data-connector, semantic-search, export-document, documentation, cognitive-accessibility, accessibility-qa, ngo-cee-domain, openspec-steward, test-automation) **no se seleccionan directamente**: los agentes-fase las invocan según contexto.
+
+## 5. Flujo OpenSpec obligatorio
 
 Antes de escribir código:
 
-1. Crear change folder en `openspec/changes/<id>/`.
-2. Redactar `proposal.md`.
-3. Redactar `design.md` si hay arquitectura o decisión técnica.
-4. Redactar `tasks.md` con tareas atómicas.
-5. Redactar `spec.md` con escenarios verificables.
-6. Ejecutar verificación.
-7. Implementar con el agente de coding del IDE (Cursor, Codex, VS Code/Copilot, Claude Code u OpenCode).
-8. Ejecutar tests.
-9. Actualizar docs.
-10. Archivar OpenSpec al completar.
+1. `/new-spec` → crear change folder en `openspec/changes/<id>/`.
+2. Redactar `proposal.md`, `design.md`, `tasks.md`, `spec.md`.
+3. `/verify-change` sobre el borrador.
+4. `/implement-task` contra task atómica (agente `build`).
+5. Tests + `/verify-change` final (agente `verify`).
+6. Docs (agente `docs`).
+7. `/archive-change` (agente `release`).
 
-## 5. Definition of Done
+## 6. Definition of Done
 
 Una implementación está completa si:
 
-- Tiene OpenSpec aprobado.
-- Tiene tests.
-- Pasa lint/typecheck.
-- No viola licencia ARASAAC.
-- Incluye atribución si toca materiales.
+- Tiene OpenSpec aprobado y archivado al cierre.
+- Pasa tests, lint y typecheck.
+- Cumple los 3 gates críticos: **license**, **privacy**, **human_review** (ver `.agents/rules/mandatory-gates.md`).
+- Incluye atribución ARASAAC si toca materiales.
 - Mantiene audit log si genera/exporta.
 - No introduce PII.
 - Cumple accesibilidad AA si toca frontend.
 - Actualiza documentación.
 
-## 6. Seguridad MCP
+## 7. Seguridad MCP
 
-- Usar allowlist de tools.
-- Validar todos los inputs con Pydantic.
-- No shell execution.
-- No filesystem arbitrary access.
-- No network calls fuera de conectores aprobados.
-- No secretos en logs.
-- Registrar tool calls relevantes.
+- Allowlist estricta de tools.
+- Validación Pydantic de todos los inputs.
+- Prohibido: shell execution, filesystem arbitrario, red fuera de conectores aprobados, secretos en logs.
+- Registro de tool calls relevantes.
 
-## 7. Política ARASAAC
+## 8. Política ARASAAC
 
-Cada uso de pictograma debe almacenar:
+Cada uso de pictograma debe almacenar: `ID ARASAAC`, `label`, `URL/origen`, `autor: Sergio Palao`, `propietario: Gobierno de Aragón`, `licencia: CC BY-NC-SA 4.0`, `fecha_recuperacion`, `material_id`. Cada exportación incluye atribución visible en `NOTICE-ARASAAC.md`-compatible form.
 
-- ID ARASAAC.
-- Label usado.
-- URL/origen.
-- Autor: Sergio Palao.
-- Propietario: Gobierno de Aragón.
-- Licencia: CC BY-NC-SA.
-- Fecha de recuperación.
-- Material donde se usó.
+## 9. Accesibilidad
 
-Cada exportación debe incluir atribución visible.
+Frontend aspira a **WCAG 2.2 AA**: navegación por teclado, foco visible, contraste suficiente, estructura semántica, labels y errores claros, independencia del color, lenguaje comprensible, testeable con axe.
 
-## 8. Accesibilidad
+## 10. Regla operativa para agentes de coding
 
-El frontend debe aspirar a WCAG 2.2 AA:
-
-- Navegación por teclado.
-- Foco visible.
-- Contraste suficiente.
-- Estructura semántica.
-- Labels y errores claros.
-- No depender solo del color.
-- Textos comprensibles.
-- Componentes testeables con axe.
-
-## 9. Agentes autorizados
-
-- Product Owner Agent.
-- Accessibility Expert Agent.
-- CAA/SAAC Methodology Agent.
-- Foundation/NGO Domain Agent.
-- MCP Architect Agent.
-- Backend Agent.
-- Frontend Agent.
-- Data/Indexing Agent.
-- Export/Document Agent.
-- QA Agent.
-- Accessibility QA Agent.
-- License Compliance Agent.
-- Security Agent.
-- Test Automation Agent.
-- OpenSpec Steward.
-- Architecture Reviewer.
-- Risk & Compliance Agent.
-- Documentation Agent.
-- Release Manager Agent.
-
-## 10. Instrucción a agentes de implementación
-
-Todo agente de coding del equipo debe trabajar siempre contra una task atómica de OpenSpec. Si una tarea no tiene spec, no se implementa. Si se detecta conflicto entre productividad y cumplimiento, gana cumplimiento.
+Todo agente de coding (Cursor, Codex, VS Code/Copilot, Claude Code, OpenCode) trabaja **siempre contra una task atómica de OpenSpec**. Si una task no tiene spec, no se implementa. Ante conflicto entre productividad y cumplimiento, **gana cumplimiento**.
 
 ## 11. Packs agenticos multi-IDE
 
-Fuente canónica compartida: `.agents/` (catálogos, contenido neutro, skills portables).
+Fuente canónica: [`.agents/`](.agents/). Los packs por IDE se **generan automáticamente**; no editar a mano.
 
 | Herramienta | Pack generado |
 |-------------|---------------|
-| Portable (todos) | `.agents/skills/` |
 | Cursor | `.cursor/` |
 | Codex | `.codex/` |
 | Claude Code | `.claude/` |
 | OpenCode | `.opencode/` |
-| VS Code / GitHub Copilot | `.github/` |
+| VS Code / GitHub Copilot | `.github/` (agents, personas, skills, workflows-agents, prompts, instructions, copilot-instructions.md) |
 | Obsidian (referencia humana) | `docs/obsidian/agent-pack/` |
 
-Regenerar packs tras editar `.agents/`:
+**Regenerar tras editar `.agents/`:**
 
 ```bash
-python3 scripts/sync_agent_packs.py
-# o: make agent-packs-sync
+make agent-packs-sync    # o: .venv/bin/python scripts/sync_agent_packs.py
 ```
 
-Verificar sincronía (local o CI):
+**Verificar sincronía (local o CI):**
 
 ```bash
-python3 scripts/verify_agent_packs_sync.py
-# o: make agent-packs-verify
+make agent-packs-verify  # o: .venv/bin/python scripts/verify_agent_packs_sync.py
 ```
 
-Documentación: [docs/agents/multi-ide-agent-packs.md](../docs/agents/multi-ide-agent-packs.md).
-CI: [.github/workflows/agent-packs.yml](../.github/workflows/agent-packs.yml).
+Requiere `pyyaml` (ya en `.venv`).
 
-Documento operativo maestro: `.agents/02_AGENTES_SKILLS_WORKFLOWS_V2.md`.
+## 12. Documentación de referencia
+
+- `.agents/00_OPERATING_MODEL.md` — modelo operativo completo.
+- `.agents/rules/mandatory-gates.md` — 3 gates críticos (fuente única).
+- `docs/agents/multi-ide-agent-packs.md` — guía multi-IDE.
+- `.github/workflows/agent-packs.yml` — CI de sincronía.

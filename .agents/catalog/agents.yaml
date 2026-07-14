@@ -1,226 +1,117 @@
+# Agentes-fase de ARASAAC Social MCP Platform
+# 5 agentes = 5 fases del ciclo de vida OpenSpec → producción
+# Cada agente invoca internamente N personas de dominio (ver personas.yaml)
+version: 2
+
 agents:
-- id: openspec_steward
-  name: OpenSpec Steward Agent
-  mission: Gobierna proposal/design/tasks/spec y precedencias.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: product_owner_social
-  name: Product Owner Social Agent
-  mission: Convierte necesidades sociales en backlog priorizado.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: arasaac_liaison
-  name: ARASAAC Liaison Agent
-  mission: Prepara dossier y relación institucional.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: license_legal_compliance
-  name: License & Legal Compliance Agent
-  mission: Valida CC BY-NC-SA, atribución y no comercialidad.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: privacy_ethics
-  name: Privacy & Ethics Agent
-  mission: Evita datos personales y vinculación a personas concretas.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: caasaac_methodology
-  name: CAA/SAAC Methodology Agent
-  mission: Asegura criterios de comunicación aumentativa/alternativa.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: cognitive_accessibility
-  name: Cognitive Accessibility Agent
-  mission: Revisa comprensión, lenguaje y carga visual.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: easy_reading
-  name: Easy Reading Agent
-  mission: Adapta textos a lectura fácil/lenguaje claro.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: ngo_cee_domain
-  name: NGO/CEE Domain Agent
-  mission: Aterriza casos de uso para entidades, CEE y fundaciones.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: ux_accessibility
-  name: UX Accessibility Agent
-  mission: Diseña Web App accesible AA y guiada.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: solution_architect
-  name: Solution Architect Agent
-  mission: Mantiene arquitectura modular y escalable.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: mcp_architect
-  name: MCP Architect Agent
-  mission: Diseña tools/resources/prompts MCP seguros.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: backend
-  name: Backend Agent
-  mission: Implementa FastAPI, dominio, persistencia y validadores.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: frontend
-  name: Frontend Agent
-  mission: Implementa Next.js, editor, preview y flujos guiados.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: data_connector
-  name: Data Connector Agent
-  mission: Integra ARASAAC API, caché y metadatos.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: semantic_search
-  name: Semantic Search Agent
-  mission: Evoluciona búsqueda semántica open source.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: export_document
-  name: Export/Document Agent
-  mission: Genera HTML/PDF/DOCX/PPTX/ZIP con créditos.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: devops
-  name: DevOps Agent
-  mission: Docker Compose, CI y despliegue reproducible.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: security
-  name: Security Agent
-  mission: Threat modeling y seguridad MCP/API.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: qa
-  name: QA Agent
-  mission: Valida funcional y regresión.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: accessibility_qa
-  name: Accessibility QA Agent
-  mission: Valida accesibilidad digital/cognitiva.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: test_automation
-  name: Test Automation Agent
-  mission: Automatiza unit, contract, E2E y gates.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: observability
-  name: Observability Agent
-  mission: Eventos, métricas, auditoría y trazabilidad.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: documentation
-  name: Documentation Agent
-  mission: README, manuales, despliegue y contribución.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
-- id: release_manager
-  name: Release Manager Agent
-  mission: Releases, piloto, changelog y readiness.
-  common_rules:
-  - must_follow_openspec
-  - must_not_store_personal_data_in_mvp
-  - must_not_generate_or_modify_arasaac_pictograms
-  - must_enforce_human_review_before_export
-  - must_preserve_visible_attribution
+  - name: spec
+    title: Spec Agent
+    phase: spec
+    description: >-
+      Traduce necesidad social en change OpenSpec completa (proposal, design,
+      tasks, spec). Aplica gates de compliance desde el diseño.
+    invokes_personas:
+      - product-owner-social
+      - ngo-cee-domain
+      - caasaac-methodology
+      - a11y-cognitive
+      - license-legal
+      - privacy-ethics
+      - arasaac-liaison
+      - solution-architect
+      - mcp-architect
+      - openspec-steward
+    uses_skills:
+      - openspec-lifecycle
+      - compliance-scan
+    uses_workflows:
+      - spec-build-verify
+    mandatory_gates: [license, privacy, human_review]
+    file: agents/spec.agent.md
+
+  - name: build
+    title: Build Agent
+    phase: build
+    description: >-
+      Implementa una task atómica de OpenSpec. Detecta subsistema por globs de
+      la task (backend/frontend/mcp/data/export) y aplica reglas de área.
+    invokes_personas:
+      - backend
+      - frontend
+      - mcp-architect
+      - data-connector
+      - semantic-search
+      - export-document
+      - devops
+      - solution-architect
+    uses_skills:
+      - openspec-lifecycle
+      - arasaac-fetch
+      - mcp-tool-scaffold
+      - material-pipeline
+      - export-with-manifest
+    uses_workflows:
+      - spec-build-verify
+    mandatory_gates: [license, privacy]
+    file: agents/build.agent.md
+
+  - name: verify
+    title: Verify Agent
+    phase: verify
+    description: >-
+      Ejecuta tests, lint, typecheck, axe, contratos visuales y los 3 gates
+      críticos. Nada pasa a docs/release sin su OK.
+    invokes_personas:
+      - qa
+      - accessibility-qa
+      - test-automation
+      - security
+      - license-legal
+      - privacy-ethics
+      - observability
+    uses_skills:
+      - compliance-scan
+      - a11y-audit
+      - human-review-gate
+    uses_workflows:
+      - spec-build-verify
+    mandatory_gates: [license, privacy, human_review]
+    file: agents/verify.agent.md
+
+  - name: docs
+    title: Docs Agent
+    phase: docs
+    description: >-
+      Genera y actualiza README, manuales técnicos, deployment, contribution,
+      release notes, dossier ARASAAC y manuales de entidad.
+    invokes_personas:
+      - documentation
+      - arasaac-liaison
+      - easy-reading
+      - ux-accessibility
+      - a11y-cognitive
+    uses_skills:
+      - docs-generate
+    uses_workflows:
+      - spec-build-verify
+    mandatory_gates: [license]
+    file: agents/docs.agent.md
+
+  - name: release
+    title: Release Agent
+    phase: release
+    description: >-
+      Archiva la change OpenSpec, publica release notes, actualiza changelog
+      y regenera los packs multi-IDE.
+    invokes_personas:
+      - release-manager
+      - openspec-steward
+      - product-owner-social
+      - devops
+    uses_skills:
+      - openspec-archive
+      - docs-generate
+    uses_workflows:
+      - spec-build-verify
+    mandatory_gates: [human_review]
+    file: agents/release.agent.md

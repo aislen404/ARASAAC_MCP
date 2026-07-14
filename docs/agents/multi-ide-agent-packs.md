@@ -1,82 +1,100 @@
 # Packs agenticos multi-IDE
 
-Este documento describe cómo mantener **paridad de capacidades agenticas** entre
-Cursor, Codex, Claude Code, OpenCode, VS Code / GitHub Copilot y Obsidian.
+Este documento describe cómo trabajamos con **una sola fuente canónica** de configuración agentica (`.agents/`) que se materializa automáticamente en packs específicos para cada IDE / cliente de IA usado en el proyecto.
 
-## Fuente canónica
+## Objetivo
 
-Editar **solo** en `.agents/`:
+Que todos los entornos (Cursor, Codex, Claude Code, OpenCode, VS Code/GitHub Copilot, Obsidian como referencia humana) tengan **exactamente la misma capa de reglas, agentes-fase, personas de dominio, skills, workflows y prompts**, sin drift, sin duplicación manual y con CI que garantice la paridad.
 
-| Ruta | Qué contiene |
-|------|----------------|
-| `.agents/catalog/` | Catálogos YAML (`agents`, `skills`, `workflows`, `packs`) |
-| `.agents/content/` | Cuerpos markdown IDE-neutral (agentes, prompts, plantillas) |
-| `.agents/rules/` | Reglas por dominio (`platform`, `backend`, `frontend`, `mcp`, `export-license`) |
-| `.agents/02_AGENTES_SKILLS_WORKFLOWS_V2.md` | Definición operativa maestra |
+## Arquitectura
 
-No editar manualmente los packs generados (`.cursor/`, `.codex/`, `.claude/`,
-`.opencode/`, partes de `.github/` ni `docs/obsidian/agent-pack/`).
+```
+.agents/                          ← fuente canónica (editar solo aquí)
+├── 00_OPERATING_MODEL.md         ← modelo operativo completo
+├── agents/                       ← 5 agentes-fase: spec, build, verify, docs, release
+├── personas/                     ← 25 personas de dominio (.persona.md)
+├── skills/                       ← 10 skills reales (procedimientos ejecutables)
+├── workflows/                    ← 4 workflows (1 canónico OpenSpec + 3 negocio)
+├── prompts/                      ← 4 prompts parametrizables (slash commands)
+├── rules/                        ← reglas globales + gates críticos + reglas por área
+└── catalog/                      ← YAML descriptivo (fuente de verdad de contadores)
 
-## Regenerar packs
-
-```bash
-make agent-packs-sync
-# equivalente:
-python3 scripts/sync_agent_packs.py
+Packs generados (NO editar a mano)
+├── .cursor/                      ← Cursor
+├── .codex/                       ← Codex CLI
+├── .claude/                      ← Claude Code
+├── .opencode/                    ← OpenCode
+├── .github/                      ← VS Code + GitHub Copilot
+│   ├── agents/  personas/  skills/  workflows-agents/
+│   ├── prompts/  instructions/
+│   └── copilot-instructions.md
+└── docs/obsidian/agent-pack/     ← Obsidian (referencia humana)
 ```
 
-## Verificar sincronía (local o CI)
+## Contadores de paridad (invariantes)
 
-```bash
-make agent-packs-verify
-# equivalente:
-.venv/bin/python3 scripts/verify_agent_packs_sync.py
-```
+Cada IDE debe contener exactamente:
 
-El verificador ejecuta el sync y comprueba que no haya diff en rutas generadas.
-El gate canónico de sincronía es el workflow **Quality**
-(`.github/workflows/quality.yml`), que ejecuta `make test-uat` en cada PR.
-El workflow path-filtered `.github/workflows/agent-packs.yml` ofrece feedback
-rápido cuando solo cambian packs agenticos.
+| Elemento | Cantidad |
+|----------|----------|
+| Agentes-fase | 5 |
+| Personas | 25 |
+| Skills | 10 |
+| Workflows | 4 |
+| Prompts / slash commands | 4 |
+| Reglas | 6 |
 
-## Packs por herramienta
+El script `verify_agent_packs_sync.py` comprueba estos contadores más otros invariantes estructurales (I1–I9) y hace `git diff --quiet` sobre los directorios generados. Cualquier drift falla el CI.
 
-| Herramienta | Ruta | Formato |
-|-------------|------|---------|
-| Portable (todos) | `.agents/skills/` | Agent Skills (`SKILL.md`) |
-| Cursor | `.cursor/` | Subagentes YAML, rules `.mdc`, commands |
-| Codex | `.codex/` | Agents `.toml` + compat `.md` |
-| Claude Code | `.claude/` | Subagentes, skills, commands |
-| OpenCode | `.opencode/` | Skills + agents |
-| VS Code / Copilot | `.github/` | `copilot-instructions.md`, `.agent.md`, `.instructions.md` |
-| Obsidian | `docs/obsidian/agent-pack/` | Vault con wikilinks (referencia humana) |
+## Herramientas
 
-## Flujo recomendado para el equipo
+Script | Uso
+--- | ---
+`scripts/sync_agent_packs.py` | Regenera los 6 packs desde `.agents/`. Idempotente.
+`scripts/verify_agent_packs_sync.py` | Verifica invariantes + ausencia de diffs.
 
-1. Cambiar catálogo o contenido en `.agents/`.
-2. Ejecutar `make agent-packs-sync`.
-3. Revisar diff de packs generados.
-4. Ejecutar `make agent-packs-verify` antes de commit.
-5. Commit incluyendo cambios en `.agents/` **y** packs generados.
+Ambos requieren `pyyaml`. Usa `.venv/bin/python` en local; en CI se instala automáticamente.
 
-## Limpieza post-sync
+## Convenciones de generación
 
-Si iCloud/Dropbox crea copias de conflicto (`* 2.md`, `* 3.toml`, etc.):
+- Cada archivo generado incluye cabecera canónica:
+  ```
+  <!-- generated from .agents/ — do not edit manually -->
+  <!-- source-hash: XXXXXXXXXXXX -->
+  ```
+- El `source-hash` (SHA-256, 12 primeros chars) permite detectar re-generación.
+- Los prompts se materializan según convención de cada IDE (`.cursor/commands/`, `.codex/prompts/`, `.claude/commands/`, `.opencode/prompts/`, `.github/prompts/`).
+- Las reglas se materializan como `.mdc` (Cursor), `.md` (Codex/Claude/OpenCode) o `*.instructions.md` con `applyTo` (VS Code Copilot).
 
-```bash
-find .codex docs/obsidian \( -name '* 2.*' -o -name '* 3.*' \) -type f -delete
-```
+## Flujo de trabajo
 
-Esos patrones están en `.gitignore`. No editar manualmente archivos con sufijo numérico.
+1. Editar cualquier archivo dentro de `.agents/`.
+2. Ejecutar `make agent-packs-sync` (o el script directamente).
+3. Verificar con `make agent-packs-verify`.
+4. Commitear `.agents/` **y** los packs generados en el mismo commit.
+5. El CI (`.github/workflows/agent-packs.yml`) volverá a verificar en PR.
 
+## Gates críticos
 
-- **Reglas globales:** `AGENTS.md` + `.agents/rules/platform.md` → always-on.
-- **Reglas scoped:** backend, frontend, mcp, export-license con globs por IDE.
-- **Agentes readonly:** QA, licencia, privacidad, ARASAAC liaison.
-- **Skills críticos:** dominios `export` y `validate` requieren invocación manual en Cursor.
+Los 3 gates críticos del proyecto (`license`, `privacy`, `human_review`) tienen texto único en `.agents/rules/mandatory-gates.md`. Cualquier agente / skill / workflow los **referencia por nombre**; nunca duplica el texto. El sync copia ese archivo tal cual a cada pack.
+
+## Personas invocadas por agentes
+
+Las 25 personas de dominio **no son seleccionables** en la UI de ningún IDE. Los 5 agentes-fase las invocan internamente según necesidad (ej. el agente `verify` invoca `license-legal`, `privacy-ethics`, `qa`, `accessibility-qa`). Esto simplifica la elección para el usuario y mantiene consistencia entre herramientas.
+
+## Prompts parametrizables
+
+Los 4 prompts son la superficie de entrada más habitual:
+
+- `/new-spec` → invoca agente `spec`.
+- `/implement-task` → invoca agente `build`.
+- `/verify-change` → invoca agente `verify`.
+- `/archive-change` → invoca agente `release`.
+
+Cada uno se materializa en el formato nativo de slash command de cada IDE.
 
 ## Referencias
 
-- [AGENTS.md](../../AGENTS.md) — reglas vinculantes del repositorio
-- [.agents/README.md](../../.agents/README.md) — índice de la fuente canónica
-- [.agents/02_AGENTES_SKILLS_WORKFLOWS_V2.md](../../.agents/02_AGENTES_SKILLS_WORKFLOWS_V2.md) — catálogo operativo completo
+- `.agents/00_OPERATING_MODEL.md` — filosofía y detalle completo.
+- `AGENTS.md` §11 — resumen operativo.
+- `.github/workflows/agent-packs.yml` — CI.

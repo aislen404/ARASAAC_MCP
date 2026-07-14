@@ -1,18 +1,27 @@
 # Configuración de packs IDE generados desde .agents/
-version: 1
+# Fuente canónica: .agents/catalog/{agents,personas,skills,workflows,prompts}.yaml
+version: 2
+
 canonical:
+  agents_path: .agents/agents
+  personas_path: .agents/personas
   skills_path: .agents/skills
+  workflows_path: .agents/workflows
+  prompts_path: .agents/prompts
   rules_path: .agents/rules
-  doc_path: .agents/02_AGENTES_SKILLS_WORKFLOWS_V2.md
+  operating_model: .agents/00_OPERATING_MODEL.md
+  mandatory_gates: .agents/rules/mandatory-gates.md
 
 targets:
   cursor:
     path: .cursor
     label: Cursor
     impl_agent: Cursor Agent
-    skills_path: .cursor/skills
     agents_path: .cursor/agents
-    commands_path: .cursor/commands
+    personas_path: .cursor/personas
+    skills_path: .cursor/skills
+    workflows_path: .cursor/workflows
+    commands_path: .cursor/commands   # ← prompts as slash-commands
     rules_path: .cursor/rules
     rules_ext: mdc
 
@@ -21,50 +30,53 @@ targets:
     label: Codex
     impl_agent: Codex
     agents_path: .codex/agents
-    agents_native_ext: toml
+    personas_path: .codex/personas
+    skills_path: .codex/skills
+    workflows_path: .codex/workflows
     prompts_path: .codex/prompts
-    templates_path: .codex/codex
+    rules_path: .codex/rules
 
   claude:
     path: .claude
     label: Claude Code
     impl_agent: Claude Code
-    skills_path: .claude/skills
     agents_path: .claude/agents
-    commands_path: .claude/commands
+    personas_path: .claude/personas
+    skills_path: .claude/skills
+    workflows_path: .claude/workflows
+    commands_path: .claude/commands   # ← native slash-commands
+    rules_path: .claude/rules
 
   opencode:
     path: .opencode
     label: OpenCode
     impl_agent: OpenCode
-    skills_path: .opencode/skills
     agents_path: .opencode/agents
+    personas_path: .opencode/personas
+    skills_path: .opencode/skills
+    workflows_path: .opencode/workflows
+    commands_path: .opencode/commands
+    rules_path: .opencode/rules
 
   vscode:
     path: .github
     label: VS Code / GitHub Copilot
     impl_agent: GitHub Copilot
     agents_path: .github/agents
-    prompts_path: .github/prompts
+    personas_path: .github/personas
+    skills_path: .github/skills
+    workflows_path: .github/workflows-agents   # separado del CI real (.github/workflows)
+    prompts_path: .github/prompts              # → slash-commands /name
     instructions_path: .github/copilot-instructions.md
-    instructions_subpath: .github/instructions
+    instructions_subpath: .github/instructions # domain rules with applyTo
 
   obsidian:
     path: docs/obsidian/agent-pack
     label: Obsidian
     vault: true
-
-readonly_agents:
-  - qa
-  - accessibility_qa
-  - license_legal_compliance
-  - privacy_ethics
-  - arasaac_liaison
-
-manual_invocation_domains:
-  - export
-  - validate
-
-manual_invocation_workflows:
-  - export-readiness
-  - arasaac-validation-dossier
+    agents_path: docs/obsidian/agent-pack/agents
+    personas_path: docs/obsidian/agent-pack/personas
+    skills_path: docs/obsidian/agent-pack/skills
+    workflows_path: docs/obsidian/agent-pack/workflows
+    prompts_path: docs/obsidian/agent-pack/prompts
+    rules_path: docs/obsidian/agent-pack/rules

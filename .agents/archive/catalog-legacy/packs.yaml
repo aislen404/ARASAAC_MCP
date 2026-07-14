@@ -1,0 +1,70 @@
+# Configuración de packs IDE generados desde .agents/
+version: 1
+canonical:
+  skills_path: .agents/skills
+  rules_path: .agents/rules
+  doc_path: .agents/02_AGENTES_SKILLS_WORKFLOWS_V2.md
+
+targets:
+  cursor:
+    path: .cursor
+    label: Cursor
+    impl_agent: Cursor Agent
+    skills_path: .cursor/skills
+    agents_path: .cursor/agents
+    commands_path: .cursor/commands
+    rules_path: .cursor/rules
+    rules_ext: mdc
+
+  codex:
+    path: .codex
+    label: Codex
+    impl_agent: Codex
+    agents_path: .codex/agents
+    agents_native_ext: toml
+    prompts_path: .codex/prompts
+    templates_path: .codex/codex
+
+  claude:
+    path: .claude
+    label: Claude Code
+    impl_agent: Claude Code
+    skills_path: .claude/skills
+    agents_path: .claude/agents
+    commands_path: .claude/commands
+
+  opencode:
+    path: .opencode
+    label: OpenCode
+    impl_agent: OpenCode
+    skills_path: .opencode/skills
+    agents_path: .opencode/agents
+
+  vscode:
+    path: .github
+    label: VS Code / GitHub Copilot
+    impl_agent: GitHub Copilot
+    agents_path: .github/agents
+    prompts_path: .github/prompts
+    instructions_path: .github/copilot-instructions.md
+    instructions_subpath: .github/instructions
+
+  obsidian:
+    path: docs/obsidian/agent-pack
+    label: Obsidian
+    vault: true
+
+readonly_agents:
+  - qa
+  - accessibility_qa
+  - license_legal_compliance
+  - privacy_ethics
+  - arasaac_liaison
+
+manual_invocation_domains:
+  - export
+  - validate
+
+manual_invocation_workflows:
+  - export-readiness
+  - arasaac-validation-dossier
